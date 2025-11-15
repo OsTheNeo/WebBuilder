@@ -122,13 +122,13 @@ const BlockBuilder = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto">
-        {/* Header with Preview Toggle */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200 px-4 py-4"
-        >
+      {/* Header with Preview Toggle - Full Width */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200 py-3"
+      >
+        <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-bold text-gray-800">Block Builder</h1>
@@ -160,9 +160,11 @@ const BlockBuilder = () => {
               )}
             </button>
           </div>
-        </motion.div>
+        </div>
+      </motion.div>
 
-        {/* Content */}
+      {/* Content - Boxed */}
+      <div className="max-w-7xl mx-auto">
         <div className="p-4">
           {/* Initial Add Button (when no blocks) */}
           {blocks.length === 0 && !previewMode && (
