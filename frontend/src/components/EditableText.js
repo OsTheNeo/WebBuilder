@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import StyleToolbar from './StyleToolbar';
 
 const EditableText = ({
   value,
@@ -6,10 +7,14 @@ const EditableText = ({
   className = '',
   tag = 'p',
   placeholder = 'Click to edit...',
-  multiline = false
+  multiline = false,
+  onStyleChange,
+  nodeId
 }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(value);
+  const [showToolbar, setShowToolbar] = useState(false);
+  const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
   const editableRef = useRef(null);
 
   useEffect(() => {
@@ -28,15 +33,35 @@ const EditableText = ({
     }
   }, [isEditing]);
 
-  const handleClick = () => {
+  const handleClick = (e) => {
     setIsEditing(true);
+    setShowToolbar(true);
+
+    // Position toolbar above the element
+    const rect = editableRef.current?.getBoundingClientRect();
+    if (rect) {
+      setToolbarPosition({
+        x: rect.left,
+        y: rect.top
+      });
+    }
   };
 
   const handleBlur = () => {
-    setIsEditing(false);
-    const newValue = editableRef.current?.innerText || '';
-    if (newValue !== value) {
-      onChange(newValue);
+    // Delay to allow toolbar clicks to register
+    setTimeout(() => {
+      setIsEditing(false);
+      setShowToolbar(false);
+      const newValue = editableRef.current?.innerText || '';
+      if (newValue !== value) {
+        onChange(newValue);
+      }
+    }, 200);
+  };
+
+  const handleStyleChangeInternal = (styleClass) => {
+    if (onStyleChange) {
+      onStyleChange(nodeId, styleClass);
     }
   };
 
@@ -54,16 +79,25 @@ const EditableText = ({
   const Tag = tag;
 
   return (
-    <Tag
-      ref={editableRef}
-      className={`${className} ${isEditing ? 'outline-2 outline-blue-500 outline-dashed outline-offset-2' : 'cursor-text hover:bg-blue-50/30 transition-colors'} ${!content && !isEditing ? 'text-gray-400' : ''}`}
-      contentEditable={isEditing}
-      suppressContentEditableWarning
-      onClick={handleClick}
-      onBlur={handleBlur}
-      onKeyDown={handleKeyDown}
-      dangerouslySetInnerHTML={{ __html: content || (isEditing ? '' : placeholder) }}
-    />
+    <>
+      <Tag
+        ref={editableRef}
+        className={`${className} ${isEditing ? 'outline-2 outline-blue-500 outline-dashed outline-offset-2' : 'cursor-text hover:bg-blue-50/30 transition-colors'} ${!content && !isEditing ? 'text-gray-400' : ''}`}
+        contentEditable={isEditing}
+        suppressContentEditableWarning
+        onClick={handleClick}
+        onBlur={handleBlur}
+        onKeyDown={handleKeyDown}
+        dangerouslySetInnerHTML={{ __html: content || (isEditing ? '' : placeholder) }}
+      />
+
+      <StyleToolbar
+        isVisible={showToolbar}
+        position={toolbarPosition}
+        currentStyles={className}
+        onStyleChange={handleStyleChangeInternal}
+      />
+    </>
   );
 };
 
