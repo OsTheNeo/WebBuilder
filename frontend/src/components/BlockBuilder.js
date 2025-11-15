@@ -217,34 +217,35 @@ const BlockBuilder = () => {
             <AnimatePresence mode="popLayout">
               {blocks.map((block, index) => (
                 <React.Fragment key={block.uniqueId}>
-                  {/* Block */}
+                  {/* Block with Floating Add Button */}
                   <motion.div
                     layout
                     initial={{ opacity: 0, scale: 0.8 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.3 }}
+                    className="relative pointer-events-none"
                   >
-                    <Block
-                      block={block}
-                      index={index}
-                      onDelete={() => handleDeleteBlock(index)}
-                      onMoveUp={() => handleMoveUp(index)}
-                      onMoveDown={() => handleMoveDown(index)}
-                      onEdit={() => handleEditBlock(index)}
-                      canMoveUp={index > 0}
-                      canMoveDown={index < blocks.length - 1}
-                      previewMode={previewMode}
-                      onDragStart={handleDragStart}
-                      onDragEnd={handleDragEnd}
-                      onDragOver={handleDragOver}
-                      onDrop={handleDrop}
-                    />
-                  </motion.div>
+                    <div className="pointer-events-auto">
+                      <Block
+                        block={block}
+                        index={index}
+                        onDelete={() => handleDeleteBlock(index)}
+                        onMoveUp={() => handleMoveUp(index)}
+                        onMoveDown={() => handleMoveDown(index)}
+                        onEdit={() => handleEditBlock(index)}
+                        canMoveUp={index > 0}
+                        canMoveDown={index < blocks.length - 1}
+                        previewMode={previewMode}
+                        onDragStart={handleDragStart}
+                        onDragEnd={handleDragEnd}
+                        onDragOver={handleDragOver}
+                        onDrop={handleDrop}
+                      />
+                    </div>
 
-                  {/* Add Block Button between blocks */}
-                  {!previewMode && (
-                    <>
+                    {/* Add Block Button - Floating at bottom of block */}
+                    {!previewMode && (
                       <AnimatePresence>
                         {selectorOpenAt !== index + 1 && (
                           <AddBlockButton
@@ -253,32 +254,36 @@ const BlockBuilder = () => {
                           />
                         )}
                       </AnimatePresence>
+                    )}
+                  </motion.div>
 
-                      {/* Block Selector */}
-                      <div ref={(el) => (selectorRefs.current[index + 1] = el)}>
-                        <AnimatePresence>
-                          {selectorOpenAt === index + 1 && (
-                            <>
+                  {/* Block Selector */}
+                  {!previewMode && (
+                    <div ref={(el) => (selectorRefs.current[index + 1] = el)}>
+                      <AnimatePresence>
+                        {selectorOpenAt === index + 1 && (
+                          <>
+                            <div className="relative pointer-events-none h-0 z-30">
                               <AddBlockButton
                                 onClick={() => setSelectorOpenAt(null)}
                                 isOpen={true}
                               />
-                              <motion.div
-                                initial={{ opacity: 0 }}
-                                animate={{ opacity: 1 }}
-                                exit={{ opacity: 0 }}
-                                transition={{ duration: 0.3 }}
-                              >
-                                <BlockSelector
-                                  onSelectBlock={(block) => handleAddBlock(block, index + 1)}
-                                  onClose={() => setSelectorOpenAt(null)}
-                                />
-                              </motion.div>
-                            </>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    </>
+                            </div>
+                            <motion.div
+                              initial={{ opacity: 0 }}
+                              animate={{ opacity: 1 }}
+                              exit={{ opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                            >
+                              <BlockSelector
+                                onSelectBlock={(block) => handleAddBlock(block, index + 1)}
+                                onClose={() => setSelectorOpenAt(null)}
+                              />
+                            </motion.div>
+                          </>
+                        )}
+                      </AnimatePresence>
+                    </div>
                   )}
                 </React.Fragment>
               ))}

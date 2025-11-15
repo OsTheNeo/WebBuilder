@@ -8,16 +8,16 @@ const AddBlockButton = ({ onClick, isOpen }) => {
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0 }}
       transition={{ duration: 0.2 }}
-      className="flex justify-center -my-6 relative z-10"
+      className="absolute left-1/2 -translate-x-1/2 -bottom-6 z-30 pointer-events-auto"
     >
       <motion.button
         onClick={onClick}
-        whileHover={{ scale: 1.1 }}
+        whileHover={{ scale: 1.15 }}
         whileTap={{ scale: 0.95 }}
-        className={`w-12 h-12 rounded-full shadow-lg transition-all border-2 flex items-center justify-center ${
+        className={`w-12 h-12 rounded-full shadow-xl transition-all border-2 flex items-center justify-center ${
           isOpen
             ? 'bg-white border-red-400 text-red-600'
-            : 'bg-white border-gray-400/60 text-gray-500'
+            : 'bg-white/95 border-blue-400/60 text-blue-500 hover:border-blue-500 hover:bg-white'
         }`}
         style={{ backdropFilter: 'blur(8px)' }}
         aria-label={isOpen ? 'Close block selector' : 'Add block'}
