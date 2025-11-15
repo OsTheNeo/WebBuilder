@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Block from './Block';
 import BlockSelector from './BlockSelector';
@@ -7,6 +7,9 @@ import AddBlockButton from './AddBlockButton';
 const BlockBuilder = () => {
   const [blocks, setBlocks] = useState([]);
   const [selectorOpenAt, setSelectorOpenAt] = useState(null);
+  const [previewMode, setPreviewMode] = useState(false);
+  const [draggedIndex, setDraggedIndex] = useState(null);
+  const selectorRefs = useRef({});
 
   const handleAddBlock = (block, position) => {
     const newBlock = {
@@ -15,16 +18,13 @@ const BlockBuilder = () => {
     };
 
     if (position === null || position === undefined) {
-      // Add to end
       setBlocks([...blocks, newBlock]);
     } else {
-      // Insert at position
       const newBlocks = [...blocks];
       newBlocks.splice(position, 0, newBlock);
       setBlocks(newBlocks);
     }
 
-    // Close selector
     setSelectorOpenAt(null);
   };
 
@@ -33,132 +33,259 @@ const BlockBuilder = () => {
       setSelectorOpenAt(null);
     } else {
       setSelectorOpenAt(position);
+
+      // Scroll to selector after a short delay to allow animation
+      setTimeout(() => {
+        const selectorElement = selectorRefs.current[position];
+        if (selectorElement) {
+          selectorElement.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+          });
+        }
+      }, 100);
     }
+  };
+
+  const handleDeleteBlock = (index) => {
+    const newBlocks = [...blocks];
+    newBlocks.splice(index, 1);
+    setBlocks(newBlocks);
+  };
+
+  const handleMoveUp = (index) => {
+    if (index > 0) {
+      const newBlocks = [...blocks];
+      [newBlocks[index], newBlocks[index - 1]] = [newBlocks[index - 1], newBlocks[index]];
+      setBlocks(newBlocks);
+    }
+  };
+
+  const handleMoveDown = (index) => {
+    if (index < blocks.length - 1) {
+      const newBlocks = [...blocks];
+      [newBlocks[index], newBlocks[index + 1]] = [newBlocks[index + 1], newBlocks[index]];
+      setBlocks(newBlocks);
+    }
+  };
+
+  const handleEditBlock = (index) => {
+    // TODO: Implement edit functionality
+    alert(`Edit block at index ${index}`);
+  };
+
+  // Drag and Drop handlers
+  const handleDragStart = (e, index) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+  };
+
+  const handleDragEnd = () => {
+    setDraggedIndex(null);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+  };
+
+  const handleDrop = (e, dropIndex) => {
+    e.preventDefault();
+
+    if (draggedIndex === null || draggedIndex === dropIndex) {
+      return;
+    }
+
+    const newBlocks = [...blocks];
+    const draggedBlock = newBlocks[draggedIndex];
+
+    // Remove from old position
+    newBlocks.splice(draggedIndex, 1);
+
+    // Insert at new position
+    const insertIndex = draggedIndex < dropIndex ? dropIndex - 1 : dropIndex;
+    newBlocks.splice(insertIndex, 0, draggedBlock);
+
+    setBlocks(newBlocks);
+    setDraggedIndex(null);
   };
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto p-4">
-        {/* Header */}
+      <div className="max-w-7xl mx-auto">
+        {/* Header with Preview Toggle */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center py-8"
+          className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200 px-4 py-4"
         >
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Block Builder</h1>
-          <p className="text-gray-600">Create your page by adding and arranging blocks</p>
+          <div className="flex justify-between items-center">
+            <div>
+              <h1 className="text-3xl font-bold text-gray-800">Block Builder</h1>
+              <p className="text-gray-600 text-sm">Create your page by adding and arranging blocks</p>
+            </div>
+            <button
+              onClick={() => setPreviewMode(!previewMode)}
+              className={`px-6 py-2 rounded-lg font-semibold transition-all ${
+                previewMode
+                  ? 'bg-blue-500 text-white hover:bg-blue-600'
+                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              }`}
+            >
+              {previewMode ? (
+                <span className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                  </svg>
+                  Edit Mode
+                </span>
+              ) : (
+                <span className="flex items-center gap-2">
+                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                  Preview
+                </span>
+              )}
+            </button>
+          </div>
         </motion.div>
 
-        {/* Initial Add Button (when no blocks) */}
-        {blocks.length === 0 && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.2 }}
-            className="flex flex-col items-center justify-center min-h-[60vh]"
-          >
-            <motion.button
-              onClick={() => toggleSelector(0)}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-32 h-32 rounded-full bg-blue-500 hover:bg-blue-600 text-white shadow-2xl flex items-center justify-center transition-colors"
-              aria-label="Add first block"
+        {/* Content */}
+        <div className="p-4">
+          {/* Initial Add Button (when no blocks) */}
+          {blocks.length === 0 && !previewMode && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-col items-center justify-center min-h-[60vh]"
             >
-              <motion.span
-                className="text-6xl font-bold"
-                animate={{ rotate: selectorOpenAt === 0 ? 45 : 0 }}
-                transition={{ duration: 0.2 }}
+              <motion.button
+                onClick={() => toggleSelector(0)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-32 h-32 rounded-full bg-white border-2 border-gray-400/60 text-gray-500 shadow-2xl flex items-center justify-center transition-colors hover:border-blue-500 hover:text-blue-500"
+                aria-label="Add first block"
               >
-                +
-              </motion.span>
-            </motion.button>
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-              className="mt-4 text-gray-600 font-semibold"
-            >
-              Click to add your first block
-            </motion.p>
-          </motion.div>
-        )}
-
-        {/* Block Selector at position 0 */}
-        <AnimatePresence>
-          {selectorOpenAt === 0 && (
-            <BlockSelector
-              onSelectBlock={(block) => handleAddBlock(block, 0)}
-              onClose={() => setSelectorOpenAt(null)}
-            />
-          )}
-        </AnimatePresence>
-
-        {/* Render Blocks */}
-        <div className="space-y-0">
-          <AnimatePresence mode="popLayout">
-            {blocks.map((block, index) => (
-              <React.Fragment key={block.uniqueId}>
-                {/* Block */}
-                <motion.div
-                  layout
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  transition={{ duration: 0.3 }}
-                  className="mb-0"
+                <motion.span
+                  className="text-6xl font-light"
+                  animate={{ rotate: selectorOpenAt === 0 ? 45 : 0 }}
+                  transition={{ duration: 0.2 }}
                 >
-                  <Block block={block} index={index} />
-                </motion.div>
+                  +
+                </motion.span>
+              </motion.button>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.4 }}
+                className="mt-4 text-gray-600 font-semibold"
+              >
+                Click to add your first block
+              </motion.p>
+            </motion.div>
+          )}
 
-                {/* Add Block Button between blocks */}
-                <AnimatePresence>
-                  {selectorOpenAt !== index + 1 && (
-                    <AddBlockButton
-                      onClick={() => toggleSelector(index + 1)}
-                      isOpen={false}
+          {/* Block Selector at position 0 */}
+          <div ref={(el) => (selectorRefs.current[0] = el)}>
+            <AnimatePresence>
+              {selectorOpenAt === 0 && (
+                <BlockSelector
+                  onSelectBlock={(block) => handleAddBlock(block, 0)}
+                  onClose={() => setSelectorOpenAt(null)}
+                />
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Render Blocks */}
+          <div className="space-y-0">
+            <AnimatePresence mode="popLayout">
+              {blocks.map((block, index) => (
+                <React.Fragment key={block.uniqueId}>
+                  {/* Block */}
+                  <motion.div
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <Block
+                      block={block}
+                      index={index}
+                      onDelete={() => handleDeleteBlock(index)}
+                      onMoveUp={() => handleMoveUp(index)}
+                      onMoveDown={() => handleMoveDown(index)}
+                      onEdit={() => handleEditBlock(index)}
+                      canMoveUp={index > 0}
+                      canMoveDown={index < blocks.length - 1}
+                      previewMode={previewMode}
+                      onDragStart={handleDragStart}
+                      onDragEnd={handleDragEnd}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop}
                     />
-                  )}
-                </AnimatePresence>
+                  </motion.div>
 
-                {/* Block Selector */}
-                <AnimatePresence>
-                  {selectorOpenAt === index + 1 && (
+                  {/* Add Block Button between blocks */}
+                  {!previewMode && (
                     <>
-                      <AddBlockButton
-                        onClick={() => setSelectorOpenAt(null)}
-                        isOpen={true}
-                      />
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        <BlockSelector
-                          onSelectBlock={(block) => handleAddBlock(block, index + 1)}
-                          onClose={() => setSelectorOpenAt(null)}
-                        />
-                      </motion.div>
+                      <AnimatePresence>
+                        {selectorOpenAt !== index + 1 && (
+                          <AddBlockButton
+                            onClick={() => toggleSelector(index + 1)}
+                            isOpen={false}
+                          />
+                        )}
+                      </AnimatePresence>
+
+                      {/* Block Selector */}
+                      <div ref={(el) => (selectorRefs.current[index + 1] = el)}>
+                        <AnimatePresence>
+                          {selectorOpenAt === index + 1 && (
+                            <>
+                              <AddBlockButton
+                                onClick={() => setSelectorOpenAt(null)}
+                                isOpen={true}
+                              />
+                              <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                transition={{ duration: 0.3 }}
+                              >
+                                <BlockSelector
+                                  onSelectBlock={(block) => handleAddBlock(block, index + 1)}
+                                  onClose={() => setSelectorOpenAt(null)}
+                                />
+                              </motion.div>
+                            </>
+                          )}
+                        </AnimatePresence>
+                      </div>
                     </>
                   )}
-                </AnimatePresence>
-              </React.Fragment>
-            ))}
-          </AnimatePresence>
-        </div>
+                </React.Fragment>
+              ))}
+            </AnimatePresence>
+          </div>
 
-        {/* Stats */}
-        {blocks.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-8 text-gray-600"
-          >
-            <p className="font-semibold">
-              Total Blocks: {blocks.length}
-            </p>
-          </motion.div>
-        )}
+          {/* Stats */}
+          {blocks.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="text-center py-8 text-gray-600"
+            >
+              <p className="font-semibold">
+                Total Blocks: {blocks.length}
+              </p>
+            </motion.div>
+          )}
+        </div>
       </div>
     </div>
   );

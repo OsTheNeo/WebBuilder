@@ -164,8 +164,8 @@ const BlockSelector = ({ onSelectBlock, onClose }) => {
                 <motion.div
                   key={block.id}
                   className="flex-shrink-0 w-full flex items-center justify-center p-8 snap-center"
-                  initial={{ scale: 0.7 }}
-                  animate={{ scale: currentIndex === index ? 0.7 : 0.6 }}
+                  initial={{ scale: 0.85 }}
+                  animate={{ scale: currentIndex === index ? 0.85 : 0.75 }}
                   transition={{ duration: 0.3 }}
                 >
                   <div className="w-full max-w-4xl">
