@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import EditableText from '../components/EditableText';
 import TreeView from '../components/TreeView';
+import MediaModal from '../components/MediaModal';
 
 const EditorPage = () => {
   const [article, setArticle] = useState({
@@ -26,6 +27,8 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
   });
 
   const [selectedNodeId, setSelectedNodeId] = useState('root');
+  const [showMediaModal, setShowMediaModal] = useState(false);
+  const [mediaType, setMediaType] = useState('image'); // or 'video'
 
   // Build tree structure from article
   const buildTreeStructure = () => {
@@ -81,6 +84,14 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
     console.log(`Adding ${componentType.name} to parent ${parentId}`);
     // TODO: Implement adding new nodes to the structure
     // This will update the treeStructure and add corresponding content to article
+  };
+
+  const handleMediaSelect = (media) => {
+    setArticle(prev => ({
+      ...prev,
+      image: media.url
+    }));
+    setMediaType(media.type);
   };
 
   return (
@@ -153,21 +164,26 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
               </div>
             </header>
 
-            {/* Featured Image */}
+            {/* Featured Media (Image or Video) */}
             <div className="mb-12 group relative">
-              <img
-                src={article.image}
-                alt={article.title}
-                className="w-full h-96 object-cover rounded-lg shadow-md"
-              />
+              {mediaType === 'video' ? (
+                <video
+                  src={article.image}
+                  controls
+                  className="w-full h-96 object-cover rounded-lg shadow-md"
+                />
+              ) : (
+                <img
+                  src={article.image}
+                  alt={article.title}
+                  className="w-full h-96 object-cover rounded-lg shadow-md"
+                />
+              )}
               <button
-                onClick={() => {
-                  const newUrl = prompt('Enter image URL:', article.image);
-                  if (newUrl) updateArticleField('image', newUrl);
-                }}
+                onClick={() => setShowMediaModal(true)}
                 className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity px-4 py-2 bg-white rounded-lg shadow-lg font-semibold hover:bg-gray-50"
               >
-                Change Image
+                Change Media
               </button>
             </div>
 
@@ -248,6 +264,14 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
           />
         </div>
       </div>
+
+      {/* Media Modal */}
+      <MediaModal
+        isOpen={showMediaModal}
+        onClose={() => setShowMediaModal(false)}
+        onSelectMedia={handleMediaSelect}
+        currentUrl={article.image}
+      />
     </div>
   );
 };

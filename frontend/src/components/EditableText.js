@@ -14,12 +14,16 @@ const EditableText = ({
   const [isEditing, setIsEditing] = useState(false);
   const [content, setContent] = useState(value);
   const [showToolbar, setShowToolbar] = useState(false);
-  const [toolbarPosition, setToolbarPosition] = useState({ x: 0, y: 0 });
+  const [appliedClasses, setAppliedClasses] = useState(className);
   const editableRef = useRef(null);
 
   useEffect(() => {
     setContent(value);
   }, [value]);
+
+  useEffect(() => {
+    setAppliedClasses(className);
+  }, [className]);
 
   useEffect(() => {
     if (isEditing && editableRef.current) {
@@ -36,15 +40,6 @@ const EditableText = ({
   const handleClick = (e) => {
     setIsEditing(true);
     setShowToolbar(true);
-
-    // Position toolbar above the element
-    const rect = editableRef.current?.getBoundingClientRect();
-    if (rect) {
-      setToolbarPosition({
-        x: rect.left,
-        y: rect.top
-      });
-    }
   };
 
   const handleBlur = () => {
@@ -60,8 +55,43 @@ const EditableText = ({
   };
 
   const handleStyleChangeInternal = (styleClass) => {
+    // Remove conflicting classes from the same category
+    let currentClasses = appliedClasses.split(' ').filter(c => c);
+
+    // Define class categories to avoid conflicts
+    const classCategories = {
+      textColor: /^text-(gray|blue|red|green|purple|orange|yellow|indigo|pink|teal)-\d+$/,
+      fontSize: /^text-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)$/,
+      fontWeight: /^font-(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)$/,
+      bgColor: /^bg-(gray|blue|red|green|purple|orange|yellow|indigo|pink|teal|white)-\d+$/,
+      fontFamily: /^font-(sans|serif|mono)$/,
+    };
+
+    // Identify which category the new class belongs to
+    let categoryToRemove = null;
+    for (const [category, regex] of Object.entries(classCategories)) {
+      if (regex.test(styleClass)) {
+        categoryToRemove = regex;
+        break;
+      }
+    }
+
+    // Remove old classes from the same category
+    if (categoryToRemove) {
+      currentClasses = currentClasses.filter(c => !categoryToRemove.test(c));
+    }
+
+    // Add the new class if it's not empty
+    if (styleClass) {
+      currentClasses.push(styleClass);
+    }
+
+    const newClasses = currentClasses.join(' ');
+    setAppliedClasses(newClasses);
+
+    // Notify parent component
     if (onStyleChange) {
-      onStyleChange(nodeId, styleClass);
+      onStyleChange(nodeId, newClasses);
     }
   };
 
@@ -82,7 +112,7 @@ const EditableText = ({
     <>
       <Tag
         ref={editableRef}
-        className={`${className} ${isEditing ? 'outline-2 outline-blue-500 outline-dashed outline-offset-2' : 'cursor-text hover:bg-blue-50/30 transition-colors'} ${!content && !isEditing ? 'text-gray-400' : ''}`}
+        className={`${appliedClasses} ${isEditing ? 'outline-2 outline-blue-500 outline-dashed outline-offset-2' : 'cursor-text hover:bg-blue-50/30 transition-colors'} ${!content && !isEditing ? 'text-gray-400' : ''}`}
         contentEditable={isEditing}
         suppressContentEditableWarning
         onClick={handleClick}
@@ -93,8 +123,7 @@ const EditableText = ({
 
       <StyleToolbar
         isVisible={showToolbar}
-        position={toolbarPosition}
-        currentStyles={className}
+        targetElement={editableRef.current}
         onStyleChange={handleStyleChangeInternal}
       />
     </>
