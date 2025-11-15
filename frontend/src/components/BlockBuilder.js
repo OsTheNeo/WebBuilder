@@ -3,12 +3,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Block from './Block';
 import BlockSelector from './BlockSelector';
 import AddBlockButton from './AddBlockButton';
+import DrawerEditor from './DrawerEditor';
 
 const BlockBuilder = () => {
   const [blocks, setBlocks] = useState([]);
   const [selectorOpenAt, setSelectorOpenAt] = useState(null);
   const [previewMode, setPreviewMode] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState(null);
+  const [editingBlock, setEditingBlock] = useState(null);
   const selectorRefs = useRef({});
 
   const handleAddBlock = (block, position) => {
@@ -80,8 +82,7 @@ const BlockBuilder = () => {
   };
 
   const handleEditBlock = (index) => {
-    // TODO: Implement edit functionality
-    alert(`Edit block at index ${index}`);
+    setEditingBlock({ ...blocks[index], index });
   };
 
   // Drag and Drop handlers
@@ -302,6 +303,13 @@ const BlockBuilder = () => {
           )}
         </div>
       </div>
+
+      {/* Drawer Editor */}
+      <DrawerEditor
+        isOpen={editingBlock !== null}
+        onClose={() => setEditingBlock(null)}
+        block={editingBlock}
+      />
     </div>
   );
 };
