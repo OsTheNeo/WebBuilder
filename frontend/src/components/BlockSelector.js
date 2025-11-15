@@ -128,24 +128,24 @@ const BlockSelector = ({ onSelectBlock, onClose }) => {
           transition={{ delay: 0.2 }}
           className="relative"
         >
-          {/* Navigation Buttons */}
+          {/* Navigation Buttons - Floating over carousel */}
           <button
             onClick={navigateLeft}
-            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-2xl hover:bg-white hover:scale-110 transition-all"
             aria-label="Previous block"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
             </svg>
           </button>
 
           <button
             onClick={navigateRight}
-            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full p-3 shadow-lg hover:bg-gray-100 transition-colors"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-2xl hover:bg-white hover:scale-110 transition-all"
             aria-label="Next block"
           >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
             </svg>
           </button>
 
@@ -163,12 +163,12 @@ const BlockSelector = ({ onSelectBlock, onClose }) => {
               return (
                 <motion.div
                   key={block.id}
-                  className="flex-shrink-0 w-full flex items-center justify-center p-8 snap-center"
-                  initial={{ scale: 0.85 }}
-                  animate={{ scale: currentIndex === index ? 0.85 : 0.75 }}
+                  className="flex-shrink-0 w-full flex items-center justify-center px-16 py-8 snap-center"
+                  initial={{ opacity: 0.7 }}
+                  animate={{ opacity: currentIndex === index ? 1 : 0.5 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-full max-w-4xl">
+                  <div className="w-full max-w-6xl" style={{ transform: 'scale(0.85)' }}>
                     <motion.div
                       className={`w-full ${block.height} ${bgColor} rounded-lg shadow-xl flex items-center justify-center border-4 ${
                         currentIndex === index ? 'border-blue-500' : 'border-gray-300'

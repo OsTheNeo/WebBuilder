@@ -34,16 +34,26 @@ const BlockBuilder = () => {
     } else {
       setSelectorOpenAt(position);
 
-      // Scroll to selector after a short delay to allow animation
+      // Scroll to selector with better centering after animation completes
       setTimeout(() => {
         const selectorElement = selectorRefs.current[position];
         if (selectorElement) {
-          selectorElement.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center'
+          // Get the element's position
+          const rect = selectorElement.getBoundingClientRect();
+          const elementTop = rect.top + window.pageYOffset;
+          const elementHeight = rect.height;
+
+          // Calculate center position accounting for the selector's height
+          const windowHeight = window.innerHeight;
+          const scrollToPosition = elementTop - (windowHeight / 2) + (elementHeight / 2);
+
+          // Smooth scroll to calculated position
+          window.scrollTo({
+            top: scrollToPosition,
+            behavior: 'smooth'
           });
         }
-      }, 100);
+      }, 450); // Increased delay to allow full animation
     }
   };
 
