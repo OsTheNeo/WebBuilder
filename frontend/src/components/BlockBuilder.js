@@ -224,25 +224,23 @@ const BlockBuilder = () => {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.3 }}
-                    className="relative pointer-events-none"
+                    className="relative"
                   >
-                    <div className="pointer-events-auto">
-                      <Block
-                        block={block}
-                        index={index}
-                        onDelete={() => handleDeleteBlock(index)}
-                        onMoveUp={() => handleMoveUp(index)}
-                        onMoveDown={() => handleMoveDown(index)}
-                        onEdit={() => handleEditBlock(index)}
-                        canMoveUp={index > 0}
-                        canMoveDown={index < blocks.length - 1}
-                        previewMode={previewMode}
-                        onDragStart={handleDragStart}
-                        onDragEnd={handleDragEnd}
-                        onDragOver={handleDragOver}
-                        onDrop={handleDrop}
-                      />
-                    </div>
+                    <Block
+                      block={block}
+                      index={index}
+                      onDelete={() => handleDeleteBlock(index)}
+                      onMoveUp={() => handleMoveUp(index)}
+                      onMoveDown={() => handleMoveDown(index)}
+                      onEdit={() => handleEditBlock(index)}
+                      canMoveUp={index > 0}
+                      canMoveDown={index < blocks.length - 1}
+                      previewMode={previewMode}
+                      onDragStart={handleDragStart}
+                      onDragEnd={handleDragEnd}
+                      onDragOver={handleDragOver}
+                      onDrop={handleDrop}
+                    />
 
                     {/* Add Block Button - Floating at bottom of block */}
                     {!previewMode && (
