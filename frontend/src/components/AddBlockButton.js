@@ -12,8 +12,10 @@ const AddBlockButton = ({ onClick, isOpen }) => {
     >
       <motion.button
         onClick={onClick}
-        whileHover={{ scale: 1.15 }}
+        whileHover={{ scale: 1.15, opacity: 0.75 }}
         whileTap={{ scale: 0.95 }}
+        initial={{ opacity: 0.5 }}
+        animate={{ opacity: isOpen ? 1 : 0.5 }}
         className={`w-12 h-12 rounded-full shadow-xl transition-all border-2 flex items-center justify-center ${
           isOpen
             ? 'bg-white border-red-400 text-red-600'
