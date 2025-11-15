@@ -5,15 +5,15 @@ const MediumTeam = ({ data = {} }) => {
     title = 'Meet the Team',
     subtitle = 'The people behind our success',
     members = [
-      { name: 'Sarah Johnson', role: 'CEO & Founder', icon: '👩‍💼', bio: 'Leading with vision' },
-      { name: 'Mike Chen', role: 'CTO', icon: '👨‍💻', bio: 'Building the future' },
-      { name: 'Emma Davis', role: 'Design Lead', icon: '👩‍🎨', bio: 'Creating experiences' },
-      { name: 'Alex Rodriguez', role: 'Marketing', icon: '👨‍💼', bio: 'Spreading the word' }
+      { name: 'Sarah Johnson', role: 'CEO & Founder', initials: 'SJ', color: 'bg-teal-600', bio: 'Leading with vision' },
+      { name: 'Mike Chen', role: 'CTO', initials: 'MC', color: 'bg-teal-700', bio: 'Building the future' },
+      { name: 'Emma Davis', role: 'Design Lead', initials: 'ED', color: 'bg-teal-800', bio: 'Creating experiences' },
+      { name: 'Alex Rodriguez', role: 'Marketing', initials: 'AR', color: 'bg-cyan-600', bio: 'Spreading the word' }
     ]
   } = data;
 
   return (
-    <div className="w-full h-48 bg-gradient-to-r from-teal-500 to-teal-700 flex items-center justify-center px-8 py-6">
+    <section className="w-full h-48 bg-gradient-to-r from-teal-500 to-teal-700 flex items-center justify-center px-8 py-6">
       <div className="max-w-6xl w-full">
         <div className="text-center mb-6">
           <h2 className="text-3xl font-bold text-white mb-1">{title}</h2>
@@ -22,7 +22,9 @@ const MediumTeam = ({ data = {} }) => {
         <div className="grid grid-cols-4 gap-4">
           {members.map((member, index) => (
             <div key={index} className="bg-white/15 backdrop-blur-md rounded-xl p-4 text-center hover:bg-white/25 transition-all hover:scale-105">
-              <div className="text-5xl mb-2">{member.icon}</div>
+              <div className={`w-16 h-16 ${member.color} rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-2`}>
+                {member.initials}
+              </div>
               <div className="font-bold text-white text-lg">{member.name}</div>
               <div className="text-teal-200 text-sm font-semibold mb-1">{member.role}</div>
               <div className="text-teal-100 text-xs italic">{member.bio}</div>
@@ -30,8 +32,113 @@ const MediumTeam = ({ data = {} }) => {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
+};
+
+// Block metadata and structure for tree mapping
+MediumTeam.blockMeta = {
+  id: 'team-2',
+  name: 'Medium Team',
+  category: 'team',
+  height: 'h-48',
+  defaultData: {
+    title: 'Meet the Team',
+    subtitle: 'The people behind our success',
+    members: [
+      { name: 'Sarah Johnson', role: 'CEO & Founder', initials: 'SJ', color: 'bg-teal-600', bio: 'Leading with vision' },
+      { name: 'Mike Chen', role: 'CTO', initials: 'MC', color: 'bg-teal-700', bio: 'Building the future' },
+      { name: 'Emma Davis', role: 'Design Lead', initials: 'ED', color: 'bg-teal-800', bio: 'Creating experiences' },
+      { name: 'Alex Rodriguez', role: 'Marketing', initials: 'AR', color: 'bg-cyan-600', bio: 'Spreading the word' }
+    ]
+  },
+  // Tree structure definition
+  getTree: (data = {}) => ({
+    id: 'medium-team-root',
+    tag: 'section',
+    label: 'Team Section',
+    className: 'w-full h-48 bg-gradient-to-r from-teal-500 to-teal-700 flex items-center justify-center px-8 py-6',
+    children: [
+      {
+        id: 'medium-team-container',
+        tag: 'div',
+        label: 'Container',
+        className: 'max-w-6xl w-full',
+        children: [
+          {
+            id: 'medium-team-header',
+            tag: 'div',
+            label: 'Header',
+            className: 'text-center mb-6',
+            children: [
+              {
+                id: 'medium-team-title',
+                tag: 'h2',
+                label: 'Section Title',
+                content: data.title || 'Meet the Team',
+                className: 'text-3xl font-bold text-white mb-1',
+                editable: true
+              },
+              {
+                id: 'medium-team-subtitle',
+                tag: 'p',
+                label: 'Subtitle',
+                content: data.subtitle || 'The people behind our success',
+                className: 'text-teal-100',
+                editable: true
+              }
+            ]
+          },
+          {
+            id: 'medium-team-grid',
+            tag: 'div',
+            label: 'Team Grid',
+            className: 'grid grid-cols-4 gap-4',
+            children: (data.members || MediumTeam.blockMeta.defaultData.members).map((member, index) => ({
+              id: `medium-team-member-${index}`,
+              tag: 'div',
+              label: `Team Member ${index + 1}`,
+              className: 'bg-white/15 backdrop-blur-md rounded-xl p-4 text-center hover:bg-white/25 transition-all hover:scale-105',
+              children: [
+                {
+                  id: `medium-team-avatar-${index}`,
+                  tag: 'div',
+                  label: `Avatar ${index + 1}`,
+                  content: member.initials,
+                  className: `w-16 h-16 ${member.color} rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-2`,
+                  editable: true
+                },
+                {
+                  id: `medium-team-name-${index}`,
+                  tag: 'div',
+                  label: `Name ${index + 1}`,
+                  content: member.name,
+                  className: 'font-bold text-white text-lg',
+                  editable: true
+                },
+                {
+                  id: `medium-team-role-${index}`,
+                  tag: 'div',
+                  label: `Role ${index + 1}`,
+                  content: member.role,
+                  className: 'text-teal-200 text-sm font-semibold mb-1',
+                  editable: true
+                },
+                {
+                  id: `medium-team-bio-${index}`,
+                  tag: 'div',
+                  label: `Bio ${index + 1}`,
+                  content: member.bio,
+                  className: 'text-teal-100 text-xs italic',
+                  editable: true
+                }
+              ]
+            }))
+          }
+        ]
+      }
+    ]
+  })
 };
 
 export default MediumTeam;

@@ -4,119 +4,268 @@ const XXLGallery = ({ data = {} }) => {
   const {
     title = 'Premium Gallery Collection',
     subtitle = 'Immerse yourself in visual excellence',
-    description = 'A carefully curated selection of the world\'s most stunning photography and imagery',
+    description = 'A carefully curated selection of the world\'s most stunning photography',
     images = [
       {
-        title: 'Tropical Paradise',
-        color: 'bg-gradient-to-br from-teal-400 via-cyan-500 to-blue-600',
-        icon: '🏝️',
-        description: 'Pristine beaches with crystal waters',
-        tags: ['Beach', 'Tropical', 'Ocean'],
-        photographer: 'John Doe'
-      },
-      {
+        url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4',
         title: 'Mountain Majesty',
-        color: 'bg-gradient-to-br from-slate-500 via-gray-600 to-stone-700',
-        icon: '⛰️',
-        description: 'Towering peaks touching clouds',
-        tags: ['Mountains', 'Nature', 'Adventure'],
-        photographer: 'Jane Smith'
+        description: 'Towering peaks and valleys',
+        tags: ['Mountains', 'Nature', 'Peaks']
       },
       {
-        title: 'Urban Pulse',
-        color: 'bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-700',
-        icon: '🌃',
-        description: 'Vibrant city life at night',
-        tags: ['City', 'Night', 'Urban'],
-        photographer: 'Mike Johnson'
+        url: 'https://images.unsplash.com/photo-1511884642898-4c92249e20b6',
+        title: 'Ocean Paradise',
+        description: 'Crystal clear tropical waters',
+        tags: ['Beach', 'Ocean', 'Tropical']
       },
       {
-        title: 'Forest Dreams',
-        color: 'bg-gradient-to-br from-green-500 via-emerald-600 to-teal-700',
-        icon: '🌲',
-        description: 'Enchanted woodland paths',
-        tags: ['Forest', 'Nature', 'Trees'],
-        photographer: 'Sarah Lee'
+        url: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716',
+        title: 'Forest Haven',
+        description: 'Deep woodland trails',
+        tags: ['Forest', 'Nature', 'Trees']
       },
       {
-        title: 'Desert Solitude',
-        color: 'bg-gradient-to-br from-yellow-500 via-orange-600 to-red-700',
-        icon: '🏜️',
-        description: 'Endless golden sand dunes',
-        tags: ['Desert', 'Sand', 'Adventure'],
-        photographer: 'Alex Chen'
+        url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e',
+        title: 'Desert Dreams',
+        description: 'Endless golden dunes',
+        tags: ['Desert', 'Sand', 'Landscape']
       },
       {
-        title: 'Arctic Wonder',
-        color: 'bg-gradient-to-br from-cyan-300 via-blue-400 to-indigo-500',
-        icon: '❄️',
-        description: 'Frozen landscapes and ice',
-        tags: ['Arctic', 'Ice', 'Winter'],
-        photographer: 'Emma Wilson'
+        url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b',
+        title: 'Winter Wonderland',
+        description: 'Pristine snowy peaks',
+        tags: ['Winter', 'Snow', 'Mountains']
       },
       {
-        title: 'Cosmic Beauty',
-        color: 'bg-gradient-to-br from-purple-600 via-indigo-700 to-black',
-        icon: '🌌',
-        description: 'Galaxies and celestial wonders',
-        tags: ['Space', 'Stars', 'Galaxy'],
-        photographer: 'David Park'
+        url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e',
+        title: 'Rolling Hills',
+        description: 'Verdant meadows',
+        tags: ['Hills', 'Nature', 'Grass']
       },
       {
-        title: 'Wildlife Kingdom',
-        color: 'bg-gradient-to-br from-amber-500 via-orange-600 to-brown-700',
-        icon: '🦁',
-        description: 'Majestic creatures in nature',
-        tags: ['Wildlife', 'Animals', 'Safari'],
-        photographer: 'Lisa Martinez'
+        url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05',
+        title: 'Misty Morning',
+        description: 'Foggy forest atmosphere',
+        tags: ['Fog', 'Forest', 'Morning']
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e',
+        title: 'Sunset Vista',
+        description: 'Golden hour beauty',
+        tags: ['Sunset', 'Sky', 'Evening']
       }
     ]
   } = data;
 
   return (
-    <div className="w-full h-96 bg-gradient-to-br from-pink-600 via-purple-600 to-indigo-800 flex items-center justify-center px-8 py-12">
+    <section className="w-full h-96 bg-gradient-to-br from-pink-500 via-pink-600 to-pink-700 flex items-center justify-center px-8 py-12">
       <div className="max-w-7xl w-full">
         <div className="text-center mb-12">
-          <h2 className="text-6xl font-extrabold text-white mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white to-pink-100">
-            {title}
-          </h2>
+          <h2 className="text-6xl font-extrabold text-white mb-4">{title}</h2>
           <p className="text-2xl text-pink-100 font-semibold mb-3">{subtitle}</p>
           <p className="text-xl text-pink-200 max-w-4xl mx-auto leading-relaxed">{description}</p>
         </div>
         <div className="grid grid-cols-4 gap-5">
           {images.map((image, index) => (
-            <div key={index} className="group relative">
-              <div className={`${image.color} rounded-2xl h-48 flex flex-col items-center justify-center text-white shadow-2xl group-hover:scale-105 transition-all cursor-pointer p-5 border-2 border-white/30 overflow-hidden relative`}>
-                {/* Background overlay on hover */}
+            <div key={index} className="group relative bg-pink-100 rounded-2xl overflow-hidden shadow-2xl hover:scale-105 transition-all cursor-pointer border-2 border-pink-300">
+              <div className="h-32 bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center relative">
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all"></div>
-
-                {/* Content */}
-                <div className="relative z-10">
-                  <span className="text-5xl mb-3 group-hover:scale-110 transition-transform block">{image.icon}</span>
-                  <span className="font-bold text-lg mb-2 block text-center">{image.title}</span>
-                  <span className="text-xs opacity-90 mb-3 block text-center leading-relaxed">{image.description}</span>
-
-                  {/* Tags */}
-                  <div className="flex gap-1 mb-2 justify-center flex-wrap">
-                    {image.tags.map((tag, idx) => (
-                      <span key={idx} className="bg-white/25 backdrop-blur-sm px-2 py-1 rounded text-xs font-semibold">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Photographer */}
-                  <div className="text-xs opacity-75 text-center">
-                    📸 {image.photographer}
-                  </div>
+                <span className="text-white text-lg font-bold relative z-10">{image.title}</span>
+              </div>
+              <div className="p-4 bg-pink-100">
+                <p className="text-pink-700 text-sm text-center mb-3 leading-relaxed">{image.description}</p>
+                <div className="flex gap-1 justify-center flex-wrap">
+                  {image.tags.map((tag, idx) => (
+                    <span key={idx} className="bg-pink-200 text-pink-700 px-2 py-1 rounded text-xs font-semibold">
+                      {tag}
+                    </span>
+                  ))}
                 </div>
               </div>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
+};
+
+// Block metadata and structure for tree mapping
+XXLGallery.blockMeta = {
+  id: 'gallery-5',
+  name: 'XXL Gallery',
+  category: 'galleries',
+  height: 'h-96',
+  defaultData: {
+    title: 'Premium Gallery Collection',
+    subtitle: 'Immerse yourself in visual excellence',
+    description: 'A carefully curated selection of the world\'s most stunning photography',
+    images: [
+      {
+        url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4',
+        title: 'Mountain Majesty',
+        description: 'Towering peaks and valleys',
+        tags: ['Mountains', 'Nature', 'Peaks']
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1511884642898-4c92249e20b6',
+        title: 'Ocean Paradise',
+        description: 'Crystal clear tropical waters',
+        tags: ['Beach', 'Ocean', 'Tropical']
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1433086966358-54859d0ed716',
+        title: 'Forest Haven',
+        description: 'Deep woodland trails',
+        tags: ['Forest', 'Nature', 'Trees']
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1469474968028-56623f02e42e',
+        title: 'Desert Dreams',
+        description: 'Endless golden dunes',
+        tags: ['Desert', 'Sand', 'Landscape']
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b',
+        title: 'Winter Wonderland',
+        description: 'Pristine snowy peaks',
+        tags: ['Winter', 'Snow', 'Mountains']
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1441974231531-c6227db76b6e',
+        title: 'Rolling Hills',
+        description: 'Verdant meadows',
+        tags: ['Hills', 'Nature', 'Grass']
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05',
+        title: 'Misty Morning',
+        description: 'Foggy forest atmosphere',
+        tags: ['Fog', 'Forest', 'Morning']
+      },
+      {
+        url: 'https://images.unsplash.com/photo-1472214103451-9374bd1c798e',
+        title: 'Sunset Vista',
+        description: 'Golden hour beauty',
+        tags: ['Sunset', 'Sky', 'Evening']
+      }
+    ]
+  },
+  // Tree structure definition
+  getTree: (data = {}) => ({
+    id: 'xxl-gallery-root',
+    tag: 'section',
+    label: 'Gallery Section',
+    className: 'w-full h-96 bg-gradient-to-br from-pink-500 via-pink-600 to-pink-700 flex items-center justify-center px-8 py-12',
+    children: [
+      {
+        id: 'xxl-gallery-wrapper',
+        tag: 'div',
+        label: 'Gallery Container',
+        className: 'max-w-7xl w-full',
+        children: [
+          {
+            id: 'xxl-gallery-header',
+            tag: 'div',
+            label: 'Gallery Header',
+            className: 'text-center mb-12',
+            children: [
+              {
+                id: 'xxl-gallery-title',
+                tag: 'h2',
+                label: 'Gallery Title',
+                content: data.title || 'Premium Gallery Collection',
+                className: 'text-6xl font-extrabold text-white mb-4',
+                editable: true
+              },
+              {
+                id: 'xxl-gallery-subtitle',
+                tag: 'p',
+                label: 'Gallery Subtitle',
+                content: data.subtitle || 'Immerse yourself in visual excellence',
+                className: 'text-2xl text-pink-100 font-semibold mb-3',
+                editable: true
+              },
+              {
+                id: 'xxl-gallery-description',
+                tag: 'p',
+                label: 'Gallery Description',
+                content: data.description || 'A carefully curated selection of the world\'s most stunning photography',
+                className: 'text-xl text-pink-200 max-w-4xl mx-auto leading-relaxed',
+                editable: true
+              }
+            ]
+          },
+          {
+            id: 'xxl-gallery-grid',
+            tag: 'div',
+            label: 'Image Grid',
+            className: 'grid grid-cols-4 gap-5',
+            children: (data.images || XXLGallery.blockMeta.defaultData.images).map((image, index) => ({
+              id: `xxl-gallery-item-${index}`,
+              tag: 'div',
+              label: `Gallery Item ${index + 1}`,
+              className: 'group relative bg-pink-100 rounded-2xl overflow-hidden shadow-2xl hover:scale-105 transition-all cursor-pointer border-2 border-pink-300',
+              children: [
+                {
+                  id: `xxl-gallery-item-image-${index}`,
+                  tag: 'div',
+                  label: 'Image Area',
+                  className: 'h-32 bg-gradient-to-br from-pink-400 to-pink-600 flex items-center justify-center relative',
+                  children: [
+                    {
+                      id: `xxl-gallery-item-overlay-${index}`,
+                      tag: 'div',
+                      label: 'Hover Overlay',
+                      className: 'absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all'
+                    },
+                    {
+                      id: `xxl-gallery-item-title-${index}`,
+                      tag: 'span',
+                      label: 'Image Title',
+                      content: image.title,
+                      className: 'text-white text-lg font-bold relative z-10',
+                      editable: true
+                    }
+                  ]
+                },
+                {
+                  id: `xxl-gallery-item-content-${index}`,
+                  tag: 'div',
+                  label: 'Content Area',
+                  className: 'p-4 bg-pink-100',
+                  children: [
+                    {
+                      id: `xxl-gallery-item-desc-${index}`,
+                      tag: 'p',
+                      label: 'Description',
+                      content: image.description,
+                      className: 'text-pink-700 text-sm text-center mb-3 leading-relaxed',
+                      editable: true
+                    },
+                    {
+                      id: `xxl-gallery-item-tags-${index}`,
+                      tag: 'div',
+                      label: 'Tags Container',
+                      className: 'flex gap-1 justify-center flex-wrap',
+                      children: image.tags.map((tag, tagIdx) => ({
+                        id: `xxl-gallery-item-tag-${index}-${tagIdx}`,
+                        tag: 'span',
+                        label: `Tag ${tagIdx + 1}`,
+                        content: tag,
+                        className: 'bg-pink-200 text-pink-700 px-2 py-1 rounded text-xs font-semibold',
+                        editable: true
+                      }))
+                    }
+                  ]
+                }
+              ]
+            }))
+          }
+        ]
+      }
+    ]
+  })
 };
 
 export default XXLGallery;
