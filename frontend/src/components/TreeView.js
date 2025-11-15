@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const TreeView = ({ structure, onAddNode, onSelectNode, selectedNodeId }) => {
+const TreeView = ({ structure, onAddNode, onSelectNode, selectedNodeId, nodeStyles = {} }) => {
   const [expandedNodes, setExpandedNodes] = useState(new Set(['root']));
   const [showAddMenu, setShowAddMenu] = useState(null);
+  const [activeTab, setActiveTab] = useState('content');
 
   const componentTypes = [
     { id: 'title', name: 'Title', icon: 'H1' },
@@ -122,20 +123,112 @@ const TreeView = ({ structure, onAddNode, onSelectNode, selectedNodeId }) => {
     );
   };
 
+  const renderStylesNode = (node, depth = 0) => {
+    const isExpanded = expandedNodes.has(node.id);
+    const hasChildren = node.children && node.children.length > 0;
+    const isSelected = selectedNodeId === node.id;
+    const styles = nodeStyles[node.id] || 'No styles applied';
+
+    return (
+      <div key={node.id} className="relative">
+        <div
+          className={`flex items-center gap-2 py-2 px-3 rounded-lg cursor-pointer transition-all ${
+            isSelected
+              ? 'bg-purple-100 border-l-4 border-purple-500'
+              : 'hover:bg-gray-100'
+          }`}
+          style={{ paddingLeft: `${depth * 20 + 12}px` }}
+          onClick={() => onSelectNode(node.id)}
+        >
+          {/* Expand/Collapse Button */}
+          {hasChildren && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleNode(node.id);
+              }}
+              className="w-5 h-5 flex items-center justify-center hover:bg-gray-200 rounded"
+            >
+              <svg
+                className={`w-3 h-3 transition-transform ${isExpanded ? 'rotate-90' : ''}`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
+
+          {/* Node Info */}
+          <div className="flex-1">
+            <div className="flex items-center gap-2 mb-1">
+              <span className="text-xs font-mono text-gray-500">&lt;{node.tag}&gt;</span>
+              <span className="text-sm font-medium text-gray-700">{node.label}</span>
+            </div>
+            <div className="text-xs text-gray-600 font-mono bg-gray-50 px-2 py-1 rounded">
+              {styles}
+            </div>
+          </div>
+        </div>
+
+        {/* Children */}
+        {hasChildren && isExpanded && (
+          <div className="border-l-2 border-gray-200 ml-3">
+            {node.children.map((child) => renderStylesNode(child, depth + 1))}
+          </div>
+        )}
+      </div>
+    );
+  };
+
   return (
-    <div className="h-full overflow-y-auto bg-white rounded-lg border border-gray-200 p-4">
-      <div className="mb-4 pb-3 border-b border-gray-200">
-        <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+    <div className="h-full flex flex-col bg-white rounded-lg border border-gray-200">
+      {/* Header */}
+      <div className="p-4 pb-3 border-b border-gray-200">
+        <h3 className="text-lg font-bold text-gray-800 flex items-center gap-2 mb-3">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
           </svg>
           Document Structure
         </h3>
-        <p className="text-xs text-gray-500 mt-1">Click to select • + to add components</p>
+
+        {/* Tabs */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => setActiveTab('content')}
+            className={`flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+              activeTab === 'content'
+                ? 'bg-blue-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Content
+          </button>
+          <button
+            onClick={() => setActiveTab('styles')}
+            className={`flex-1 px-4 py-2 rounded-lg font-medium text-sm transition-colors ${
+              activeTab === 'styles'
+                ? 'bg-purple-500 text-white'
+                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+            }`}
+          >
+            Styles
+          </button>
+        </div>
+
+        <p className="text-xs text-gray-500 mt-2">
+          {activeTab === 'content'
+            ? 'Click to select • + to add components'
+            : 'View applied Tailwind classes'}
+        </p>
       </div>
 
-      <div className="space-y-1 group">
-        {renderNode(structure)}
+      {/* Content */}
+      <div className="flex-1 overflow-y-auto p-4">
+        <div className="space-y-1 group">
+          {activeTab === 'content' ? renderNode(structure) : renderStylesNode(structure)}
+        </div>
       </div>
     </div>
   );

@@ -29,6 +29,7 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
   const [selectedNodeId, setSelectedNodeId] = useState('root');
   const [showMediaModal, setShowMediaModal] = useState(false);
   const [mediaType, setMediaType] = useState('image'); // or 'video'
+  const [nodeStyles, setNodeStyles] = useState({}); // Track styles for each node
 
   // Build tree structure from article
   const buildTreeStructure = () => {
@@ -81,9 +82,59 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
   };
 
   const handleAddNode = (parentId, componentType) => {
-    console.log(`Adding ${componentType.name} to parent ${parentId}`);
-    // TODO: Implement adding new nodes to the structure
-    // This will update the treeStructure and add corresponding content to article
+    const newNodeId = `${componentType.id}-${Date.now()}`;
+
+    // Create new node based on component type
+    const newNode = {
+      id: newNodeId,
+      tag: componentType.id === 'title' ? 'h1' :
+           componentType.id === 'subtitle' ? 'h2' :
+           componentType.id === 'paragraph' ? 'p' :
+           componentType.id === 'quote' ? 'blockquote' :
+           componentType.id === 'image' ? 'img' :
+           componentType.id === 'two-column' ? 'div' : 'div',
+      label: componentType.name,
+      ...(componentType.id === 'two-column' && {
+        children: [
+          { id: `${newNodeId}-col1`, tag: 'div', label: 'Column 1' },
+          { id: `${newNodeId}-col2`, tag: 'div', label: 'Column 2' }
+        ]
+      })
+    };
+
+    // Add default content to article
+    const defaultContent = {
+      title: 'New Title',
+      subtitle: 'New Subtitle',
+      paragraph: 'New paragraph content...',
+      quote: 'New quote...',
+      image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop',
+      'two-column': { col1: 'Column 1 content...', col2: 'Column 2 content...' }
+    };
+
+    setArticle(prev => ({
+      ...prev,
+      [newNodeId]: defaultContent[componentType.id] || 'New content...'
+    }));
+
+    // Update tree structure
+    const addNodeToTree = (node, parentId, newChild) => {
+      if (node.id === parentId) {
+        return {
+          ...node,
+          children: [...(node.children || []), newChild]
+        };
+      }
+      if (node.children) {
+        return {
+          ...node,
+          children: node.children.map(child => addNodeToTree(child, parentId, newChild))
+        };
+      }
+      return node;
+    };
+
+    setTreeStructure(prev => addNodeToTree(prev, parentId, newNode));
   };
 
   const handleMediaSelect = (media) => {
@@ -92,6 +143,119 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
       image: media.url
     }));
     setMediaType(media.type);
+  };
+
+  const handleStyleChange = (nodeId, newClasses) => {
+    setNodeStyles(prev => ({
+      ...prev,
+      [nodeId]: newClasses
+    }));
+  };
+
+  const renderDynamicContent = (node) => {
+    if (!node || node.id === 'root') {
+      return node.children?.map(child => renderDynamicContent(child));
+    }
+
+    // Skip rendering static nodes that are already rendered manually
+    const staticNodes = ['header', 'title', 'subtitle', 'meta', 'image', 'content', 'col1', 'col2', 'quote-section', 'quote', 'quote-author'];
+    if (staticNodes.includes(node.id)) {
+      return null;
+    }
+
+    const content = article[node.id];
+
+    switch (node.tag) {
+      case 'h1':
+      case 'h2':
+        return (
+          <EditableText
+            key={node.id}
+            tag={node.tag}
+            value={content || 'New heading...'}
+            onChange={(val) => updateArticleField(node.id, val)}
+            className={node.tag === 'h1' ? 'text-4xl font-bold text-gray-900 mb-4' : 'text-3xl font-semibold text-gray-800 mb-3'}
+            placeholder="Enter heading..."
+            nodeId={node.id}
+            onStyleChange={handleStyleChange}
+          />
+        );
+
+      case 'p':
+        return (
+          <EditableText
+            key={node.id}
+            tag="p"
+            value={content || 'New paragraph...'}
+            onChange={(val) => updateArticleField(node.id, val)}
+            className="text-gray-700 leading-relaxed text-lg mb-4"
+            placeholder="Enter paragraph..."
+            multiline={true}
+            nodeId={node.id}
+            onStyleChange={handleStyleChange}
+          />
+        );
+
+      case 'blockquote':
+        return (
+          <div key={node.id} className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-8 rounded-r-lg my-8">
+            <EditableText
+              tag="blockquote"
+              value={content || 'New quote...'}
+              onChange={(val) => updateArticleField(node.id, val)}
+              className="text-2xl font-medium text-gray-800 italic"
+              placeholder="Enter quote..."
+              multiline={true}
+              nodeId={node.id}
+              onStyleChange={handleStyleChange}
+            />
+          </div>
+        );
+
+      case 'img':
+        return (
+          <div key={node.id} className="mb-8 group relative">
+            <img
+              src={content || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop'}
+              alt={node.label}
+              className="w-full h-96 object-cover rounded-lg shadow-md"
+            />
+            <button
+              onClick={() => setShowMediaModal(true)}
+              className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity px-4 py-2 bg-white rounded-lg shadow-lg font-semibold hover:bg-gray-50"
+            >
+              Change Image
+            </button>
+          </div>
+        );
+
+      case 'div':
+        if (node.children && node.children.length === 2) {
+          // Two column layout
+          return (
+            <div key={node.id} className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+              {node.children.map(child => (
+                <div key={child.id} className="space-y-4">
+                  <EditableText
+                    tag="p"
+                    value={article[child.id] || 'Column content...'}
+                    onChange={(val) => updateArticleField(child.id, val)}
+                    className="text-gray-700 leading-relaxed text-lg"
+                    placeholder="Enter content..."
+                    multiline={true}
+                    nodeId={child.id}
+                    onStyleChange={handleStyleChange}
+                  />
+                </div>
+              ))}
+            </div>
+          );
+        }
+        return null;
+
+      default:
+        return null;
+    }
   };
 
   return (
@@ -138,6 +302,8 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
                 onChange={(val) => updateArticleField('title', val)}
                 className="text-5xl font-bold text-gray-900 mb-4"
                 placeholder="Enter article title..."
+                nodeId="title"
+                onStyleChange={handleStyleChange}
               />
               <EditableText
                 tag="p"
@@ -145,6 +311,8 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
                 onChange={(val) => updateArticleField('subtitle', val)}
                 className="text-2xl text-gray-600 mb-6"
                 placeholder="Enter subtitle..."
+                nodeId="subtitle"
+                onStyleChange={handleStyleChange}
               />
               <div className="flex items-center text-gray-500 text-sm">
                 <EditableText
@@ -153,6 +321,8 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
                   onChange={(val) => updateArticleField('author', val)}
                   className="font-semibold"
                   placeholder="Author name..."
+                  nodeId="meta"
+                  onStyleChange={handleStyleChange}
                 />
                 <span className="mx-2">•</span>
                 <EditableText
@@ -160,6 +330,8 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
                   value={article.date}
                   onChange={(val) => updateArticleField('date', val)}
                   placeholder="Date..."
+                  nodeId="meta"
+                  onStyleChange={handleStyleChange}
                 />
               </div>
             </header>
@@ -204,6 +376,8 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
                     className="text-gray-700 leading-relaxed text-lg"
                     placeholder="Enter paragraph..."
                     multiline={true}
+                    nodeId="col1"
+                    onStyleChange={handleStyleChange}
                   />
                 ))}
               </div>
@@ -223,6 +397,8 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
                     className="text-gray-700 leading-relaxed text-lg"
                     placeholder="Enter paragraph..."
                     multiline={true}
+                    nodeId="col2"
+                    onStyleChange={handleStyleChange}
                   />
                 ))}
               </div>
@@ -242,6 +418,8 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
                 className="text-2xl font-medium text-gray-800 italic mb-3"
                 placeholder="Enter quote..."
                 multiline={true}
+                nodeId="quote"
+                onStyleChange={handleStyleChange}
               />
               <EditableText
                 tag="cite"
@@ -249,8 +427,13 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
                 onChange={(val) => updateArticleField('quoteAuthor', val)}
                 className="text-gray-600 not-italic font-semibold"
                 placeholder="Quote author..."
+                nodeId="quote-author"
+                onStyleChange={handleStyleChange}
               />
             </motion.div>
+
+            {/* Dynamic Content - Rendered from tree structure */}
+            {renderDynamicContent(treeStructure)}
           </motion.article>
         </div>
 
@@ -261,6 +444,7 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
             onAddNode={handleAddNode}
             onSelectNode={setSelectedNodeId}
             selectedNodeId={selectedNodeId}
+            nodeStyles={nodeStyles}
           />
         </div>
       </div>

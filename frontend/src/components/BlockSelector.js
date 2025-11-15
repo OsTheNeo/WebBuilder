@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { categories, getColorShades } from '../data/blocksData';
+import { getBlockComponent } from '../blocks';
 
 const BlockSelector = ({ onSelectBlock, onClose }) => {
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -160,6 +161,8 @@ const BlockSelector = ({ onSelectBlock, onClose }) => {
               const shadeIndex = Math.min(index % colorShades.length, colorShades.length - 1);
               const bgColor = colorShades[shadeIndex];
 
+              const BlockComponent = getBlockComponent(block.id);
+
               return (
                 <motion.div
                   key={block.id}
@@ -170,17 +173,22 @@ const BlockSelector = ({ onSelectBlock, onClose }) => {
                 >
                   <div className="w-full max-w-6xl" style={{ transform: 'scale(0.85)' }}>
                     <motion.div
-                      className={`w-full ${block.height} ${bgColor} rounded-lg shadow-xl flex items-center justify-center border-4 ${
+                      className={`w-full rounded-lg shadow-xl overflow-hidden border-4 ${
                         currentIndex === index ? 'border-blue-500' : 'border-gray-300'
                       } cursor-pointer`}
                       onClick={() => setCurrentIndex(index)}
                       whileHover={{ scale: 1.02 }}
                     >
-                      <div className="text-center">
-                        <h3 className="text-2xl font-bold text-gray-800">{block.name}</h3>
-                        <p className="text-lg text-gray-600 mt-2">{block.categoryName}</p>
-                        <p className="text-sm text-gray-500 mt-1">{block.height}</p>
-                      </div>
+                      {BlockComponent ? (
+                        <BlockComponent data={{}} />
+                      ) : (
+                        <div className={`w-full ${block.height} ${bgColor} flex items-center justify-center`}>
+                          <div className="text-center">
+                            <h3 className="text-2xl font-bold text-gray-800">{block.name}</h3>
+                            <p className="text-lg text-gray-600 mt-2">{block.categoryName}</p>
+                          </div>
+                        </div>
+                      )}
                     </motion.div>
                   </div>
                 </motion.div>

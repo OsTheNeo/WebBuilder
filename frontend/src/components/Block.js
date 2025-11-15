@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { getColorShades } from '../data/blocksData';
+import { getBlockComponent } from '../blocks';
 
 const Block = ({
   block,
@@ -22,6 +23,8 @@ const Block = ({
   const shadeIndex = Math.min(index % colorShades.length, colorShades.length - 1);
   const bgColor = colorShades[shadeIndex];
 
+  const BlockComponent = getBlockComponent(block.id);
+
   return (
     <motion.div
       layout
@@ -29,7 +32,7 @@ const Block = ({
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
       transition={{ duration: 0.3 }}
-      className={`relative w-full ${block.height} ${bgColor} flex items-center justify-center border-2 border-gray-200 group`}
+      className={`relative w-full border-2 border-gray-200 group overflow-hidden`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       draggable={!previewMode}
@@ -38,11 +41,17 @@ const Block = ({
       onDragOver={onDragOver}
       onDrop={(e) => onDrop && onDrop(e, index)}
     >
-      {/* Content */}
-      <div className="text-center">
-        <h3 className="text-xl font-bold text-gray-800">{block.name}</h3>
-        <p className="text-sm text-gray-600">{block.categoryName}</p>
-      </div>
+      {/* Block Content */}
+      {BlockComponent ? (
+        <BlockComponent data={block.data || {}} />
+      ) : (
+        <div className={`w-full ${block.height} ${bgColor} flex items-center justify-center`}>
+          <div className="text-center">
+            <h3 className="text-xl font-bold text-gray-800">{block.name}</h3>
+            <p className="text-sm text-gray-600">{block.categoryName}</p>
+          </div>
+        </div>
+      )}
 
       {/* Hover Controls - Only show when not in preview mode */}
       {!previewMode && isHovered && (
