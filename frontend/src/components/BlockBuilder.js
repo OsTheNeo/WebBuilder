@@ -5,6 +5,7 @@ import BlockSelector from './BlockSelector';
 import AddBlockButton from './AddBlockButton';
 import DrawerEditor from './DrawerEditor';
 import BlockSettingsDrawer from './BlockSettingsDrawer';
+import PageSettingsDrawer from './PageSettingsDrawer';
 import SvgPatterns from './SvgPatterns';
 
 const BlockBuilder = () => {
@@ -15,6 +16,10 @@ const BlockBuilder = () => {
   const [editingBlock, setEditingBlock] = useState(null);
   const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
   const [editingBlockIndex, setEditingBlockIndex] = useState(null);
+  const [pageSettingsOpen, setPageSettingsOpen] = useState(false);
+  const [pageSettings, setPageSettings] = useState({
+    backgroundColor: '#f3f4f6' // gray-100 default
+  });
   const selectorRefs = useRef({});
 
   const handleAddBlock = (block, position) => {
@@ -150,7 +155,7 @@ const BlockBuilder = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen" style={{ backgroundColor: pageSettings.backgroundColor }}>
       {/* Header with Preview Toggle - Full Width */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -163,31 +168,44 @@ const BlockBuilder = () => {
               <h1 className="text-3xl font-bold text-gray-800">Block Builder</h1>
               <p className="text-gray-600 text-sm">Create your page by adding and arranging blocks</p>
             </div>
-            <button
-              onClick={() => setPreviewMode(!previewMode)}
-              className={`px-6 py-2 rounded-lg font-semibold transition-all ${
-                previewMode
-                  ? 'bg-blue-500 text-white hover:bg-blue-600'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              {previewMode ? (
-                <span className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                  </svg>
-                  Edit Mode
-                </span>
-              ) : (
-                <span className="flex items-center gap-2">
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                  </svg>
-                  Preview
-                </span>
-              )}
-            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setPageSettingsOpen(true)}
+                className="px-4 py-2 rounded-lg font-semibold transition-all bg-purple-500 text-white hover:bg-purple-600 flex items-center gap-2"
+                title="Page Settings"
+              >
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+                Page
+              </button>
+              <button
+                onClick={() => setPreviewMode(!previewMode)}
+                className={`px-6 py-2 rounded-lg font-semibold transition-all ${
+                  previewMode
+                    ? 'bg-blue-500 text-white hover:bg-blue-600'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {previewMode ? (
+                  <span className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                    </svg>
+                    Edit Mode
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-2">
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    Preview
+                  </span>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </motion.div>
@@ -346,6 +364,14 @@ const BlockBuilder = () => {
         onClose={() => setSettingsDrawerOpen(false)}
         blockConfig={blocks[editingBlockIndex]?.config}
         onUpdate={handleConfigUpdate}
+      />
+
+      {/* Page Settings Drawer */}
+      <PageSettingsDrawer
+        isOpen={pageSettingsOpen}
+        onClose={() => setPageSettingsOpen(false)}
+        pageSettings={pageSettings}
+        onUpdate={setPageSettings}
       />
 
       {/* SVG Patterns */}

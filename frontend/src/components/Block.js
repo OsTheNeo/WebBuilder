@@ -62,8 +62,8 @@ const Block = ({
     return classes.join(' ');
   };
 
-  // Build background styles
-  const getBackgroundStyle = () => {
+  // Build background styles - applies to container or wrapper depending on layout
+  const buildBackgroundStyle = () => {
     const bg = config.background;
     const style = {};
 
@@ -107,6 +107,22 @@ const Block = ({
     return style;
   };
 
+  // Get background style for container (only for full-width)
+  const getContainerBackgroundStyle = () => {
+    if (config.layout === 'full-width') {
+      return buildBackgroundStyle();
+    }
+    return {}; // Transparent for boxed layout
+  };
+
+  // Get background style for wrapper (only for boxed)
+  const getWrapperBackgroundStyle = () => {
+    if (config.layout === 'boxed') {
+      return buildBackgroundStyle();
+    }
+    return {};
+  };
+
   // Get overlay style for image-overlay type
   const getOverlayStyle = () => {
     const bg = config.background;
@@ -141,13 +157,13 @@ const Block = ({
       onDragEnd={onDragEnd}
       onDragOver={onDragOver}
       onDrop={(e) => onDrop && onDrop(e, index)}
-      style={getBackgroundStyle()}
+      style={getContainerBackgroundStyle()}
     >
       {/* Overlay for image-overlay background */}
       {getOverlayStyle() && <div style={getOverlayStyle()} />}
 
       {/* Block Content */}
-      <div className={getWrapperClasses()} style={{ position: 'relative', zIndex: 1 }}>
+      <div className={getWrapperClasses()} style={{ ...getWrapperBackgroundStyle(), position: 'relative', zIndex: 1 }}>
         {BlockComponent ? (
           <BlockComponent data={block.data || {}} />
         ) : (
