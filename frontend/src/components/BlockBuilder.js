@@ -4,6 +4,8 @@ import Block from './Block';
 import BlockSelector from './BlockSelector';
 import AddBlockButton from './AddBlockButton';
 import DrawerEditor from './DrawerEditor';
+import BlockSettingsDrawer from './BlockSettingsDrawer';
+import SvgPatterns from './SvgPatterns';
 
 const BlockBuilder = () => {
   const [blocks, setBlocks] = useState([]);
@@ -11,6 +13,8 @@ const BlockBuilder = () => {
   const [previewMode, setPreviewMode] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [editingBlock, setEditingBlock] = useState(null);
+  const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
+  const [editingBlockIndex, setEditingBlockIndex] = useState(null);
   const selectorRefs = useRef({});
 
   const handleAddBlock = (block, position) => {
@@ -83,6 +87,22 @@ const BlockBuilder = () => {
 
   const handleEditBlock = (index) => {
     setEditingBlock({ ...blocks[index], index });
+  };
+
+  const handleBlockSettings = (index) => {
+    setEditingBlockIndex(index);
+    setSettingsDrawerOpen(true);
+  };
+
+  const handleConfigUpdate = (newConfig) => {
+    if (editingBlockIndex !== null) {
+      const newBlocks = [...blocks];
+      newBlocks[editingBlockIndex] = {
+        ...newBlocks[editingBlockIndex],
+        config: newConfig
+      };
+      setBlocks(newBlocks);
+    }
   };
 
   // Drag and Drop handlers
@@ -234,6 +254,7 @@ const BlockBuilder = () => {
                       onMoveUp={() => handleMoveUp(index)}
                       onMoveDown={() => handleMoveDown(index)}
                       onEdit={() => handleEditBlock(index)}
+                      onSettings={() => handleBlockSettings(index)}
                       canMoveUp={index > 0}
                       canMoveDown={index < blocks.length - 1}
                       previewMode={previewMode}
@@ -310,6 +331,17 @@ const BlockBuilder = () => {
         onClose={() => setEditingBlock(null)}
         block={editingBlock}
       />
+
+      {/* Settings Drawer */}
+      <BlockSettingsDrawer
+        isOpen={settingsDrawerOpen}
+        onClose={() => setSettingsDrawerOpen(false)}
+        blockConfig={blocks[editingBlockIndex]?.config}
+        onUpdate={handleConfigUpdate}
+      />
+
+      {/* SVG Patterns */}
+      <SvgPatterns />
     </div>
   );
 };

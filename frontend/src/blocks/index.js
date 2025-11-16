@@ -71,151 +71,151 @@ import FullContact from './contact/FullContact';
 
 // Block component registry - maps block IDs to their components
 export const blockComponents = {
-  // Headers
-  'header-1': SimpleHeader,
-  'header-2': LargeHeader,
-  'header-3': MegaHeader,
-  'header-4': TallHeader,
-  'header-5': GiantHeader,
+ // Headers
+ 'header-1': SimpleHeader,
+ 'header-2': LargeHeader,
+ 'header-3': MegaHeader,
+ 'header-4': TallHeader,
+ 'header-5': GiantHeader,
 
-  // Hero Sections
-  'hero-1': CompactHero,
-  'hero-2': StandardHero,
-  'hero-3': LargeHero,
-  'hero-4': FullHero,
-  'hero-5': MassiveHero,
+ // Hero Sections
+ 'hero-1': CompactHero,
+ 'hero-2': StandardHero,
+ 'hero-3': LargeHero,
+ 'hero-4': FullHero,
+ 'hero-5': MassiveHero,
 
-  // Features
-  'features-1': SmallFeatures,
-  'features-2': MediumFeatures,
-  'features-3': LargeFeatures,
-  'features-4': XLFeatures,
-  'features-5': XXLFeatures,
+ // Features
+ 'features-1': SmallFeatures,
+ 'features-2': MediumFeatures,
+ 'features-3': LargeFeatures,
+ 'features-4': XLFeatures,
+ 'features-5': XXLFeatures,
 
-  // Testimonials
-  'testimonial-1': CompactTestimonial,
-  'testimonial-2': StandardTestimonial,
-  'testimonial-3': LargeTestimonial,
-  'testimonial-4': TallTestimonial,
-  'testimonial-5': GiantTestimonial,
+ // Testimonials
+ 'testimonial-1': CompactTestimonial,
+ 'testimonial-2': StandardTestimonial,
+ 'testimonial-3': LargeTestimonial,
+ 'testimonial-4': TallTestimonial,
+ 'testimonial-5': GiantTestimonial,
 
-  // CTAs
-  'cta-1': SmallCTA,
-  'cta-2': MediumCTA,
-  'cta-3': LargeCTA,
-  'cta-4': XLCTA,
-  'cta-5': XXLCTA,
+ // CTAs
+ 'cta-1': SmallCTA,
+ 'cta-2': MediumCTA,
+ 'cta-3': LargeCTA,
+ 'cta-4': XLCTA,
+ 'cta-5': XXLCTA,
 
-  // Footers
-  'footer-1': SimpleFooter,
-  'footer-2': StandardFooter,
-  'footer-3': LargeFooter,
-  'footer-4': DetailedFooter,
-  'footer-5': MegaFooter,
+ // Footers
+ 'footer-1': SimpleFooter,
+ 'footer-2': StandardFooter,
+ 'footer-3': LargeFooter,
+ 'footer-4': DetailedFooter,
+ 'footer-5': MegaFooter,
 
-  // Galleries
-  'gallery-1': SmallGallery,
-  'gallery-2': MediumGallery,
-  'gallery-3': LargeGallery,
-  'gallery-4': XLGallery,
-  'gallery-5': XXLGallery,
+ // Galleries
+ 'gallery-1': SmallGallery,
+ 'gallery-2': MediumGallery,
+ 'gallery-3': LargeGallery,
+ 'gallery-4': XLGallery,
+ 'gallery-5': XXLGallery,
 
-  // Pricing
-  'pricing-1': CompactPricing,
-  'pricing-2': StandardPricing,
-  'pricing-3': LargePricing,
-  'pricing-4': DetailedPricing,
-  'pricing-5': FullPricing,
+ // Pricing
+ 'pricing-1': CompactPricing,
+ 'pricing-2': StandardPricing,
+ 'pricing-3': LargePricing,
+ 'pricing-4': DetailedPricing,
+ 'pricing-5': FullPricing,
 
-  // Team
-  'team-1': SmallTeam,
-  'team-2': MediumTeam,
-  'team-3': LargeTeam,
-  'team-4': XLTeam,
-  'team-5': XXLTeam,
+ // Team
+ 'team-1': SmallTeam,
+ 'team-2': MediumTeam,
+ 'team-3': LargeTeam,
+ 'team-4': XLTeam,
+ 'team-5': XXLTeam,
 
-  // Contact
-  'contact-1': SimpleContact,
-  'contact-2': StandardContact,
-  'contact-3': LargeContact,
-  'contact-4': DetailedContact,
-  'contact-5': FullContact,
+ // Contact
+ 'contact-1': SimpleContact,
+ 'contact-2': StandardContact,
+ 'contact-3': LargeContact,
+ 'contact-4': DetailedContact,
+ 'contact-5': FullContact,
 };
 
 // Helper function to get block component by ID
 export const getBlockComponent = (blockId) => {
-  return blockComponents[blockId] || null;
+ return blockComponents[blockId] || null;
 };
 
 // Export all components individually as well
 export {
-  // Headers
-  SimpleHeader,
-  LargeHeader,
-  MegaHeader,
-  TallHeader,
-  GiantHeader,
+ // Headers
+ SimpleHeader,
+ LargeHeader,
+ MegaHeader,
+ TallHeader,
+ GiantHeader,
 
-  // Hero
-  CompactHero,
-  StandardHero,
-  LargeHero,
-  FullHero,
-  MassiveHero,
+ // Hero
+ CompactHero,
+ StandardHero,
+ LargeHero,
+ FullHero,
+ MassiveHero,
 
-  // Features
-  SmallFeatures,
-  MediumFeatures,
-  LargeFeatures,
-  XLFeatures,
-  XXLFeatures,
+ // Features
+ SmallFeatures,
+ MediumFeatures,
+ LargeFeatures,
+ XLFeatures,
+ XXLFeatures,
 
-  // Testimonials
-  CompactTestimonial,
-  StandardTestimonial,
-  LargeTestimonial,
-  TallTestimonial,
-  GiantTestimonial,
+ // Testimonials
+ CompactTestimonial,
+ StandardTestimonial,
+ LargeTestimonial,
+ TallTestimonial,
+ GiantTestimonial,
 
-  // CTAs
-  SmallCTA,
-  MediumCTA,
-  LargeCTA,
-  XLCTA,
-  XXLCTA,
+ // CTAs
+ SmallCTA,
+ MediumCTA,
+ LargeCTA,
+ XLCTA,
+ XXLCTA,
 
-  // Footers
-  SimpleFooter,
-  StandardFooter,
-  LargeFooter,
-  DetailedFooter,
-  MegaFooter,
+ // Footers
+ SimpleFooter,
+ StandardFooter,
+ LargeFooter,
+ DetailedFooter,
+ MegaFooter,
 
-  // Galleries
-  SmallGallery,
-  MediumGallery,
-  LargeGallery,
-  XLGallery,
-  XXLGallery,
+ // Galleries
+ SmallGallery,
+ MediumGallery,
+ LargeGallery,
+ XLGallery,
+ XXLGallery,
 
-  // Pricing
-  CompactPricing,
-  StandardPricing,
-  LargePricing,
-  DetailedPricing,
-  FullPricing,
+ // Pricing
+ CompactPricing,
+ StandardPricing,
+ LargePricing,
+ DetailedPricing,
+ FullPricing,
 
-  // Team
-  SmallTeam,
-  MediumTeam,
-  LargeTeam,
-  XLTeam,
-  XXLTeam,
+ // Team
+ SmallTeam,
+ MediumTeam,
+ LargeTeam,
+ XLTeam,
+ XXLTeam,
 
-  // Contact
-  SimpleContact,
-  StandardContact,
-  LargeContact,
-  DetailedContact,
-  FullContact,
+ // Contact
+ SimpleContact,
+ StandardContact,
+ LargeContact,
+ DetailedContact,
+ FullContact,
 };
