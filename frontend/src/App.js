@@ -1,11 +1,19 @@
 import React from 'react';
-import BlockBuilder from './components/BlockBuilder';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import BuilderPage from './pages/BuilderPage';
+import EditorPage from './pages/EditorPage';
 
 function App() {
   return (
-    <div className="App">
-      <BlockBuilder />
-    </div>
+    <Router>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<Navigate to="/builder" replace />} />
+          <Route path="/builder" element={<BuilderPage />} />
+          <Route path="/editor" element={<EditorPage />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
