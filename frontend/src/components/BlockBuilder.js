@@ -184,9 +184,9 @@ const BlockBuilder = () => {
         </div>
       </motion.div>
 
-      {/* Content - Boxed */}
-      <div className="max-w-7xl mx-auto">
-        <div className="p-4">
+      {/* Content - Full Width */}
+      <div className="w-full">
+        <div className="">
           {/* Initial Add Button (when no blocks) */}
           {blocks.length === 0 && !previewMode && (
             <motion.div
