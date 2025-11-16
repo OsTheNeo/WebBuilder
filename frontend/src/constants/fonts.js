@@ -1,0 +1,27 @@
+// Google Fonts popular list
+export const GOOGLE_FONTS = [
+  'Inter',
+  'Roboto',
+  'Open Sans',
+  'Lato',
+  'Montserrat',
+  'Poppins',
+  'Raleway',
+  'Playfair Display',
+  'Merriweather',
+  'Nunito',
+  'Source Sans Pro',
+  'PT Sans',
+  'Ubuntu',
+  'Oswald',
+  'Quicksand',
+  'Mukta',
+  'Work Sans',
+  'Rubik',
+  'DM Sans',
+  'Space Grotesk',
+  'Outfit',
+  'Manrope',
+  'Plus Jakarta Sans',
+  'Sora'
+];
