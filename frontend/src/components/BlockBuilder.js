@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Block from './Block';
 import BlockSelector from './BlockSelector';
@@ -18,9 +18,38 @@ const BlockBuilder = () => {
   const [editingBlockIndex, setEditingBlockIndex] = useState(null);
   const [pageSettingsOpen, setPageSettingsOpen] = useState(false);
   const [pageSettings, setPageSettings] = useState({
-    backgroundColor: '#f3f4f6' // gray-100 default
+    backgroundColor: '#f3f4f6',
+    primaryFont: 'Inter',
+    secondaryFont: 'Inter',
+    primaryColor: '#3b82f6',
+    secondaryColor: '#8b5cf6',
+    logo: null
   });
   const selectorRefs = useRef({});
+
+  // Load Google Fonts dynamically
+  useEffect(() => {
+    const loadGoogleFont = (fontName) => {
+      const formattedFont = fontName.replace(/ /g, '+');
+      const linkId = `google-font-${formattedFont}`;
+
+      // Check if font is already loaded
+      if (document.getElementById(linkId)) return;
+
+      const link = document.createElement('link');
+      link.id = linkId;
+      link.href = `https://fonts.googleapis.com/css2?family=${formattedFont}:wght@300;400;500;600;700;800;900&display=swap`;
+      link.rel = 'stylesheet';
+      document.head.appendChild(link);
+    };
+
+    if (pageSettings.primaryFont) {
+      loadGoogleFont(pageSettings.primaryFont);
+    }
+    if (pageSettings.secondaryFont && pageSettings.secondaryFont !== pageSettings.primaryFont) {
+      loadGoogleFont(pageSettings.secondaryFont);
+    }
+  }, [pageSettings.primaryFont, pageSettings.secondaryFont]);
 
   const handleAddBlock = (block, position) => {
     const newBlock = {
@@ -155,7 +184,16 @@ const BlockBuilder = () => {
   };
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: pageSettings.backgroundColor }}>
+    <div
+      className="min-h-screen"
+      style={{
+        backgroundColor: pageSettings.backgroundColor,
+        '--primary-font': pageSettings.primaryFont,
+        '--secondary-font': pageSettings.secondaryFont,
+        '--primary-color': pageSettings.primaryColor,
+        '--secondary-color': pageSettings.secondaryColor
+      }}
+    >
       {/* Header with Preview Toggle - Full Width */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}

@@ -10,3 +10,18 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+/* Apply dynamic typography from page settings */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--primary-font, 'Inter'), sans-serif;
+}
+
+p, span, div, a, li, label, input, textarea, select, button {
+  font-family: var(--secondary-font, 'Inter'), sans-serif;
+}
+
+/* CSS Variables for theme colors (accessible throughout the app) */
+:root {
+  --primary-color: #3b82f6;
+  --secondary-color: #8b5cf6;
+}
