@@ -42,16 +42,20 @@ const EditableText = ({
     setShowToolbar(true);
   };
 
-  const handleBlur = () => {
-    // Delay to allow toolbar clicks to register
+  const handleBlur = (e) => {
+    // The StyleToolbar uses preventDefault on mouseDown, so clicks on it won't trigger blur
+    // We use a small delay to handle edge cases and ensure smooth UX
     setTimeout(() => {
-      setIsEditing(false);
-      setShowToolbar(false);
-      const newValue = editableRef.current?.innerText || '';
-      if (newValue !== value) {
-        onChange(newValue);
+      // Only close if we're still not focused on the editable element
+      if (!editableRef.current?.contains(document.activeElement)) {
+        setIsEditing(false);
+        setShowToolbar(false);
+        const newValue = editableRef.current?.innerText || '';
+        if (newValue !== value) {
+          onChange(newValue);
+        }
       }
-    }, 200);
+    }, 100);
   };
 
   const handleStyleChangeInternal = (styleClass) => {
@@ -93,6 +97,13 @@ const EditableText = ({
     if (onStyleChange) {
       onStyleChange(nodeId, newClasses);
     }
+
+    // Return focus to the editable element after applying style
+    setTimeout(() => {
+      if (editableRef.current && isEditing) {
+        editableRef.current.focus();
+      }
+    }, 10);
   };
 
   const handleKeyDown = (e) => {

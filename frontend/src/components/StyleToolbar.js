@@ -97,6 +97,10 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
           exit={{ opacity: 0, y: 5 }}
           transition={{ duration: 0.15 }}
           className="fixed z-[100] bg-white rounded-lg shadow-2xl border-2 border-blue-500"
+          onMouseDown={(e) => {
+            // Prevent blur event on the editable element
+            e.preventDefault();
+          }}
           style={{
             left: `${position.x}px`,
             top: `${position.y}px`,
