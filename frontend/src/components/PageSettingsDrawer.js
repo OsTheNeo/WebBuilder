@@ -1,90 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// Google Fonts popular list
-const googleFonts = [
-  'Inter', 'Roboto', 'Open Sans', 'Lato', 'Montserrat', 'Poppins', 'Raleway',
-  'Playfair Display', 'Merriweather', 'Nunito', 'Source Sans Pro', 'PT Sans',
-  'Ubuntu', 'Oswald', 'Quicksand', 'Mukta', 'Work Sans', 'Rubik', 'DM Sans',
-  'Space Grotesk', 'Outfit', 'Manrope', 'Plus Jakarta Sans', 'Sora'
-];
-
-// Style Presets
-const stylePresets = [
-  {
-    id: 'modern',
-    name: 'Modern & Clean',
-    description: 'Clean design with Inter typography',
-    primaryFont: 'Inter',
-    secondaryFont: 'Inter',
-    primaryColor: '#3b82f6',
-    secondaryColor: '#8b5cf6',
-    backgroundColor: '#ffffff'
-  },
-  {
-    id: 'elegant',
-    name: 'Elegant Serif',
-    description: 'Classic serif with Playfair Display',
-    primaryFont: 'Playfair Display',
-    secondaryFont: 'Lato',
-    primaryColor: '#1f2937',
-    secondaryColor: '#f59e0b',
-    backgroundColor: '#faf5f0'
-  },
-  {
-    id: 'bold',
-    name: 'Bold & Vibrant',
-    description: 'Eye-catching with strong colors',
-    primaryFont: 'Poppins',
-    secondaryFont: 'Poppins',
-    primaryColor: '#dc2626',
-    secondaryColor: '#f97316',
-    backgroundColor: '#fef2f2'
-  },
-  {
-    id: 'minimal',
-    name: 'Minimal',
-    description: 'Clean minimalism with Roboto',
-    primaryFont: 'Roboto',
-    secondaryFont: 'Roboto',
-    primaryColor: '#000000',
-    secondaryColor: '#6b7280',
-    backgroundColor: '#f9fafb'
-  },
-  {
-    id: 'professional',
-    name: 'Professional',
-    description: 'Business-ready with subtle colors',
-    primaryFont: 'Open Sans',
-    secondaryFont: 'Merriweather',
-    primaryColor: '#1e40af',
-    secondaryColor: '#059669',
-    backgroundColor: '#f0f9ff'
-  },
-  {
-    id: 'creative',
-    name: 'Creative',
-    description: 'Artistic with Montserrat',
-    primaryFont: 'Montserrat',
-    secondaryFont: 'Nunito',
-    primaryColor: '#a855f7',
-    secondaryColor: '#ec4899',
-    backgroundColor: '#fdf4ff'
-  }
-];
-
-const defaultSettings = {
-  backgroundColor: '#f3f4f6',
-  primaryFont: 'Inter',
-  secondaryFont: 'Inter',
-  primaryColor: '#3b82f6',
-  secondaryColor: '#8b5cf6',
-  logo: null,
-  fullHeight: true
-};
+import { GOOGLE_FONTS } from '../constants/fonts';
+import { STYLE_PRESETS } from '../constants/stylePresets';
+import { DEFAULT_PAGE_SETTINGS } from '../constants/pageSettings';
 
 const PageSettingsDrawer = ({ isOpen, onClose, pageSettings, onUpdate }) => {
-  const [settings, setSettings] = useState(pageSettings || defaultSettings);
+  const [settings, setSettings] = useState(pageSettings || DEFAULT_PAGE_SETTINGS);
   const [activeTab, setActiveTab] = useState('branding'); // branding, typography, presets
 
   useEffect(() => {
@@ -351,7 +272,7 @@ const PageSettingsDrawer = ({ isOpen, onClose, pageSettings, onUpdate }) => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       style={{ fontFamily: settings.primaryFont }}
                     >
-                      {googleFonts.map((font) => (
+                      {GOOGLE_FONTS.map((font) => (
                         <option key={font} value={font} style={{ fontFamily: font }}>
                           {font}
                         </option>
@@ -376,7 +297,7 @@ const PageSettingsDrawer = ({ isOpen, onClose, pageSettings, onUpdate }) => {
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                       style={{ fontFamily: settings.secondaryFont }}
                     >
-                      {googleFonts.map((font) => (
+                      {GOOGLE_FONTS.map((font) => (
                         <option key={font} value={font} style={{ fontFamily: font }}>
                           {font}
                         </option>
@@ -422,7 +343,7 @@ const PageSettingsDrawer = ({ isOpen, onClose, pageSettings, onUpdate }) => {
                   </div>
 
                   <div className="grid grid-cols-1 gap-4">
-                    {stylePresets.map((preset) => (
+                    {STYLE_PRESETS.map((preset) => (
                       <motion.button
                         key={preset.id}
                         onClick={() => applyPreset(preset)}

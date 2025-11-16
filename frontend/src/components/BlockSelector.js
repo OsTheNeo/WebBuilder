@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { categories, getColorShades } from '../data/blocksData';
 import { getBlockComponent } from '../blocks';
+import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
 
 const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories, excludeCategories }) => {
   // Filter categories based on props
@@ -127,9 +128,7 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
             className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-2xl hover:bg-white hover:scale-110 transition-all"
             aria-label="Previous block"
           >
-            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-            </svg>
+            <IconChevronLeft className="w-7 h-7" stroke={2.5} />
           </button>
 
           <button
@@ -137,9 +136,7 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
             className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-2xl hover:bg-white hover:scale-110 transition-all"
             aria-label="Next block"
           >
-            <svg className="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-            </svg>
+            <IconChevronRight className="w-7 h-7" stroke={2.5} />
           </button>
 
           {/* Blocks Carousel */}
