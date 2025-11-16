@@ -9,7 +9,7 @@ const SimpleFooter = ({ data = {} }) => {
 
  return (
  <footer className="w-full bg-gray-800 flex items-center justify-center px-8">
- <div className="max-w-6xl w-full flex items-center justify-between">
+ <div className="w-full flex items-center justify-between">
  <div className="text-gray-900">
  <div className="font-bold text-xl mb-1">{companyName}</div>
  <div className="text-gray-300 text-sm">© {copyright} All rights reserved.</div>
@@ -48,7 +48,7 @@ SimpleFooter.blockMeta = {
  id: 'simple-footer-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-6xl w-full flex items-center justify-between',
+ className: 'w-full flex items-center justify-between',
  children: [
  {
  id: 'simple-footer-brand',

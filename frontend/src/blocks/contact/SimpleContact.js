@@ -9,7 +9,7 @@ const SimpleContact = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-16">
- <div className="max-w-4xl w-full text-center">
+ <div className="w-full text-center">
  <h2 className="text-2xl font-bold text-gray-900 mb-3">{title}</h2>
  <div className="flex gap-8 justify-center">
  <div className="flex items-center gap-2 text-gray-900">
@@ -47,7 +47,7 @@ SimpleContact.blockMeta = {
  id: 'simple-contact-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-4xl w-full text-center',
+ className: 'w-full text-center',
  children: [
  {
  id: 'simple-contact-title',

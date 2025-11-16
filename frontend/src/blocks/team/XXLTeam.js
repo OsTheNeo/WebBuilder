@@ -89,16 +89,16 @@ const XXLTeam = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-12">
- <div className="max-w-7xl w-full">
+ <div className="w-full">
  <div className="text-center mb-8">
  <h2 className="text-6xl font-extrabold text-gray-900 mb-4">
  {title}
  </h2>
  <p className="text-2xl text-gray-600 font-semibold mb-3">{subtitle}</p>
- <p className="text-xl text-teal-200 max-w-5xl mx-auto leading-relaxed mb-6">{description}</p>
+ <p className="text-xl text-teal-200 mx-auto leading-relaxed mb-6">{description}</p>
 
  {/* Stats */}
- <div className="grid grid-cols-4 gap-4 max-w-4xl mx-auto mb-8">
+ <div className="grid grid-cols-4 gap-4 mx-auto mb-8">
  {stats.map((stat, index) => (
  <div key={index} className="bg-white/15 backdrop-blur-sm rounded-lg p-3 border border-gray-300/25">
  <div className="text-3xl font-bold text-gray-900">{stat.value}</div>
@@ -248,7 +248,7 @@ XXLTeam.blockMeta = {
  id: 'xxl-team-container',
  tag: 'div',
  label: 'Container',
- className: 'max-w-7xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'xxl-team-header',
@@ -277,14 +277,14 @@ XXLTeam.blockMeta = {
  tag: 'p',
  label: 'Description',
  content: data.description || 'Our leadership team brings together unparalleled expertise from the world\'s most innovative companies',
- className: 'text-xl text-teal-200 max-w-5xl mx-auto leading-relaxed mb-6',
+ className: 'text-xl text-teal-200 mx-auto leading-relaxed mb-6',
  editable: true
  },
  {
  id: 'xxl-team-stats-grid',
  tag: 'div',
  label: 'Stats Grid',
- className: 'grid grid-cols-4 gap-4 max-w-4xl mx-auto mb-8',
+ className: 'grid grid-cols-4 gap-4 mx-auto mb-8',
  children: (data.stats || XXLTeam.blockMeta.defaultData.stats).map((stat, index) => ({
  id: `xxl-team-stat-${index}`,
  tag: 'div',

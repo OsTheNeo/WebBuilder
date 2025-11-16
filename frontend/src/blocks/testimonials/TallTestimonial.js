@@ -38,11 +38,11 @@ const TallTestimonial = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-10">
- <div className="max-w-7xl w-full">
+ <div className="w-full">
  <div className="text-center mb-10">
  <h2 className="text-5xl font-bold text-gray-900 mb-3">{title}</h2>
  <p className="text-2xl text-yellow-100 mb-2">{subtitle}</p>
- <p className="text-lg text-yellow-200 max-w-3xl mx-auto">{description}</p>
+ <p className="text-lg text-yellow-200 mx-auto">{description}</p>
  </div>
  <div className="grid grid-cols-3 gap-6">
  {testimonials.map((testimonial, index) => (
@@ -119,7 +119,7 @@ TallTestimonial.blockMeta = {
  id: 'tall-testimonial-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-7xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'tall-testimonial-header',
@@ -148,7 +148,7 @@ TallTestimonial.blockMeta = {
  tag: 'p',
  label: 'Description',
  content: data.description || 'Join thousands of satisfied customers who have transformed their business',
- className: 'text-lg text-yellow-200 max-w-3xl mx-auto',
+ className: 'text-lg text-yellow-200 mx-auto',
  editable: true
  }
  ]

@@ -11,10 +11,10 @@ const FullHero = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-16">
- <div className="max-w-4xl text-center space-y-6">
+ <div className="text-center space-y-6">
  <h1 className="text-5xl md:text-6xl font-bold leading-tight text-gray-900">{title}</h1>
  <p className="text-xl md:text-2xl text-gray-700 font-medium">{subtitle}</p>
- <p className="text-lg text-gray-600 max-w-2xl mx-auto">{description}</p>
+ <p className="text-lg text-gray-600 mx-auto">{description}</p>
  <div className="flex gap-4 justify-center pt-4">
  <button className="bg-purple-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-purple-700 transition-all transform hover:scale-105 shadow-lg">
  {ctaText}
@@ -51,7 +51,7 @@ FullHero.blockMeta = {
  id: 'full-hero-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-4xl text-center space-y-6',
+ className: 'text-center space-y-6',
  children: [
  {
  id: 'full-hero-title',
@@ -74,7 +74,7 @@ FullHero.blockMeta = {
  tag: 'p',
  label: 'Description',
  content: data.description || 'Join thousands of satisfied customers who have achieved their goals with our platform',
- className: 'text-lg text-gray-600 max-w-2xl mx-auto',
+ className: 'text-lg text-gray-600 mx-auto',
  editable: true
  },
  {

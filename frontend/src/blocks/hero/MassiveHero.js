@@ -12,13 +12,13 @@ const MassiveHero = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-16">
- <div className="max-w-5xl text-center space-y-8">
+ <div className="text-center space-y-8">
  <div className="space-y-4">
  <h1 className="text-6xl md:text-7xl font-extrabold leading-tight text-gray-900">
  {title}
  </h1>
  <p className="text-2xl md:text-3xl text-gray-700 font-semibold">{subtitle}</p>
- <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">{description}</p>
+ <p className="text-xl text-gray-600 mx-auto leading-relaxed">{description}</p>
  </div>
 
  <div className="flex gap-6 justify-center flex-wrap">
@@ -66,7 +66,7 @@ MassiveHero.blockMeta = {
  id: 'massive-hero-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-5xl text-center space-y-8',
+ className: 'text-center space-y-8',
  children: [
  {
  id: 'massive-hero-header',
@@ -95,7 +95,7 @@ MassiveHero.blockMeta = {
  tag: 'p',
  label: 'Description',
  content: data.description || 'Experience the next generation of web development with our cutting-edge tools and features',
- className: 'text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed',
+ className: 'text-xl text-gray-600 mx-auto leading-relaxed',
  editable: true
  }
  ]

@@ -47,11 +47,11 @@ const XLGallery = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-10">
- <div className="max-w-7xl w-full">
+ <div className="w-full">
  <div className="text-center mb-10">
  <h2 className="text-5xl font-bold text-gray-900 mb-3">{title}</h2>
  <p className="text-2xl text-pink-100 mb-2">{subtitle}</p>
- <p className="text-lg text-pink-200 max-w-3xl mx-auto">{description}</p>
+ <p className="text-lg text-pink-200 mx-auto">{description}</p>
  </div>
  <div className="grid grid-cols-3 gap-6">
  {images.map((image, index) => (
@@ -137,7 +137,7 @@ XLGallery.blockMeta = {
  id: 'xl-gallery-wrapper',
  tag: 'div',
  label: 'Gallery Container',
- className: 'max-w-7xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'xl-gallery-header',
@@ -166,7 +166,7 @@ XLGallery.blockMeta = {
  tag: 'p',
  label: 'Gallery Description',
  content: data.description || 'Browse through our curated collection of breathtaking photographs',
- className: 'text-lg text-pink-200 max-w-3xl mx-auto',
+ className: 'text-lg text-pink-200 mx-auto',
  editable: true
  }
  ]

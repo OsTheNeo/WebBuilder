@@ -101,7 +101,7 @@ const FullPricing = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-12">
- <div className="max-w-7xl w-full">
+ <div className="w-full">
  <div className="text-center mb-10">
  <h2 className="text-6xl font-extrabold text-gray-900 mb-4">
  {title}
@@ -283,7 +283,7 @@ FullPricing.blockMeta = {
  id: 'full-pricing-container',
  tag: 'div',
  label: 'Container',
- className: 'max-w-7xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'full-pricing-header',

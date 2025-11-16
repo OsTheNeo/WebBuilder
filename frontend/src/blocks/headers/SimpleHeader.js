@@ -5,7 +5,7 @@ const SimpleHeader = ({ data = {} }) => {
 
  return (
  <header className="w-full flex items-center justify-center px-8 py-12">
- <div className="text-center max-w-4xl">
+ <div className="text-center">
  <h1 className="text-3xl font-bold mb-2 text-gray-900">{title}</h1>
  <p className="text-gray-600 text-base">{subtitle}</p>
  </div>
@@ -34,7 +34,7 @@ SimpleHeader.blockMeta = {
  id: 'simple-header-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'text-center max-w-4xl',
+ className: 'text-center',
  children: [
  {
  id: 'simple-header-title',

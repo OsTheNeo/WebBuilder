@@ -12,11 +12,11 @@ const LargeCTA = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-8">
- <div className="max-w-5xl w-full">
+ <div className="w-full">
  <div className="text-center mb-8">
  <h2 className="text-5xl font-bold text-gray-900 mb-3">{title}</h2>
  <p className="text-2xl text-red-100 mb-2">{subtitle}</p>
- <p className="text-lg text-red-200 max-w-3xl mx-auto">{description}</p>
+ <p className="text-lg text-red-200 mx-auto">{description}</p>
  </div>
 
  <div className="flex gap-4 justify-center mb-6">
@@ -69,7 +69,7 @@ LargeCTA.blockMeta = {
  id: 'large-cta-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-5xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'large-cta-header',
@@ -98,7 +98,7 @@ LargeCTA.blockMeta = {
  tag: 'p',
  label: 'Description',
  content: data.description || 'Start your 14-day free trial. No credit card required. Full access to all features.',
- className: 'text-lg text-red-200 max-w-3xl mx-auto',
+ className: 'text-lg text-red-200 mx-auto',
  editable: true
  }
  ]

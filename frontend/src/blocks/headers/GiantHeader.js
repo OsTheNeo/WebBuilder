@@ -18,7 +18,7 @@ const GiantHeader = ({ data = {} }) => {
  }}></div>
  </div>
 
- <div className="text-center max-w-5xl relative z-10">
+ <div className="text-center relative z-10">
  <h1 className="text-7xl font-bold mb-8 text-gray-900">{title}</h1>
  <p className="text-3xl text-gray-600 mb-10">{subtitle}</p>
  <div className="flex gap-6 justify-center">
@@ -75,7 +75,7 @@ GiantHeader.blockMeta = {
  id: 'giant-header-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'text-center max-w-5xl relative z-10',
+ className: 'text-center relative z-10',
  children: [
  {
  id: 'giant-header-title',

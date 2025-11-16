@@ -47,13 +47,13 @@ const GiantTestimonial = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-12">
- <div className="max-w-7xl w-full">
+ <div className="w-full">
  <div className="text-center mb-12">
  <h2 className="text-6xl font-extrabold text-gray-900 mb-4 bg-clip-text text-transparent">
  {title}
  </h2>
  <p className="text-2xl text-yellow-100 font-semibold mb-3">{subtitle}</p>
- <p className="text-xl text-yellow-200 max-w-4xl mx-auto leading-relaxed">{description}</p>
+ <p className="text-xl text-yellow-200 mx-auto leading-relaxed">{description}</p>
  </div>
  <div className="grid grid-cols-4 gap-5">
  {testimonials.map((testimonial, index) => (
@@ -143,7 +143,7 @@ GiantTestimonial.blockMeta = {
  id: 'giant-testimonial-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-7xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'giant-testimonial-header',
@@ -172,7 +172,7 @@ GiantTestimonial.blockMeta = {
  tag: 'p',
  label: 'Description',
  content: data.description || 'From startups to enterprises, see how our platform drives real business results',
- className: 'text-xl text-yellow-200 max-w-4xl mx-auto leading-relaxed',
+ className: 'text-xl text-yellow-200 mx-auto leading-relaxed',
  editable: true
  }
  ]

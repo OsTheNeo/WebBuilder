@@ -6,6 +6,7 @@ const BlockSettingsDrawer = ({ isOpen, onClose, blockConfig, onUpdate }) => {
   const [config, setConfig] = useState(blockConfig || {
     layout: 'boxed', // 'boxed' or 'full-width'
     alignment: 'center', // 'left', 'center', 'right'
+    maxWidth: '7xl', // Tailwind max-width class (only for boxed layout)
     padding: { top: 12, right: 8, bottom: 12, left: 8 }, // in Tailwind units
     margin: { top: 0, bottom: 0 }, // in Tailwind units
     background: {
@@ -129,6 +130,31 @@ const BlockSettingsDrawer = ({ isOpen, onClose, blockConfig, onUpdate }) => {
                       </button>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {/* Max Width (only for boxed) */}
+              {config.layout === 'boxed' && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Max Width</h3>
+                  <select
+                    value={config.maxWidth}
+                    onChange={(e) => updateConfig('maxWidth', e.target.value)}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  >
+                    <option value="xs">Extra Small (20rem / 320px)</option>
+                    <option value="sm">Small (24rem / 384px)</option>
+                    <option value="md">Medium (28rem / 448px)</option>
+                    <option value="lg">Large (32rem / 512px)</option>
+                    <option value="xl">Extra Large (36rem / 576px)</option>
+                    <option value="2xl">2XL (42rem / 672px)</option>
+                    <option value="3xl">3XL (48rem / 768px)</option>
+                    <option value="4xl">4XL (56rem / 896px)</option>
+                    <option value="5xl">5XL (64rem / 1024px)</option>
+                    <option value="6xl">6XL (72rem / 1152px)</option>
+                    <option value="7xl">7XL (80rem / 1280px)</option>
+                    <option value="full">Full (100%)</option>
+                  </select>
                 </div>
               )}
 

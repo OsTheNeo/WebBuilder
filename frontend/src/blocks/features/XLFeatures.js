@@ -17,11 +17,11 @@ const XLFeatures = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-10">
- <div className="max-w-7xl w-full">
+ <div className="w-full">
  <div className="text-center mb-10">
  <h2 className="text-5xl font-bold text-gray-900 mb-3">{title}</h2>
  <p className="text-2xl text-gray-600 mb-2">{subtitle}</p>
- <p className="text-lg text-gray-600 max-w-3xl mx-auto">{description}</p>
+ <p className="text-lg text-gray-600 mx-auto">{description}</p>
  </div>
  <div className="grid grid-cols-3 gap-6">
  {features.map((feature, index) => (
@@ -67,7 +67,7 @@ XLFeatures.blockMeta = {
  id: 'xl-features-container',
  tag: 'div',
  label: 'Container',
- className: 'max-w-7xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'xl-features-header',
@@ -96,7 +96,7 @@ XLFeatures.blockMeta = {
  tag: 'p',
  label: 'Description',
  content: data.description || 'Discover all the features that make our platform the best choice for your business',
- className: 'text-lg text-gray-600 max-w-3xl mx-auto',
+ className: 'text-lg text-gray-600 mx-auto',
  editable: true
  }
  ]

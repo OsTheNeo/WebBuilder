@@ -29,13 +29,13 @@ const XXLCTA = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-12">
- <div className="max-w-7xl w-full">
+ <div className="w-full">
  <div className="text-center mb-10">
  <h2 className="text-7xl font-extrabold text-gray-900 mb-5 bg-clip-text text-transparent leading-tight">
  {title}
  </h2>
  <p className="text-3xl text-red-100 font-bold mb-3">{subtitle}</p>
- <p className="text-xl text-red-200 max-w-5xl mx-auto leading-relaxed">{description}</p>
+ <p className="text-xl text-red-200 mx-auto leading-relaxed">{description}</p>
  </div>
 
  <div className="grid grid-cols-4 gap-4 mb-8">
@@ -142,7 +142,7 @@ XXLCTA.blockMeta = {
  id: 'xxl-cta-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-7xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'xxl-cta-header',
@@ -171,7 +171,7 @@ XXLCTA.blockMeta = {
  tag: 'p',
  label: 'Description',
  content: data.description || 'Transform your operations with our all-in-one platform. Powerful features, unbeatable support, guaranteed results.',
- className: 'text-xl text-red-200 max-w-5xl mx-auto leading-relaxed',
+ className: 'text-xl text-red-200 mx-auto leading-relaxed',
  editable: true
  }
  ]

@@ -9,7 +9,7 @@ const CompactTestimonial = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-16">
- <div className="max-w-3xl text-center">
+ <div className="text-center">
  <p className="text-lg font-semibold text-yellow-900 mb-2 italic">"{quote}"</p>
  <div className="text-yellow-800">
  <span className="font-bold">{author}</span> - <span>{role}</span>
@@ -41,7 +41,7 @@ CompactTestimonial.blockMeta = {
  id: 'compact-testimonial-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-3xl text-center',
+ className: 'text-center',
  children: [
  {
  id: 'compact-testimonial-quote',

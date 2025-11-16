@@ -25,7 +25,7 @@ const DetailedFooter = ({ data = {} }) => {
 
  return (
  <footer className="w-full bg-gray-900 flex items-center justify-center px-8 py-10">
- <div className="max-w-7xl w-full">
+ <div className="w-full">
  <div className="grid grid-cols-6 gap-6 mb-8">
  <div className="col-span-2">
  <div className="font-bold text-gray-900 text-4xl mb-3">{companyName}</div>
@@ -116,7 +116,7 @@ DetailedFooter.blockMeta = {
  id: 'detailed-footer-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-7xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'detailed-footer-grid',

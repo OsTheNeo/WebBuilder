@@ -10,7 +10,7 @@ const MediumCTA = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-6">
- <div className="max-w-4xl text-center">
+ <div className="text-center">
  <h2 className="text-4xl font-bold text-gray-900 mb-3">{title}</h2>
  <p className="text-xl text-red-100 mb-6">{subtitle}</p>
  <div className="flex gap-4 justify-center">
@@ -49,7 +49,7 @@ MediumCTA.blockMeta = {
  id: 'medium-cta-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-4xl text-center',
+ className: 'text-center',
  children: [
  {
  id: 'medium-cta-title',

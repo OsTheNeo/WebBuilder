@@ -36,7 +36,7 @@ const MegaFooter = ({ data = {} }) => {
 
  return (
  <footer className="w-full bg-gray-900 flex items-center justify-center px-8 py-12">
- <div className="max-w-7xl w-full">
+ <div className="w-full">
  {/* Top Section */}
  <div className="grid grid-cols-7 gap-6 mb-8">
  {/* Company Info */}
@@ -179,7 +179,7 @@ MegaFooter.blockMeta = {
  id: 'mega-footer-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-7xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'mega-footer-grid',

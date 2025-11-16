@@ -10,7 +10,7 @@ const TallHeader = ({ data = {} }) => {
 
  return (
  <header className="w-full flex items-center justify-center px-8 py-16">
- <div className="text-center max-w-4xl">
+ <div className="text-center">
  <h1 className="text-6xl font-bold mb-6 text-gray-900">{title}</h1>
  <p className="text-2xl text-gray-600 mb-8">{subtitle}</p>
  <div className="flex gap-4 justify-center">
@@ -49,7 +49,7 @@ TallHeader.blockMeta = {
  id: 'tall-header-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'text-center max-w-4xl',
+ className: 'text-center',
  children: [
  {
  id: 'tall-header-title',

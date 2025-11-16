@@ -10,7 +10,7 @@ const StandardHero = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-12 py-16">
- <div className="text-center max-w-3xl">
+ <div className="text-center">
  <h1 className="text-4xl font-bold mb-3 text-gray-900">{title}</h1>
  <p className="text-gray-600 text-lg mb-6">{subtitle}</p>
  <div className="flex gap-4 justify-center">
@@ -48,7 +48,7 @@ StandardHero.blockMeta = {
  id: 'standard-hero-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'text-center max-w-3xl',
+ className: 'text-center',
  children: [
  {
  id: 'standard-hero-title',

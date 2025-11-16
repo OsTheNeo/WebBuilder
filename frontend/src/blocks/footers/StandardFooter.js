@@ -15,7 +15,7 @@ const StandardFooter = ({ data = {} }) => {
 
  return (
  <footer className="w-full bg-gray-900 flex items-center justify-center px-8 py-6">
- <div className="max-w-6xl w-full">
+ <div className="w-full">
  <div className="grid grid-cols-4 gap-8 mb-6">
  <div>
  <div className="font-bold text-gray-900 text-2xl mb-2">{companyName}</div>
@@ -77,7 +77,7 @@ StandardFooter.blockMeta = {
  id: 'standard-footer-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-6xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'standard-footer-grid',

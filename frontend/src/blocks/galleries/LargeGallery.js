@@ -40,7 +40,7 @@ const LargeGallery = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-8">
- <div className="max-w-6xl w-full">
+ <div className="w-full">
  <div className="text-center mb-8">
  <h2 className="text-4xl font-bold text-gray-900 mb-2">{title}</h2>
  <p className="text-xl text-pink-100">{subtitle}</p>
@@ -115,7 +115,7 @@ LargeGallery.blockMeta = {
  id: 'large-gallery-wrapper',
  tag: 'div',
  label: 'Gallery Container',
- className: 'max-w-6xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'large-gallery-header',

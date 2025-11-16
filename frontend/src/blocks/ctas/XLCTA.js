@@ -18,11 +18,11 @@ const XLCTA = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-10">
- <div className="max-w-6xl w-full">
+ <div className="w-full">
  <div className="text-center mb-8">
  <h2 className="text-6xl font-bold text-gray-900 mb-4">{title}</h2>
  <p className="text-2xl text-red-100 font-semibold mb-3">{subtitle}</p>
- <p className="text-xl text-red-200 max-w-4xl mx-auto leading-relaxed">{description}</p>
+ <p className="text-xl text-red-200 mx-auto leading-relaxed">{description}</p>
  </div>
 
  <div className="grid grid-cols-4 gap-4 mb-8">
@@ -43,7 +43,7 @@ const XLCTA = ({ data = {} }) => {
  </button>
  </div>
 
- <div className="grid grid-cols-3 gap-4 max-w-3xl mx-auto">
+ <div className="grid grid-cols-3 gap-4 mx-auto">
  {features.map((feature, index) => (
  <div key={index} className="flex items-center gap-2 text-gray-900 justify-center">
  <span className="text-xl">✓</span>
@@ -96,7 +96,7 @@ XLCTA.blockMeta = {
  id: 'xl-cta-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-6xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'xl-cta-header',
@@ -125,7 +125,7 @@ XLCTA.blockMeta = {
  tag: 'p',
  label: 'Description',
  content: data.description || 'Everything you need to scale your business, all in one powerful platform',
- className: 'text-xl text-red-200 max-w-4xl mx-auto leading-relaxed',
+ className: 'text-xl text-red-200 mx-auto leading-relaxed',
  editable: true
  }
  ]
@@ -188,7 +188,7 @@ XLCTA.blockMeta = {
  id: 'xl-cta-features',
  tag: 'div',
  label: 'Features Grid',
- className: 'grid grid-cols-3 gap-4 max-w-3xl mx-auto',
+ className: 'grid grid-cols-3 gap-4 mx-auto',
  children: features.map((feature, index) => ({
  id: `xl-cta-feature-${index}`,
  tag: 'div',

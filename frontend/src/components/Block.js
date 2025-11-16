@@ -25,6 +25,7 @@ const Block = ({
   const config = block.config || {
     layout: 'boxed',
     alignment: 'center',
+    maxWidth: '7xl',
     padding: { top: 12, right: 8, bottom: 12, left: 8 },
     margin: { top: 0, bottom: 0 },
     background: { type: 'color', color: '#ffffff' }
@@ -51,7 +52,8 @@ const Block = ({
 
     // Layout
     if (config.layout === 'boxed') {
-      classes.push('max-w-7xl');
+      const maxWidth = config.maxWidth || '7xl';
+      classes.push(`max-w-${maxWidth}`);
       if (config.alignment === 'center') classes.push('mx-auto');
       if (config.alignment === 'left') classes.push('mr-auto');
       if (config.alignment === 'right') classes.push('ml-auto');

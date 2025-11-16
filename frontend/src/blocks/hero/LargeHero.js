@@ -11,10 +11,10 @@ const LargeHero = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-16 py-16">
- <div className="text-center max-w-4xl">
+ <div className="text-center">
  <h1 className="text-5xl font-bold mb-4 text-gray-900">{title}</h1>
  <p className="text-gray-700 text-xl mb-3">{subtitle}</p>
- <p className="text-gray-600 text-base mb-8 max-w-2xl mx-auto">{description}</p>
+ <p className="text-gray-600 text-base mb-8 mx-auto">{description}</p>
  <div className="flex gap-4 justify-center">
  <button className="bg-purple-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-purple-700 transition-all transform hover:scale-105">
  {ctaText}
@@ -51,7 +51,7 @@ LargeHero.blockMeta = {
  id: 'large-hero-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'text-center max-w-4xl',
+ className: 'text-center',
  children: [
  {
  id: 'large-hero-title',
@@ -74,7 +74,7 @@ LargeHero.blockMeta = {
  tag: 'p',
  label: 'Description',
  content: data.description || 'Build, deploy, and scale your applications with confidence using our comprehensive platform.',
- className: 'text-gray-600 text-base mb-8 max-w-2xl mx-auto',
+ className: 'text-gray-600 text-base mb-8 mx-auto',
  editable: true
  },
  {

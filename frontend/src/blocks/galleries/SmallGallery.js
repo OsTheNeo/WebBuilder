@@ -24,7 +24,7 @@ const SmallGallery = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-16">
- <div className="max-w-5xl w-full">
+ <div className="w-full">
  <h2 className="text-2xl font-bold text-gray-900 text-center mb-3">{title}</h2>
  <div className="grid grid-cols-3 gap-3">
  {images.map((image, index) => (
@@ -77,7 +77,7 @@ SmallGallery.blockMeta = {
  id: 'small-gallery-wrapper',
  tag: 'div',
  label: 'Gallery Container',
- className: 'max-w-5xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'small-gallery-title',

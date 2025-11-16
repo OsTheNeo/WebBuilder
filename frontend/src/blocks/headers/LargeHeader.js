@@ -5,7 +5,7 @@ const LargeHeader = ({ data = {} }) => {
 
  return (
  <header className="w-full flex items-center justify-center px-8 py-16">
- <div className="text-center max-w-2xl">
+ <div className="text-center">
  <h1 className="text-4xl font-bold mb-3 text-gray-900">{title}</h1>
  <p className="text-lg text-gray-600">{subtitle}</p>
  </div>
@@ -34,7 +34,7 @@ LargeHeader.blockMeta = {
  id: 'large-header-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'text-center max-w-2xl',
+ className: 'text-center',
  children: [
  {
  id: 'large-header-title',

@@ -12,7 +12,7 @@ const SmallFeatures = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-16">
- <div className="max-w-5xl w-full">
+ <div className="w-full">
  <h2 className="text-2xl font-bold text-gray-900 text-center mb-3">{title}</h2>
  <div className="flex gap-8 justify-center">
  {features.map((feature, index) => (
@@ -52,7 +52,7 @@ SmallFeatures.blockMeta = {
  id: 'small-features-container',
  tag: 'div',
  label: 'Container',
- className: 'max-w-5xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'small-features-title',

@@ -11,7 +11,7 @@ const StandardTestimonial = ({ data = {} }) => {
 
  return (
  <section className="w-full flex items-center justify-center px-8 py-6">
- <div className="max-w-5xl w-full">
+ <div className="w-full">
  <h2 className="text-3xl font-bold text-yellow-900 text-center mb-6">{title}</h2>
  <div className="grid grid-cols-2 gap-6">
  {testimonials.map((testimonial, index) => (
@@ -54,7 +54,7 @@ StandardTestimonial.blockMeta = {
  id: 'standard-testimonial-wrapper',
  tag: 'div',
  label: 'Content Wrapper',
- className: 'max-w-5xl w-full',
+ className: 'w-full',
  children: [
  {
  id: 'standard-testimonial-title',
