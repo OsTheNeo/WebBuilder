@@ -5,6 +5,7 @@ import { getBlockComponent } from '../blocks';
 const Block = ({
   block,
   index,
+  section, // New prop to identify which section this block belongs to
   onDelete,
   onMoveUp,
   onMoveDown,
@@ -16,7 +17,8 @@ const Block = ({
   onDragStart,
   onDragEnd,
   onDragOver,
-  onDrop
+  onDrop,
+  disableDrag = false // New prop to disable drag-and-drop
 }) => {
   const [isHovered, setIsHovered] = useState(false);
   const BlockComponent = getBlockComponent(block.id);
@@ -152,11 +154,11 @@ const Block = ({
       className={`relative border-2 border-gray-200 group ${getContainerClasses()}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
-      draggable={!previewMode}
-      onDragStart={(e) => onDragStart && onDragStart(e, index)}
-      onDragEnd={onDragEnd}
-      onDragOver={onDragOver}
-      onDrop={(e) => onDrop && onDrop(e, index)}
+      draggable={!previewMode && !disableDrag}
+      onDragStart={(e) => !disableDrag && onDragStart && onDragStart(e, index)}
+      onDragEnd={!disableDrag ? onDragEnd : undefined}
+      onDragOver={!disableDrag ? onDragOver : undefined}
+      onDrop={(e) => !disableDrag && onDrop && onDrop(e, index)}
       style={getContainerBackgroundStyle()}
     >
       {/* Overlay for image-overlay background */}
@@ -179,47 +181,51 @@ const Block = ({
       {/* Hover Controls - Only show when not in preview mode */}
       {!previewMode && isHovered && (
         <>
-          {/* Top Left - Drag Handle */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="absolute top-2 left-2 cursor-move bg-white rounded-lg shadow-lg p-2 hover:bg-gray-50 z-30"
-            title="Drag to reorder"
-          >
-            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
-            </svg>
-          </motion.div>
+          {/* Top Left - Drag Handle (hidden when disableDrag is true) */}
+          {!disableDrag && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="absolute top-2 left-2 cursor-move bg-white rounded-lg shadow-lg p-2 hover:bg-gray-50 z-30"
+              title="Drag to reorder"
+            >
+              <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8h16M4 16h16" />
+              </svg>
+            </motion.div>
+          )}
 
-          {/* Top Left - Move Up/Down Buttons */}
-          <div className="absolute top-2 left-14 flex gap-1 z-30">
-            {canMoveUp && (
-              <motion.button
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                onClick={onMoveUp}
-                className="bg-white rounded-lg shadow-lg p-2 hover:bg-blue-50 transition-colors"
-                title="Move up"
-              >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-                </svg>
-              </motion.button>
-            )}
-            {canMoveDown && (
-              <motion.button
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                onClick={onMoveDown}
-                className="bg-white rounded-lg shadow-lg p-2 hover:bg-blue-50 transition-colors"
-                title="Move down"
-              >
-                <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </motion.button>
-            )}
-          </div>
+          {/* Top Left - Move Up/Down Buttons (hidden when disableDrag is true) */}
+          {!disableDrag && (
+            <div className="absolute top-2 left-14 flex gap-1 z-30">
+              {canMoveUp && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  onClick={onMoveUp}
+                  className="bg-white rounded-lg shadow-lg p-2 hover:bg-blue-50 transition-colors"
+                  title="Move up"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
+                  </svg>
+                </motion.button>
+              )}
+              {canMoveDown && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  onClick={onMoveDown}
+                  className="bg-white rounded-lg shadow-lg p-2 hover:bg-blue-50 transition-colors"
+                  title="Move down"
+                >
+                  <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                </motion.button>
+              )}
+            </div>
+          )}
 
           {/* Top Right - Settings, Edit and Delete Buttons */}
           <div className="absolute top-2 right-2 flex gap-2 z-30">

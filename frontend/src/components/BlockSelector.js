@@ -3,14 +3,27 @@ import { motion } from 'framer-motion';
 import { categories, getColorShades } from '../data/blocksData';
 import { getBlockComponent } from '../blocks';
 
-const BlockSelector = ({ onSelectBlock, onClose }) => {
-  const [selectedCategory, setSelectedCategory] = useState(categories[0]?.id || 'hero');
+const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories, excludeCategories }) => {
+  // Filter categories based on props
+  const getAvailableCategories = () => {
+    if (filterCategory) {
+      // Only show the specified category
+      return categories.filter(cat => cat.id === filterCategory);
+    } else if (excludeCategories && excludeCategories.length > 0) {
+      // Exclude specified categories
+      return categories.filter(cat => !excludeCategories.includes(cat.id));
+    }
+    return categories;
+  };
+
+  const availableCategories = getAvailableCategories();
+  const [selectedCategory, setSelectedCategory] = useState(availableCategories[0]?.id || 'hero');
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollContainerRef = useRef(null);
 
   // Get all blocks or filtered by category
   const getFilteredBlocks = () => {
-    const category = categories.find(cat => cat.id === selectedCategory);
+    const category = availableCategories.find(cat => cat.id === selectedCategory);
     return category ? category.blocks.map(block => ({
       ...block,
       categoryName: category.name,
@@ -72,32 +85,34 @@ const BlockSelector = ({ onSelectBlock, onClose }) => {
       className="w-full bg-gradient-to-b from-gray-50 to-white border-y-4 border-blue-500 overflow-hidden"
     >
       <div className="py-8 px-4">
-        {/* Category Filters */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="flex gap-2 mb-6 overflow-x-auto pb-2 justify-center flex-wrap"
-        >
-          {categories.map((cat) => {
-            return (
-              <button
-                key={cat.id}
-                onClick={() => {
-                  setSelectedCategory(cat.id);
-                  setCurrentIndex(0);
-                }}
-                className={`px-4 py-2 rounded-full font-semibold transition-all ${
-                  selectedCategory === cat.id
-                    ? 'bg-blue-500 text-white scale-105'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                {cat.name}
-              </button>
-            );
-          })}
-        </motion.div>
+        {/* Category Filters - Hidden if hideCategories is true */}
+        {!hideCategories && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="flex gap-2 mb-6 overflow-x-auto pb-2 justify-center flex-wrap"
+          >
+            {availableCategories.map((cat) => {
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => {
+                    setSelectedCategory(cat.id);
+                    setCurrentIndex(0);
+                  }}
+                  className={`px-4 py-2 rounded-full font-semibold transition-all ${
+                    selectedCategory === cat.id
+                      ? 'bg-blue-500 text-white scale-105'
+                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                  }`}
+                >
+                  {cat.name}
+                </button>
+              );
+            })}
+          </motion.div>
+        )}
 
         {/* Slider Container */}
         <motion.div

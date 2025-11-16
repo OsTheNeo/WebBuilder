@@ -9,13 +9,19 @@ import PageSettingsDrawer from './PageSettingsDrawer';
 import SvgPatterns from './SvgPatterns';
 
 const BlockBuilder = () => {
-  const [blocks, setBlocks] = useState([]);
+  // Separate states for header, content, and footer sections
+  const [headerBlock, setHeaderBlock] = useState(null);
+  const [contentBlocks, setContentBlocks] = useState([]);
+  const [footerBlock, setFooterBlock] = useState(null);
+
   const [selectorOpenAt, setSelectorOpenAt] = useState(null);
+  const [selectorSection, setSelectorSection] = useState(null); // 'header', 'content', or 'footer'
   const [previewMode, setPreviewMode] = useState(false);
   const [draggedIndex, setDraggedIndex] = useState(null);
   const [editingBlock, setEditingBlock] = useState(null);
   const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
   const [editingBlockIndex, setEditingBlockIndex] = useState(null);
+  const [editingSection, setEditingSection] = useState(null); // Track which section is being edited
   const [pageSettingsOpen, setPageSettingsOpen] = useState(false);
   const [pageSettings, setPageSettings] = useState({
     backgroundColor: '#f3f4f6',
@@ -52,7 +58,7 @@ const BlockBuilder = () => {
     }
   }, [pageSettings.primaryFont, pageSettings.secondaryFont]);
 
-  const handleAddBlock = (block, position) => {
+  const handleAddBlock = (block, position, section) => {
     const newBlock = {
       ...block,
       uniqueId: `${block.id}-${Date.now()}-${Math.random()}`,
@@ -66,26 +72,37 @@ const BlockBuilder = () => {
       }
     };
 
-    if (position === null || position === undefined) {
-      setBlocks([...blocks, newBlock]);
+    if (section === 'header') {
+      setHeaderBlock(newBlock);
+    } else if (section === 'footer') {
+      setFooterBlock(newBlock);
     } else {
-      const newBlocks = [...blocks];
-      newBlocks.splice(position, 0, newBlock);
-      setBlocks(newBlocks);
+      // Content section
+      if (position === null || position === undefined) {
+        setContentBlocks([...contentBlocks, newBlock]);
+      } else {
+        const newBlocks = [...contentBlocks];
+        newBlocks.splice(position, 0, newBlock);
+        setContentBlocks(newBlocks);
+      }
     }
 
     setSelectorOpenAt(null);
+    setSelectorSection(null);
   };
 
-  const toggleSelector = (position) => {
-    if (selectorOpenAt === position) {
+  const toggleSelector = (position, section) => {
+    if (selectorOpenAt === position && selectorSection === section) {
       setSelectorOpenAt(null);
+      setSelectorSection(null);
     } else {
       setSelectorOpenAt(position);
+      setSelectorSection(section);
 
       // Scroll to selector with better centering after animation completes
       setTimeout(() => {
-        const selectorElement = selectorRefs.current[position];
+        const selectorKey = `${section}-${position}`;
+        const selectorElement = selectorRefs.current[selectorKey];
         if (selectorElement) {
           // Get the element's position
           const rect = selectorElement.getBoundingClientRect();
@@ -106,45 +123,70 @@ const BlockBuilder = () => {
     }
   };
 
-  const handleDeleteBlock = (index) => {
-    const newBlocks = [...blocks];
-    newBlocks.splice(index, 1);
-    setBlocks(newBlocks);
+  const handleDeleteBlock = (index, section) => {
+    if (section === 'header') {
+      setHeaderBlock(null);
+    } else if (section === 'footer') {
+      setFooterBlock(null);
+    } else {
+      const newBlocks = [...contentBlocks];
+      newBlocks.splice(index, 1);
+      setContentBlocks(newBlocks);
+    }
   };
 
   const handleMoveUp = (index) => {
     if (index > 0) {
-      const newBlocks = [...blocks];
+      const newBlocks = [...contentBlocks];
       [newBlocks[index], newBlocks[index - 1]] = [newBlocks[index - 1], newBlocks[index]];
-      setBlocks(newBlocks);
+      setContentBlocks(newBlocks);
     }
   };
 
   const handleMoveDown = (index) => {
-    if (index < blocks.length - 1) {
-      const newBlocks = [...blocks];
+    if (index < contentBlocks.length - 1) {
+      const newBlocks = [...contentBlocks];
       [newBlocks[index], newBlocks[index + 1]] = [newBlocks[index + 1], newBlocks[index]];
-      setBlocks(newBlocks);
+      setContentBlocks(newBlocks);
     }
   };
 
-  const handleEditBlock = (index) => {
-    setEditingBlock({ ...blocks[index], index });
+  const handleEditBlock = (index, section) => {
+    if (section === 'header') {
+      setEditingBlock({ ...headerBlock, index: 0, section: 'header' });
+    } else if (section === 'footer') {
+      setEditingBlock({ ...footerBlock, index: 0, section: 'footer' });
+    } else {
+      setEditingBlock({ ...contentBlocks[index], index, section: 'content' });
+    }
   };
 
-  const handleBlockSettings = (index) => {
+  const handleBlockSettings = (index, section) => {
     setEditingBlockIndex(index);
+    setEditingSection(section);
     setSettingsDrawerOpen(true);
   };
 
   const handleConfigUpdate = (newConfig) => {
-    if (editingBlockIndex !== null) {
-      const newBlocks = [...blocks];
-      newBlocks[editingBlockIndex] = {
-        ...newBlocks[editingBlockIndex],
-        config: newConfig
-      };
-      setBlocks(newBlocks);
+    if (editingBlockIndex !== null && editingSection) {
+      if (editingSection === 'header') {
+        setHeaderBlock({
+          ...headerBlock,
+          config: newConfig
+        });
+      } else if (editingSection === 'footer') {
+        setFooterBlock({
+          ...footerBlock,
+          config: newConfig
+        });
+      } else {
+        const newBlocks = [...contentBlocks];
+        newBlocks[editingBlockIndex] = {
+          ...newBlocks[editingBlockIndex],
+          config: newConfig
+        };
+        setContentBlocks(newBlocks);
+      }
     }
   };
 
@@ -170,7 +212,7 @@ const BlockBuilder = () => {
       return;
     }
 
-    const newBlocks = [...blocks];
+    const newBlocks = [...contentBlocks];
     const draggedBlock = newBlocks[draggedIndex];
 
     // Remove from old position
@@ -180,7 +222,7 @@ const BlockBuilder = () => {
     const insertIndex = draggedIndex < dropIndex ? dropIndex - 1 : dropIndex;
     newBlocks.splice(insertIndex, 0, draggedBlock);
 
-    setBlocks(newBlocks);
+    setContentBlocks(newBlocks);
     setDraggedIndex(null);
   };
 
@@ -273,27 +315,94 @@ const BlockBuilder = () => {
         </div>
       </motion.div>
 
-      {/* Content - Full Width */}
+      {/* Content - Full Width with Three Sections */}
       <div className="w-full">
-        <div className="">
-          {/* Initial Add Button (when no blocks) */}
-          {blocks.length === 0 && !previewMode && (
+        {/* HEADER SECTION */}
+        <div className="border-b-4 border-blue-300">
+          {!previewMode && !headerBlock && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="flex flex-col items-center justify-center py-8 bg-blue-50"
+            >
+              <motion.button
+                onClick={() => toggleSelector(0, 'header')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-16 h-16 rounded-full bg-white border-2 border-blue-400/60 text-blue-500 shadow-lg flex items-center justify-center transition-colors hover:border-blue-600 hover:text-blue-600"
+                aria-label="Add header"
+              >
+                <motion.span
+                  className="text-3xl font-light"
+                  animate={{ rotate: selectorOpenAt === 0 && selectorSection === 'header' ? 45 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  +
+                </motion.span>
+              </motion.button>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="mt-3 text-blue-600 font-semibold text-sm"
+              >
+                Add Header
+              </motion.p>
+            </motion.div>
+          )}
+
+          {/* Header Block Selector */}
+          <div ref={(el) => (selectorRefs.current['header-0'] = el)}>
+            <AnimatePresence>
+              {selectorOpenAt === 0 && selectorSection === 'header' && (
+                <BlockSelector
+                  onSelectBlock={(block) => handleAddBlock(block, 0, 'header')}
+                  onClose={() => { setSelectorOpenAt(null); setSelectorSection(null); }}
+                  filterCategory="headers"
+                  hideCategories={true}
+                />
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Render Header Block */}
+          {headerBlock && (
+            <Block
+              block={headerBlock}
+              index={0}
+              section="header"
+              onDelete={() => handleDeleteBlock(0, 'header')}
+              onEdit={() => handleEditBlock(0, 'header')}
+              onSettings={() => handleBlockSettings(0, 'header')}
+              canMoveUp={false}
+              canMoveDown={false}
+              previewMode={previewMode}
+              disableDrag={true}
+            />
+          )}
+        </div>
+
+        {/* CONTENT SECTION */}
+        <div className="border-b-4 border-green-300">
+          {/* Initial Add Button (when no content blocks) */}
+          {contentBlocks.length === 0 && !previewMode && (
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="flex flex-col items-center justify-center min-h-[60vh]"
+              className="flex flex-col items-center justify-center min-h-[40vh] bg-green-50"
             >
               <motion.button
-                onClick={() => toggleSelector(0)}
+                onClick={() => toggleSelector(0, 'content')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-20 h-20 rounded-full bg-white border-2 border-gray-400/60 text-gray-500 shadow-xl flex items-center justify-center transition-colors hover:border-blue-500 hover:text-blue-500"
-                aria-label="Add first block"
+                className="w-20 h-20 rounded-full bg-white border-2 border-green-400/60 text-green-500 shadow-xl flex items-center justify-center transition-colors hover:border-green-600 hover:text-green-600"
+                aria-label="Add first content block"
               >
                 <motion.span
                   className="text-4xl font-light"
-                  animate={{ rotate: selectorOpenAt === 0 ? 45 : 0 }}
+                  animate={{ rotate: selectorOpenAt === 0 && selectorSection === 'content' ? 45 : 0 }}
                   transition={{ duration: 0.2 }}
                 >
                   +
@@ -303,29 +412,30 @@ const BlockBuilder = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="mt-4 text-gray-600 font-semibold"
+                className="mt-4 text-green-600 font-semibold"
               >
-                Click to add your first block
+                Add Content Block
               </motion.p>
             </motion.div>
           )}
 
-          {/* Block Selector at position 0 */}
-          <div ref={(el) => (selectorRefs.current[0] = el)}>
+          {/* Content Block Selector at position 0 */}
+          <div ref={(el) => (selectorRefs.current['content-0'] = el)}>
             <AnimatePresence>
-              {selectorOpenAt === 0 && (
+              {selectorOpenAt === 0 && selectorSection === 'content' && (
                 <BlockSelector
-                  onSelectBlock={(block) => handleAddBlock(block, 0)}
-                  onClose={() => setSelectorOpenAt(null)}
+                  onSelectBlock={(block) => handleAddBlock(block, 0, 'content')}
+                  onClose={() => { setSelectorOpenAt(null); setSelectorSection(null); }}
+                  excludeCategories={['headers', 'footers']}
                 />
               )}
             </AnimatePresence>
           </div>
 
-          {/* Render Blocks */}
+          {/* Render Content Blocks */}
           <div className="space-y-0">
             <AnimatePresence mode="popLayout">
-              {blocks.map((block, index) => (
+              {contentBlocks.map((block, index) => (
                 <React.Fragment key={block.uniqueId}>
                   {/* Block with Floating Add Button */}
                   <motion.div
@@ -339,26 +449,28 @@ const BlockBuilder = () => {
                     <Block
                       block={block}
                       index={index}
-                      onDelete={() => handleDeleteBlock(index)}
+                      section="content"
+                      onDelete={() => handleDeleteBlock(index, 'content')}
                       onMoveUp={() => handleMoveUp(index)}
                       onMoveDown={() => handleMoveDown(index)}
-                      onEdit={() => handleEditBlock(index)}
-                      onSettings={() => handleBlockSettings(index)}
+                      onEdit={() => handleEditBlock(index, 'content')}
+                      onSettings={() => handleBlockSettings(index, 'content')}
                       canMoveUp={index > 0}
-                      canMoveDown={index < blocks.length - 1}
+                      canMoveDown={index < contentBlocks.length - 1}
                       previewMode={previewMode}
                       onDragStart={handleDragStart}
                       onDragEnd={handleDragEnd}
                       onDragOver={handleDragOver}
                       onDrop={handleDrop}
+                      disableDrag={false}
                     />
 
                     {/* Add Block Button - Floating at bottom of block */}
                     {!previewMode && (
                       <AnimatePresence>
-                        {selectorOpenAt !== index + 1 && (
+                        {!(selectorOpenAt === index + 1 && selectorSection === 'content') && (
                           <AddBlockButton
-                            onClick={() => toggleSelector(index + 1)}
+                            onClick={() => toggleSelector(index + 1, 'content')}
                             isOpen={false}
                           />
                         )}
@@ -368,13 +480,13 @@ const BlockBuilder = () => {
 
                   {/* Block Selector */}
                   {!previewMode && (
-                    <div ref={(el) => (selectorRefs.current[index + 1] = el)}>
+                    <div ref={(el) => (selectorRefs.current[`content-${index + 1}`] = el)}>
                       <AnimatePresence>
-                        {selectorOpenAt === index + 1 && (
+                        {selectorOpenAt === index + 1 && selectorSection === 'content' && (
                           <>
                             <div className="relative pointer-events-none h-0 z-30">
                               <AddBlockButton
-                                onClick={() => setSelectorOpenAt(null)}
+                                onClick={() => { setSelectorOpenAt(null); setSelectorSection(null); }}
                                 isOpen={true}
                               />
                             </div>
@@ -385,8 +497,9 @@ const BlockBuilder = () => {
                               transition={{ duration: 0.3 }}
                             >
                               <BlockSelector
-                                onSelectBlock={(block) => handleAddBlock(block, index + 1)}
-                                onClose={() => setSelectorOpenAt(null)}
+                                onSelectBlock={(block) => handleAddBlock(block, index + 1, 'content')}
+                                onClose={() => { setSelectorOpenAt(null); setSelectorSection(null); }}
+                                excludeCategories={['headers', 'footers']}
                               />
                             </motion.div>
                           </>
@@ -398,20 +511,86 @@ const BlockBuilder = () => {
               ))}
             </AnimatePresence>
           </div>
+        </div>
 
-          {/* Stats */}
-          {blocks.length > 0 && (
+        {/* FOOTER SECTION */}
+        <div className="border-b-4 border-gray-400">
+          {!previewMode && !footerBlock && (
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="text-center py-8 text-gray-600"
+              initial={{ opacity: 0, scale: 0 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.1 }}
+              className="flex flex-col items-center justify-center py-8 bg-gray-100"
             >
-              <p className="font-semibold">
-                Total Blocks: {blocks.length}
-              </p>
+              <motion.button
+                onClick={() => toggleSelector(0, 'footer')}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="w-16 h-16 rounded-full bg-white border-2 border-gray-400/60 text-gray-500 shadow-lg flex items-center justify-center transition-colors hover:border-gray-600 hover:text-gray-600"
+                aria-label="Add footer"
+              >
+                <motion.span
+                  className="text-3xl font-light"
+                  animate={{ rotate: selectorOpenAt === 0 && selectorSection === 'footer' ? 45 : 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  +
+                </motion.span>
+              </motion.button>
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="mt-3 text-gray-600 font-semibold text-sm"
+              >
+                Add Footer
+              </motion.p>
             </motion.div>
           )}
+
+          {/* Footer Block Selector */}
+          <div ref={(el) => (selectorRefs.current['footer-0'] = el)}>
+            <AnimatePresence>
+              {selectorOpenAt === 0 && selectorSection === 'footer' && (
+                <BlockSelector
+                  onSelectBlock={(block) => handleAddBlock(block, 0, 'footer')}
+                  onClose={() => { setSelectorOpenAt(null); setSelectorSection(null); }}
+                  filterCategory="footers"
+                  hideCategories={true}
+                />
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Render Footer Block */}
+          {footerBlock && (
+            <Block
+              block={footerBlock}
+              index={0}
+              section="footer"
+              onDelete={() => handleDeleteBlock(0, 'footer')}
+              onEdit={() => handleEditBlock(0, 'footer')}
+              onSettings={() => handleBlockSettings(0, 'footer')}
+              canMoveUp={false}
+              canMoveDown={false}
+              previewMode={previewMode}
+              disableDrag={true}
+            />
+          )}
         </div>
+
+        {/* Stats */}
+        {(headerBlock || contentBlocks.length > 0 || footerBlock) && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="text-center py-8 text-gray-600"
+          >
+            <p className="font-semibold">
+              Total Blocks: {(headerBlock ? 1 : 0) + contentBlocks.length + (footerBlock ? 1 : 0)}
+            </p>
+          </motion.div>
+        )}
       </div>
 
       {/* Drawer Editor */}
@@ -425,7 +604,11 @@ const BlockBuilder = () => {
       <BlockSettingsDrawer
         isOpen={settingsDrawerOpen}
         onClose={() => setSettingsDrawerOpen(false)}
-        blockConfig={blocks[editingBlockIndex]?.config}
+        blockConfig={
+          editingSection === 'header' ? headerBlock?.config :
+          editingSection === 'footer' ? footerBlock?.config :
+          contentBlocks[editingBlockIndex]?.config
+        }
         onUpdate={handleConfigUpdate}
       />
 
