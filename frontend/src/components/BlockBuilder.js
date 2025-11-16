@@ -20,7 +20,15 @@ const BlockBuilder = () => {
   const handleAddBlock = (block, position) => {
     const newBlock = {
       ...block,
-      uniqueId: `${block.id}-${Date.now()}-${Math.random()}`
+      uniqueId: `${block.id}-${Date.now()}-${Math.random()}`,
+      config: {
+        layout: 'boxed',
+        alignment: 'center',
+        maxWidth: '7xl',
+        padding: { top: 12, right: 8, bottom: 12, left: 8 },
+        margin: { top: 0, bottom: 0 },
+        background: { type: 'color', color: '#ffffff' }
+      }
     };
 
     if (position === null || position === undefined) {

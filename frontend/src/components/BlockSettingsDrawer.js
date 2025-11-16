@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { patternOptions } from './SvgPatterns';
 
 const BlockSettingsDrawer = ({ isOpen, onClose, blockConfig, onUpdate }) => {
-  const [config, setConfig] = useState(blockConfig || {
+  const defaultConfig = {
     layout: 'boxed', // 'boxed' or 'full-width'
     alignment: 'center', // 'left', 'center', 'right'
     maxWidth: '7xl', // Tailwind max-width class (only for boxed layout)
@@ -29,7 +29,18 @@ const BlockSettingsDrawer = ({ isOpen, onClose, blockConfig, onUpdate }) => {
         opacity: 50
       }
     }
-  });
+  };
+
+  const [config, setConfig] = useState(blockConfig || defaultConfig);
+
+  // Update config when blockConfig prop changes
+  useEffect(() => {
+    if (blockConfig) {
+      setConfig(blockConfig);
+    } else {
+      setConfig(defaultConfig);
+    }
+  }, [blockConfig]);
 
   const updateConfig = (path, value) => {
     const newConfig = { ...config };
