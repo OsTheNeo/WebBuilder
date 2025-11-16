@@ -4,21 +4,12 @@ import { categories, getColorShades } from '../data/blocksData';
 import { getBlockComponent } from '../blocks';
 
 const BlockSelector = ({ onSelectBlock, onClose }) => {
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedCategory, setSelectedCategory] = useState(categories[0]?.id || 'hero');
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollContainerRef = useRef(null);
 
   // Get all blocks or filtered by category
   const getFilteredBlocks = () => {
-    if (selectedCategory === 'all') {
-      return categories.flatMap(cat =>
-        cat.blocks.map(block => ({
-          ...block,
-          categoryName: cat.name,
-          color: cat.color
-        }))
-      );
-    }
     const category = categories.find(cat => cat.id === selectedCategory);
     return category ? category.blocks.map(block => ({
       ...block,
@@ -88,21 +79,7 @@ const BlockSelector = ({ onSelectBlock, onClose }) => {
           transition={{ delay: 0.1 }}
           className="flex gap-2 mb-6 overflow-x-auto pb-2 justify-center flex-wrap"
         >
-          <button
-            onClick={() => {
-              setSelectedCategory('all');
-              setCurrentIndex(0);
-            }}
-            className={`px-4 py-2 rounded-full font-semibold transition-all ${
-              selectedCategory === 'all'
-                ? 'bg-gray-800 text-white scale-105'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-            }`}
-          >
-            All
-          </button>
           {categories.map((cat) => {
-            const colorShades = getColorShades(cat.color);
             return (
               <button
                 key={cat.id}
@@ -112,8 +89,8 @@ const BlockSelector = ({ onSelectBlock, onClose }) => {
                 }}
                 className={`px-4 py-2 rounded-full font-semibold transition-all ${
                   selectedCategory === cat.id
-                    ? `${colorShades[4]} text-white scale-105`
-                    : `${colorShades[1]} hover:${colorShades[2]}`
+                    ? 'bg-blue-500 text-white scale-105'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                 }`}
               >
                 {cat.name}
