@@ -288,11 +288,11 @@ const BlockBuilder = () => {
                 onClick={() => toggleSelector(0)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-32 h-32 rounded-full bg-white border-2 border-gray-400/60 text-gray-500 shadow-2xl flex items-center justify-center transition-colors hover:border-blue-500 hover:text-blue-500"
+                className="w-20 h-20 rounded-full bg-white border-2 border-gray-400/60 text-gray-500 shadow-xl flex items-center justify-center transition-colors hover:border-blue-500 hover:text-blue-500"
                 aria-label="Add first block"
               >
                 <motion.span
-                  className="text-6xl font-light"
+                  className="text-4xl font-light"
                   animate={{ rotate: selectorOpenAt === 0 ? 45 : 0 }}
                   transition={{ duration: 0.2 }}
                 >
