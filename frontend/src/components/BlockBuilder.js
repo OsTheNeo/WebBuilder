@@ -23,7 +23,8 @@ const BlockBuilder = () => {
     secondaryFont: 'Inter',
     primaryColor: '#3b82f6',
     secondaryColor: '#8b5cf6',
-    logo: null
+    logo: null,
+    darkMode: false
   });
   const selectorRefs = useRef({});
 
@@ -185,9 +186,9 @@ const BlockBuilder = () => {
 
   return (
     <div
-      className="min-h-screen"
+      className={`min-h-screen transition-colors duration-300 ${pageSettings.darkMode ? 'dark' : ''}`}
       style={{
-        backgroundColor: pageSettings.backgroundColor,
+        backgroundColor: pageSettings.darkMode ? '#1f2937' : pageSettings.backgroundColor,
         '--primary-font': pageSettings.primaryFont,
         '--secondary-font': pageSettings.secondaryFont,
         '--primary-color': pageSettings.primaryColor,
@@ -198,21 +199,45 @@ const BlockBuilder = () => {
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200 py-3"
+        className={`sticky top-0 z-50 shadow-sm border-b py-2 transition-colors duration-300 ${
+          pageSettings.darkMode
+            ? 'bg-gray-800 border-gray-700'
+            : 'bg-white border-gray-200'
+        }`}
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">Block Builder</h1>
-              <p className="text-gray-600 text-sm">Create your page by adding and arranging blocks</p>
+              <h1 className={`text-2xl font-bold transition-colors ${
+                pageSettings.darkMode ? 'text-white' : 'text-gray-800'
+              }`}>Block Builder</h1>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-2">
+              {/* Dark Mode Toggle */}
+              <button
+                onClick={() => setPageSettings({ ...pageSettings, darkMode: !pageSettings.darkMode })}
+                className={`p-2 rounded-lg transition-all ${
+                  pageSettings.darkMode ? 'hover:bg-gray-700' : 'hover:bg-gray-100'
+                }`}
+                title={pageSettings.darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                {pageSettings.darkMode ? (
+                  <svg className="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z" clipRule="evenodd" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
+                  </svg>
+                )}
+              </button>
+
               <button
                 onClick={() => setPageSettingsOpen(true)}
-                className="px-4 py-2 rounded-lg font-semibold transition-all bg-purple-500 text-white hover:bg-purple-600 flex items-center gap-2"
+                className="px-3 py-2 rounded-lg font-medium transition-all bg-purple-500 text-white hover:bg-purple-600 flex items-center gap-2 text-sm"
                 title="Page Settings"
               >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                 </svg>
@@ -220,7 +245,7 @@ const BlockBuilder = () => {
               </button>
               <button
                 onClick={() => setPreviewMode(!previewMode)}
-                className={`px-6 py-2 rounded-lg font-semibold transition-all ${
+                className={`px-4 py-2 rounded-lg font-medium transition-all text-sm ${
                   previewMode
                     ? 'bg-blue-500 text-white hover:bg-blue-600'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -228,14 +253,14 @@ const BlockBuilder = () => {
               >
                 {previewMode ? (
                   <span className="flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                     </svg>
-                    Edit Mode
+                    Edit
                   </span>
                 ) : (
                   <span className="flex items-center gap-2">
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                     </svg>
