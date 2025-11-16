@@ -2,34 +2,35 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { patternOptions } from './SvgPatterns';
 
-const BlockSettingsDrawer = ({ isOpen, onClose, blockConfig, onUpdate }) => {
-  const defaultConfig = {
-    layout: 'boxed', // 'boxed' or 'full-width'
-    alignment: 'center', // 'left', 'center', 'right'
-    maxWidth: '7xl', // Tailwind max-width class (only for boxed layout)
-    padding: { top: 12, right: 8, bottom: 12, left: 8 }, // in Tailwind units
-    margin: { top: 0, bottom: 0 }, // in Tailwind units
-    background: {
-      type: 'color', // 'color', 'gradient', 'pattern', 'image', 'image-overlay'
-      color: '#ffffff',
-      gradient: {
-        type: 'linear', // 'linear', 'radial'
-        direction: 'to-r', // 'to-r', 'to-l', 'to-t', 'to-b', 'to-br', etc.
-        from: '#3b82f6',
-        via: null,
-        to: '#8b5cf6'
-      },
-      pattern: null,
-      patternColor: '#000000',
-      image: '',
-      overlay: {
-        enabled: false,
-        type: 'color', // 'color', 'gradient', 'pattern'
-        color: '#000000',
-        opacity: 50
-      }
+const defaultConfig = {
+  layout: 'boxed', // 'boxed' or 'full-width'
+  alignment: 'center', // 'left', 'center', 'right'
+  maxWidth: '7xl', // Tailwind max-width class (only for boxed layout)
+  padding: { top: 12, right: 8, bottom: 12, left: 8 }, // in Tailwind units
+  margin: { top: 0, bottom: 0 }, // in Tailwind units
+  background: {
+    type: 'color', // 'color', 'gradient', 'pattern', 'image', 'image-overlay'
+    color: '#ffffff',
+    gradient: {
+      type: 'linear', // 'linear', 'radial'
+      direction: 'to-r', // 'to-r', 'to-l', 'to-t', 'to-b', 'to-br', etc.
+      from: '#3b82f6',
+      via: null,
+      to: '#8b5cf6'
+    },
+    pattern: null,
+    patternColor: '#000000',
+    image: '',
+    overlay: {
+      enabled: false,
+      type: 'color', // 'color', 'gradient', 'pattern'
+      color: '#000000',
+      opacity: 50
     }
-  };
+  }
+};
+
+const BlockSettingsDrawer = ({ isOpen, onClose, blockConfig, onUpdate }) => {
 
   const [config, setConfig] = useState(blockConfig || defaultConfig);
 
