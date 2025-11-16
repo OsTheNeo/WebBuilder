@@ -68,7 +68,7 @@ const BlockBuilder = () => {
         layout: 'boxed',
         alignment: 'center',
         maxWidth: '7xl',
-        padding: { top: 12, right: 8, bottom: 12, left: 8 },
+        padding: { top: 0, right: 0, bottom: 0, left: 0 },
         margin: { top: 0, bottom: 0 },
         background: { type: 'color', color: '#ffffff' }
       }
@@ -160,6 +160,16 @@ const BlockBuilder = () => {
       setEditingBlock({ ...footerBlock, index: 0, section: 'footer' });
     } else {
       setEditingBlock({ ...contentBlocks[index], index, section: 'content' });
+    }
+  };
+
+  const handleReplaceBlock = (index, section) => {
+    if (section === 'header') {
+      toggleSelector(0, 'header');
+    } else if (section === 'footer') {
+      toggleSelector(0, 'footer');
+    } else {
+      toggleSelector(index, 'content');
     }
   };
 
@@ -317,7 +327,7 @@ const BlockBuilder = () => {
           onSelectBlock={(block) => handleAddBlock(block, 0, 'header')}
           onCloseSelector={() => { setSelectorOpenAt(null); setSelectorSection(null); }}
           onDeleteBlock={() => handleDeleteBlock(0, 'header')}
-          onEditBlock={() => handleEditBlock(0, 'header')}
+          onReplaceBlock={() => handleReplaceBlock(0, 'header')}
           onBlockSettings={() => handleBlockSettings(0, 'header')}
         />
 
@@ -335,7 +345,7 @@ const BlockBuilder = () => {
           onDeleteBlock={handleDeleteBlock}
           onMoveUp={handleMoveUp}
           onMoveDown={handleMoveDown}
-          onEditBlock={handleEditBlock}
+          onReplaceBlock={handleReplaceBlock}
           onBlockSettings={handleBlockSettings}
           onDragStart={handleDragStart}
           onDragEnd={handleDragEnd}
@@ -353,22 +363,9 @@ const BlockBuilder = () => {
           onSelectBlock={(block) => handleAddBlock(block, 0, 'footer')}
           onCloseSelector={() => { setSelectorOpenAt(null); setSelectorSection(null); }}
           onDeleteBlock={() => handleDeleteBlock(0, 'footer')}
-          onEditBlock={() => handleEditBlock(0, 'footer')}
+          onReplaceBlock={() => handleReplaceBlock(0, 'footer')}
           onBlockSettings={() => handleBlockSettings(0, 'footer')}
         />
-
-        {/* Stats */}
-        {(headerBlock || contentBlocks.length > 0 || footerBlock) && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-center py-8 text-gray-600"
-          >
-            <p className="font-semibold">
-              Total Blocks: {(headerBlock ? 1 : 0) + contentBlocks.length + (footerBlock ? 1 : 0)}
-            </p>
-          </motion.div>
-        )}
       </div>
 
       {/* Drawer Editor */}

@@ -12,23 +12,23 @@ const FooterSection = ({
   onSelectBlock,
   onCloseSelector,
   onDeleteBlock,
-  onEditBlock,
+  onReplaceBlock,
   onBlockSettings
 }) => {
   return (
-    <div className="border-b-2 border-gray-200">
+    <div>
       {!previewMode && !footerBlock && (
         <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: 0.1 }}
-          className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-gray-300 m-4 rounded-lg"
+          className="flex flex-col items-center justify-center py-16"
         >
           <motion.button
             onClick={onToggleSelector}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="w-16 h-16 rounded-full bg-white border-2 border-gray-300 text-gray-400 shadow-md flex items-center justify-center transition-colors hover:border-gray-600 hover:text-gray-600"
+            className="w-14 h-14 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center transition-all hover:bg-gray-100 hover:text-gray-600"
             aria-label="Add footer"
           >
             <motion.span
@@ -42,10 +42,10 @@ const FooterSection = ({
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mt-3 text-gray-500 font-medium text-sm"
+            transition={{ delay: 0.2 }}
+            className="mt-4 text-gray-400 text-sm"
           >
-            Add Footer
+            Click to add footer
           </motion.p>
         </motion.div>
       )}
@@ -71,7 +71,7 @@ const FooterSection = ({
           index={0}
           section="footer"
           onDelete={onDeleteBlock}
-          onEdit={onEditBlock}
+          onEdit={onReplaceBlock}
           onSettings={onBlockSettings}
           canMoveUp={false}
           canMoveDown={false}

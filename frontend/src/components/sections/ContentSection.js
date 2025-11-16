@@ -17,7 +17,7 @@ const ContentSection = ({
   onDeleteBlock,
   onMoveUp,
   onMoveDown,
-  onEditBlock,
+  onReplaceBlock,
   onBlockSettings,
   onDragStart,
   onDragEnd,
@@ -25,22 +25,22 @@ const ContentSection = ({
   onDrop
 }) => {
   return (
-    <div className={`border-b-2 border-gray-200 ${fullHeight ? 'flex-grow' : ''}`}>
+    <div className={fullHeight ? 'flex-grow flex flex-col' : ''}>
       {/* Initial Add Button (when no content blocks) */}
       {contentBlocks.length === 0 && !previewMode && (
         <motion.div
-          initial={{ opacity: 0, scale: 0 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className={`flex flex-col items-center justify-center border-2 border-dashed border-gray-300 m-4 rounded-lg ${
-            fullHeight ? 'min-h-full' : 'min-h-[40vh]'
+          className={`flex flex-col items-center justify-center ${
+            fullHeight ? 'flex-grow' : 'py-32'
           }`}
         >
           <motion.button
             onClick={() => onToggleSelector(0, 'content')}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="w-20 h-20 rounded-full bg-white border-2 border-gray-300 text-gray-400 shadow-md flex items-center justify-center transition-colors hover:border-green-500 hover:text-green-500"
+            className="w-16 h-16 rounded-full bg-gray-50 text-gray-400 flex items-center justify-center transition-all hover:bg-gray-100 hover:text-gray-600"
             aria-label="Add first content block"
           >
             <motion.span
@@ -54,10 +54,10 @@ const ContentSection = ({
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.4 }}
-            className="mt-4 text-gray-500 font-medium"
+            transition={{ delay: 0.3 }}
+            className="mt-4 text-gray-400 text-sm"
           >
-            Add Content Block
+            Click to add content
           </motion.p>
         </motion.div>
       )}
@@ -76,7 +76,7 @@ const ContentSection = ({
       </div>
 
       {/* Render Content Blocks */}
-      <div className="space-y-0">
+      <div className="space-y-0 pb-12">
         <AnimatePresence mode="popLayout">
           {contentBlocks.map((block, index) => (
             <React.Fragment key={block.uniqueId}>
@@ -96,7 +96,7 @@ const ContentSection = ({
                   onDelete={() => onDeleteBlock(index, 'content')}
                   onMoveUp={() => onMoveUp(index)}
                   onMoveDown={() => onMoveDown(index)}
-                  onEdit={() => onEditBlock(index, 'content')}
+                  onEdit={() => onReplaceBlock(index, 'content')}
                   onSettings={() => onBlockSettings(index, 'content')}
                   canMoveUp={index > 0}
                   canMoveDown={index < contentBlocks.length - 1}
