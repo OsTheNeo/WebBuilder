@@ -79,7 +79,8 @@ const defaultSettings = {
   secondaryFont: 'Inter',
   primaryColor: '#3b82f6',
   secondaryColor: '#8b5cf6',
-  logo: null
+  logo: null,
+  fullHeight: true
 };
 
 const PageSettingsDrawer = ({ isOpen, onClose, pageSettings, onUpdate }) => {
@@ -187,6 +188,31 @@ const PageSettingsDrawer = ({ isOpen, onClose, pageSettings, onUpdate }) => {
               {/* Branding Tab */}
               {activeTab === 'branding' && (
                 <>
+                  {/* Full Height Layout Toggle */}
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-700 mb-3">Layout Options</h3>
+                    <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+                      <div>
+                        <p className="font-medium text-gray-800 text-sm">Full Height Layout</p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          Content section expands to fill available screen height
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => updateSetting('fullHeight', !settings.fullHeight)}
+                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                          settings.fullHeight ? 'bg-purple-600' : 'bg-gray-300'
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+                            settings.fullHeight ? 'translate-x-6' : 'translate-x-1'
+                          }`}
+                        />
+                      </button>
+                    </div>
+                  </div>
+
                   {/* Logo Upload */}
                   <div>
                     <h3 className="text-sm font-semibold text-gray-700 mb-3">Logo</h3>

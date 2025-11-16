@@ -30,7 +30,8 @@ const BlockBuilder = () => {
     primaryColor: '#3b82f6',
     secondaryColor: '#8b5cf6',
     logo: null,
-    darkMode: false
+    darkMode: false,
+    fullHeight: true
   });
   const selectorRefs = useRef({});
 
@@ -316,21 +317,21 @@ const BlockBuilder = () => {
       </motion.div>
 
       {/* Content - Full Width with Three Sections */}
-      <div className="w-full">
+      <div className={`w-full ${pageSettings.fullHeight ? 'flex flex-col min-h-[calc(100vh-73px)]' : ''}`}>
         {/* HEADER SECTION */}
-        <div className="border-b-4 border-blue-300">
+        <div className="border-b-2 border-gray-200">
           {!previewMode && !headerBlock && (
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.1 }}
-              className="flex flex-col items-center justify-center py-8 bg-blue-50"
+              className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-gray-300 m-4 rounded-lg"
             >
               <motion.button
                 onClick={() => toggleSelector(0, 'header')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-16 h-16 rounded-full bg-white border-2 border-blue-400/60 text-blue-500 shadow-lg flex items-center justify-center transition-colors hover:border-blue-600 hover:text-blue-600"
+                className="w-16 h-16 rounded-full bg-white border-2 border-gray-300 text-gray-400 shadow-md flex items-center justify-center transition-colors hover:border-blue-500 hover:text-blue-500"
                 aria-label="Add header"
               >
                 <motion.span
@@ -345,7 +346,7 @@ const BlockBuilder = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="mt-3 text-blue-600 font-semibold text-sm"
+                className="mt-3 text-gray-500 font-medium text-sm"
               >
                 Add Header
               </motion.p>
@@ -384,20 +385,22 @@ const BlockBuilder = () => {
         </div>
 
         {/* CONTENT SECTION */}
-        <div className="border-b-4 border-green-300">
+        <div className={`border-b-2 border-gray-200 ${pageSettings.fullHeight ? 'flex-grow' : ''}`}>
           {/* Initial Add Button (when no content blocks) */}
           {contentBlocks.length === 0 && !previewMode && (
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
-              className="flex flex-col items-center justify-center min-h-[40vh] bg-green-50"
+              className={`flex flex-col items-center justify-center border-2 border-dashed border-gray-300 m-4 rounded-lg ${
+                pageSettings.fullHeight ? 'min-h-full' : 'min-h-[40vh]'
+              }`}
             >
               <motion.button
                 onClick={() => toggleSelector(0, 'content')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-20 h-20 rounded-full bg-white border-2 border-green-400/60 text-green-500 shadow-xl flex items-center justify-center transition-colors hover:border-green-600 hover:text-green-600"
+                className="w-20 h-20 rounded-full bg-white border-2 border-gray-300 text-gray-400 shadow-md flex items-center justify-center transition-colors hover:border-green-500 hover:text-green-500"
                 aria-label="Add first content block"
               >
                 <motion.span
@@ -412,7 +415,7 @@ const BlockBuilder = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
-                className="mt-4 text-green-600 font-semibold"
+                className="mt-4 text-gray-500 font-medium"
               >
                 Add Content Block
               </motion.p>
@@ -514,19 +517,19 @@ const BlockBuilder = () => {
         </div>
 
         {/* FOOTER SECTION */}
-        <div className="border-b-4 border-gray-400">
+        <div className="border-b-2 border-gray-200">
           {!previewMode && !footerBlock && (
             <motion.div
               initial={{ opacity: 0, scale: 0 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.1 }}
-              className="flex flex-col items-center justify-center py-8 bg-gray-100"
+              className="flex flex-col items-center justify-center py-8 border-2 border-dashed border-gray-300 m-4 rounded-lg"
             >
               <motion.button
                 onClick={() => toggleSelector(0, 'footer')}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className="w-16 h-16 rounded-full bg-white border-2 border-gray-400/60 text-gray-500 shadow-lg flex items-center justify-center transition-colors hover:border-gray-600 hover:text-gray-600"
+                className="w-16 h-16 rounded-full bg-white border-2 border-gray-300 text-gray-400 shadow-md flex items-center justify-center transition-colors hover:border-gray-600 hover:text-gray-600"
                 aria-label="Add footer"
               >
                 <motion.span
@@ -541,7 +544,7 @@ const BlockBuilder = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3 }}
-                className="mt-3 text-gray-600 font-semibold text-sm"
+                className="mt-3 text-gray-500 font-medium text-sm"
               >
                 Add Footer
               </motion.p>
