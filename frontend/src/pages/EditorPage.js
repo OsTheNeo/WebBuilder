@@ -30,6 +30,7 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
   const [showMediaModal, setShowMediaModal] = useState(false);
   const [mediaType, setMediaType] = useState('image'); // or 'video'
   const [nodeStyles, setNodeStyles] = useState({}); // Track styles for each node
+  const [zoomLevel, setZoomLevel] = useState(100);
 
   // Build tree structure from article
   const buildTreeStructure = () => {
@@ -76,6 +77,19 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
   };
 
   const [treeStructure, setTreeStructure] = useState(buildTreeStructure());
+
+  // Zoom handlers
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev + 10, 200));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => Math.max(prev - 10, 50));
+  };
+
+  const handleZoomReset = () => {
+    setZoomLevel(100);
+  };
 
   const updateArticleField = (field, value) => {
     setArticle(prev => ({ ...prev, [field]: value }));
@@ -268,9 +282,44 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
       >
         <div className="max-w-full mx-auto px-4">
           <div className="flex justify-between items-center">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-800">Article Editor</h1>
-              <p className="text-gray-600 text-sm">Create and edit your article with inline editing</p>
+            <div className="flex items-center gap-4">
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800">Article Editor</h1>
+                <p className="text-gray-600 text-sm">Create and edit your article with inline editing</p>
+              </div>
+
+              {/* Zoom Controls */}
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg border bg-gray-50 border-gray-300">
+                <button
+                  onClick={handleZoomOut}
+                  disabled={zoomLevel <= 50}
+                  className="p-1 rounded hover:bg-gray-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-gray-600"
+                  title="Zoom Out"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                  </svg>
+                </button>
+
+                <button
+                  onClick={handleZoomReset}
+                  className="px-2 py-0.5 text-xs font-semibold rounded hover:bg-gray-200 transition-colors min-w-[3rem] text-gray-700"
+                  title="Reset Zoom (Click to reset to 100%)"
+                >
+                  {zoomLevel}%
+                </button>
+
+                <button
+                  onClick={handleZoomIn}
+                  disabled={zoomLevel >= 200}
+                  className="p-1 rounded hover:bg-gray-200 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-gray-600"
+                  title="Zoom In"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+              </div>
             </div>
             <div className="flex gap-3">
               <button className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
@@ -288,12 +337,19 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
       <div className="flex h-[calc(100vh-80px)]">
         {/* Left Column: Article Editor */}
         <div className="flex-1 overflow-y-auto p-8">
-          <motion.article
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-12"
+          <div
+            className="transition-transform duration-200"
+            style={{
+              transform: `scale(${zoomLevel / 100})`,
+              transformOrigin: 'top center'
+            }}
           >
+            <motion.article
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-12"
+            >
             {/* Article Header */}
             <header className="mb-12 border-b border-gray-200 pb-8">
               <EditableText
@@ -435,6 +491,7 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
             {/* Dynamic Content - Rendered from tree structure */}
             {renderDynamicContent(treeStructure)}
           </motion.article>
+          </div>
         </div>
 
         {/* Right Column: Tree View */}
