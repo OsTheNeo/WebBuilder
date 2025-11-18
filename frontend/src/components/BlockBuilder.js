@@ -17,6 +17,7 @@ const BlockBuilder = () => {
   const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
   const [editingBlockIndex, setEditingBlockIndex] = useState(null);
   const [pageSettingsOpen, setPageSettingsOpen] = useState(false);
+  const [zoomLevel, setZoomLevel] = useState(100);
   const [pageSettings, setPageSettings] = useState({
     backgroundColor: '#f3f4f6',
     primaryFont: 'Inter',
@@ -51,6 +52,19 @@ const BlockBuilder = () => {
       loadGoogleFont(pageSettings.secondaryFont);
     }
   }, [pageSettings.primaryFont, pageSettings.secondaryFont]);
+
+  // Zoom handlers
+  const handleZoomIn = () => {
+    setZoomLevel(prev => Math.min(prev + 10, 200));
+  };
+
+  const handleZoomOut = () => {
+    setZoomLevel(prev => Math.max(prev - 10, 50));
+  };
+
+  const handleZoomReset = () => {
+    setZoomLevel(100);
+  };
 
   const handleAddBlock = (block, position) => {
     const newBlock = {
@@ -207,10 +221,53 @@ const BlockBuilder = () => {
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center">
-            <div>
+            <div className="flex items-center gap-4">
               <h1 className={`text-2xl font-bold transition-colors ${
                 pageSettings.darkMode ? 'text-white' : 'text-gray-800'
               }`}>Block Builder</h1>
+
+              {/* Zoom Controls */}
+              <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border ${
+                pageSettings.darkMode
+                  ? 'bg-gray-700 border-gray-600'
+                  : 'bg-gray-50 border-gray-300'
+              }`}>
+                <button
+                  onClick={handleZoomOut}
+                  disabled={zoomLevel <= 50}
+                  className={`p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                    pageSettings.darkMode ? 'text-gray-300' : 'text-gray-600'
+                  }`}
+                  title="Zoom Out"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                  </svg>
+                </button>
+
+                <button
+                  onClick={handleZoomReset}
+                  className={`px-2 py-0.5 text-xs font-semibold rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors min-w-[3rem] ${
+                    pageSettings.darkMode ? 'text-gray-300' : 'text-gray-700'
+                  }`}
+                  title="Reset Zoom (Click to reset to 100%)"
+                >
+                  {zoomLevel}%
+                </button>
+
+                <button
+                  onClick={handleZoomIn}
+                  disabled={zoomLevel >= 200}
+                  className={`p-1 rounded hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+                    pageSettings.darkMode ? 'text-gray-300' : 'text-gray-600'
+                  }`}
+                  title="Zoom In"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                  </svg>
+                </button>
+              </div>
             </div>
             <div className="flex gap-2">
               {/* Dark Mode Toggle */}
@@ -274,8 +331,16 @@ const BlockBuilder = () => {
       </motion.div>
 
       {/* Content - Full Width */}
-      <div className="w-full">
-        <div className="">
+      <div className="w-full" style={{
+        overflow: zoomLevel !== 100 ? 'auto' : 'visible'
+      }}>
+        <div
+          className="transition-transform duration-200 origin-top"
+          style={{
+            transform: `scale(${zoomLevel / 100})`,
+            transformOrigin: 'top center'
+          }}
+        >
           {/* Initial Add Button (when no blocks) */}
           {blocks.length === 0 && !previewMode && (
             <motion.div
