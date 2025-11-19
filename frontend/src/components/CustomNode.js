@@ -2,6 +2,9 @@ import React, { useState } from 'react';
 import { Handle, Position } from 'reactflow';
 import { IconEye, IconEyeOff, IconEdit, IconTrash, IconCheck, IconX, IconSettings } from '@tabler/icons-react';
 import { getTemplateByType } from '../constants/nodeTypes';
+import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Card } from './ui/card';
 
 const CustomNode = ({ data, id }) => {
   const [isEditing, setIsEditing] = useState(false);
@@ -28,9 +31,9 @@ const CustomNode = ({ data, id }) => {
   };
 
   return (
-    <div
-      className={`bg-white rounded-lg shadow-lg border-2 transition-all ${
-        data.enabled ? 'border-gray-200' : 'border-gray-300 opacity-60'
+    <Card
+      className={`transition-all border-2 ${
+        data.enabled ? '' : 'opacity-60'
       }`}
       style={{
         borderColor: data.enabled ? nodeColor : '#D1D5DB',
@@ -63,11 +66,11 @@ const CustomNode = ({ data, id }) => {
           <div className="flex-grow">
             <div className="flex items-center gap-2">
               {isEditing ? (
-                <input
+                <Input
                   type="text"
                   value={editedName}
                   onChange={(e) => setEditedName(e.target.value)}
-                  className="flex-1 px-2 py-1 text-sm font-semibold border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="flex-1 h-8 text-sm font-semibold"
                   autoFocus
                 />
               ) : (
@@ -80,12 +83,12 @@ const CustomNode = ({ data, id }) => {
               )}
             </div>
             {isEditing ? (
-              <input
+              <Input
                 type="text"
                 value={editedPath}
                 onChange={(e) => setEditedPath(e.target.value)}
                 placeholder="/path"
-                className="w-full mt-1 px-2 py-1 text-xs border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full mt-1 h-7 text-xs"
               />
             ) : (
               <p className="text-xs text-gray-500 mt-0.5">{data.path || '/'}</p>
@@ -98,64 +101,71 @@ const CustomNode = ({ data, id }) => {
       <div className="p-2 flex items-center justify-between border-t border-gray-100">
         {isEditing ? (
           <div className="flex gap-1 w-full">
-            <button
+            <Button
               onClick={handleSaveEdit}
-              className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 bg-green-500 text-white rounded hover:bg-green-600 transition-colors text-xs"
+              className="flex-1 bg-green-600 hover:bg-green-700 h-8 text-xs"
             >
-              <IconCheck className="w-3.5 h-3.5" />
+              <IconCheck className="w-3.5 h-3.5 mr-1" />
               Save
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleCancelEdit}
-              className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 transition-colors text-xs"
+              variant="outline"
+              className="flex-1 h-8 text-xs"
             >
-              <IconX className="w-3.5 h-3.5" />
+              <IconX className="w-3.5 h-3.5 mr-1" />
               Cancel
-            </button>
+            </Button>
           </div>
         ) : (
           <>
             <div className="flex gap-1">
-              <button
+              <Button
                 onClick={() => data.onToggleVisibility(id)}
-                className="p-1.5 rounded hover:bg-gray-100 transition-colors"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
                 title={data.enabled ? 'Hide page' : 'Show page'}
               >
                 {data.enabled ? (
                   <IconEye className="w-4 h-4 text-green-600" />
                 ) : (
-                  <IconEyeOff className="w-4 h-4 text-gray-400" />
+                  <IconEyeOff className="w-4 h-4 text-muted-foreground" />
                 )}
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => setIsEditing(true)}
-                className="p-1.5 rounded hover:bg-gray-100 transition-colors"
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
                 title="Edit page"
               >
                 <IconEdit className="w-4 h-4 text-blue-600" />
-              </button>
+              </Button>
             </div>
             <div className="flex gap-1">
               {canDelete && (
-                <button
+                <Button
                   onClick={() => data.onDelete(id)}
-                  className="p-1.5 rounded hover:bg-red-50 transition-colors"
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8 hover:bg-red-50"
                   title="Delete page"
                 >
                   <IconTrash className="w-4 h-4 text-red-600" />
-                </button>
+                </Button>
               )}
-              <button
+              <Button
                 onClick={() => data.onDesign(id)}
-                className={`flex items-center gap-1 px-3 py-1.5 ${
+                className={`h-8 text-xs ${
                   isProjectConfig
                     ? 'bg-purple-500 hover:bg-purple-600'
-                    : 'bg-blue-500 hover:bg-blue-600'
-                } text-white rounded transition-colors text-xs font-medium`}
+                    : ''
+                }`}
               >
-                {isProjectConfig && <IconSettings className="w-3.5 h-3.5" />}
+                {isProjectConfig && <IconSettings className="w-3.5 h-3.5 mr-1" />}
                 {isProjectConfig ? 'Configure' : 'Design'}
-              </button>
+              </Button>
             </div>
           </>
         )}
@@ -167,7 +177,7 @@ const CustomNode = ({ data, id }) => {
         className="w-3 h-3"
         style={{ background: nodeColor }}
       />
-    </div>
+    </Card>
   );
 };
 
