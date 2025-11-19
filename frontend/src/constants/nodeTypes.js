@@ -1,6 +1,7 @@
-import { IconShoppingCart, IconRocket, IconFileText, IconChartBar, IconBuildingStore, IconBox, IconFilter, IconShoppingBag, IconUser, IconLogin, IconUserPlus } from '@tabler/icons-react';
+import { IconShoppingCart, IconRocket, IconFileText, IconChartBar, IconBuildingStore, IconBox, IconFilter, IconShoppingBag, IconUser, IconLogin, IconUserPlus, IconSettings } from '@tabler/icons-react';
 
 export const NODE_TYPES = {
+  PROJECT_CONFIG: 'project_config',
   LANDING: 'landing',
   PAGE: 'page',
   ECOMMERCE: 'ecommerce',
@@ -9,6 +10,17 @@ export const NODE_TYPES = {
 };
 
 export const nodeTemplates = [
+  {
+    id: 'project_config',
+    type: NODE_TYPES.PROJECT_CONFIG,
+    name: 'Project Settings',
+    icon: IconSettings,
+    description: 'Global project configuration',
+    color: '#8B5CF6',
+    defaultChildren: [],
+    isSpecial: true,
+    canDelete: false
+  },
   {
     id: 'landing',
     type: NODE_TYPES.LANDING,
