@@ -203,13 +203,15 @@ const PageMapEditor = () => {
 
   const handleDeleteNode = useCallback((nodeId) => {
     // Prevent deletion of project config node
-    const nodeToDelete = nodes.find(n => n.id === nodeId);
-    if (nodeToDelete?.data?.isProjectConfig || nodeToDelete?.data?.canDelete === false) {
-      return;
-    }
-    setNodes((nds) => nds.filter((node) => node.id !== nodeId));
+    setNodes((nds) => {
+      const nodeToDelete = nds.find(n => n.id === nodeId);
+      if (nodeToDelete?.data?.isProjectConfig || nodeToDelete?.data?.canDelete === false) {
+        return nds;
+      }
+      return nds.filter((node) => node.id !== nodeId);
+    });
     setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
-  }, [nodes, setNodes, setEdges]);
+  }, [setNodes, setEdges]);
 
   const handleToggleVisibility = useCallback((nodeId) => {
     setNodes((nds) =>
@@ -230,13 +232,16 @@ const PageMapEditor = () => {
 
   const handleDesignPage = useCallback((nodeId) => {
     // Open project config modal for project config node
-    const node = nodes.find(n => n.id === nodeId);
-    if (node?.data?.isProjectConfig || node?.data?.type === 'project_config') {
-      setProjectConfigOpen(true);
-      return;
-    }
-    navigate(`/builder/${nodeId}`);
-  }, [nodes, navigate]);
+    setNodes((nds) => {
+      const node = nds.find(n => n.id === nodeId);
+      if (node?.data?.isProjectConfig || node?.data?.type === 'project_config') {
+        setProjectConfigOpen(true);
+      } else {
+        navigate(`/builder/${nodeId}`);
+      }
+      return nds;
+    });
+  }, [setNodes, navigate]);
 
   // Update callbacks for initial node
   React.useEffect(() => {
