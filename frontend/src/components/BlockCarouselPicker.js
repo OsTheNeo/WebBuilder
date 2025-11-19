@@ -60,7 +60,7 @@ const BlockCarouselPicker = ({ filterCategory, selectedBlockId, onSelectBlock, l
         </label>
       )}
 
-      <div className="border border-gray-200 rounded-lg p-3 bg-gray-50">
+      <div className="border border-gray-200 rounded-lg p-2 bg-gray-50">
         {/* Slider Container */}
         <div className="relative">
           {/* Navigation Buttons */}
@@ -104,12 +104,12 @@ const BlockCarouselPicker = ({ filterCategory, selectedBlockId, onSelectBlock, l
               return (
                 <motion.div
                   key={block.id}
-                  className="flex-shrink-0 w-full flex items-center justify-center px-10 py-3 snap-center"
+                  className="flex-shrink-0 w-full flex items-center justify-center px-10 py-1 snap-center"
                   initial={{ opacity: 0.7 }}
                   animate={{ opacity: isCurrent ? 1 : 0.5 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-full max-w-lg" style={{ transform: 'scale(0.7)' }}>
+                  <div className="w-full max-w-lg" style={{ transform: 'scale(0.75)' }}>
                     <motion.div
                       className={`w-full rounded-lg shadow-md overflow-hidden border-2 ${
                         isSelected
@@ -148,7 +148,7 @@ const BlockCarouselPicker = ({ filterCategory, selectedBlockId, onSelectBlock, l
           </div>
 
           {/* Block Counter & Name */}
-          <div className="text-center mt-2">
+          <div className="text-center mt-1">
             <p className="text-sm font-semibold text-gray-700">
               {blocks[currentIndex]?.name}
             </p>
@@ -158,7 +158,7 @@ const BlockCarouselPicker = ({ filterCategory, selectedBlockId, onSelectBlock, l
           </div>
 
           {/* Select Button */}
-          <div className="flex justify-center mt-3">
+          <div className="flex justify-center mt-2">
             <Button
               onClick={handleSelectBlock}
               type="button"

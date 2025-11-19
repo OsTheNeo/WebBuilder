@@ -47,7 +47,7 @@ const ProjectConfigModal = ({ isOpen, onClose, config, onSave }) => {
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
             onClick={(e) => e.target === e.currentTarget && onClose()}
           >
-            <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden flex flex-col">
+            <div className="bg-white rounded-xl shadow-2xl w-full max-w-6xl max-h-[90vh] overflow-hidden flex flex-col">
               {/* Header */}
               <div className="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
                 <div>
