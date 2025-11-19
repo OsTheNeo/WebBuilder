@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { categories, getColorShades } from '../data/blocksData';
 import { getBlockComponent } from '../blocks';
 import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { Button } from './ui/button';
 
 const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories, excludeCategories }) => {
   // Filter categories based on props
@@ -96,20 +97,17 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
           >
             {availableCategories.map((cat) => {
               return (
-                <button
+                <Button
                   key={cat.id}
                   onClick={() => {
                     setSelectedCategory(cat.id);
                     setCurrentIndex(0);
                   }}
-                  className={`px-4 py-2 rounded-full font-semibold transition-all ${
-                    selectedCategory === cat.id
-                      ? 'bg-blue-500 text-white scale-105'
-                      : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                  }`}
+                  variant={selectedCategory === cat.id ? "default" : "outline"}
+                  className="rounded-full"
                 >
                   {cat.name}
-                </button>
+                </Button>
               );
             })}
           </motion.div>
@@ -123,21 +121,25 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
           className="relative"
         >
           {/* Navigation Buttons - Floating over carousel */}
-          <button
+          <Button
             onClick={navigateLeft}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-2xl hover:bg-white hover:scale-110 transition-all"
+            variant="outline"
+            size="icon"
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full h-14 w-14 shadow-2xl hover:scale-110 transition-transform"
             aria-label="Previous block"
           >
             <IconChevronLeft className="w-7 h-7" stroke={2.5} />
-          </button>
+          </Button>
 
-          <button
+          <Button
             onClick={navigateRight}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full p-4 shadow-2xl hover:bg-white hover:scale-110 transition-all"
+            variant="outline"
+            size="icon"
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full h-14 w-14 shadow-2xl hover:scale-110 transition-transform"
             aria-label="Next block"
           >
             <IconChevronRight className="w-7 h-7" stroke={2.5} />
-          </button>
+          </Button>
 
           {/* Blocks Carousel */}
           <div
@@ -197,18 +199,19 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
             transition={{ delay: 0.3 }}
             className="flex gap-4 justify-center mt-6"
           >
-            <button
+            <Button
               onClick={onClose}
-              className="px-6 py-3 bg-gray-300 text-gray-800 rounded-lg font-semibold hover:bg-gray-400 transition-colors"
+              variant="outline"
+              size="lg"
             >
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={handleSelectBlock}
-              className="px-6 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+              size="lg"
             >
               Add Block
-            </button>
+            </Button>
           </motion.div>
         </motion.div>
       </div>
