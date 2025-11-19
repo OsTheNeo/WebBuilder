@@ -12,6 +12,7 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import CustomNode from '../components/CustomNode';
 import NodeTemplatesSidebar from '../components/NodeTemplatesSidebar';
+import ProjectConfigModal from '../components/ProjectConfigModal';
 import { getTemplateById } from '../constants/nodeTypes';
 
 const nodeTypes = {
@@ -19,6 +20,23 @@ const nodeTypes = {
 };
 
 const initialNodes = [
+  {
+    id: 'project-config',
+    type: 'custom',
+    position: { x: 100, y: 50 },
+    data: {
+      label: 'Project Settings',
+      path: '/config',
+      type: 'project_config',
+      enabled: true,
+      isProjectConfig: true,
+      canDelete: false,
+      onUpdate: () => {},
+      onDelete: () => {},
+      onToggleVisibility: () => {},
+      onDesign: () => {}
+    },
+  },
   {
     id: '1',
     type: 'custom',
@@ -37,13 +55,40 @@ const initialNodes = [
   },
 ];
 
+const initialEdges = [
+  {
+    id: 'e-config-home',
+    source: 'project-config',
+    target: '1',
+    animated: true,
+    style: { stroke: '#8B5CF6', strokeWidth: 2 }
+  }
+];
+
 const PageMapEditor = () => {
   const navigate = useNavigate();
   const reactFlowWrapper = useRef(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(110);
+  const [projectConfigOpen, setProjectConfigOpen] = useState(false);
+  const [projectConfig, setProjectConfig] = useState({
+    projectName: 'My Web Project',
+    description: 'A beautiful web application',
+    logo: null,
+    primaryFont: 'Inter',
+    secondaryFont: 'Inter',
+    colorPalette: {
+      primary: '#3b82f6',
+      secondary: '#8b5cf6',
+      accent: '#10b981',
+      background: '#ffffff',
+      text: '#1f2937'
+    },
+    defaultHeader: null,
+    defaultFooter: null
+  });
   const nodeIdCounter = useRef(2);
 
   const onConnect = useCallback(
@@ -157,9 +202,14 @@ const PageMapEditor = () => {
   }, [setNodes]);
 
   const handleDeleteNode = useCallback((nodeId) => {
+    // Prevent deletion of project config node
+    const nodeToDelete = nodes.find(n => n.id === nodeId);
+    if (nodeToDelete?.data?.isProjectConfig || nodeToDelete?.data?.canDelete === false) {
+      return;
+    }
     setNodes((nds) => nds.filter((node) => node.id !== nodeId));
     setEdges((eds) => eds.filter((edge) => edge.source !== nodeId && edge.target !== nodeId));
-  }, [setNodes, setEdges]);
+  }, [nodes, setNodes, setEdges]);
 
   const handleToggleVisibility = useCallback((nodeId) => {
     setNodes((nds) =>
@@ -179,8 +229,14 @@ const PageMapEditor = () => {
   }, [setNodes]);
 
   const handleDesignPage = useCallback((nodeId) => {
+    // Open project config modal for project config node
+    const node = nodes.find(n => n.id === nodeId);
+    if (node?.data?.isProjectConfig || node?.data?.type === 'project_config') {
+      setProjectConfigOpen(true);
+      return;
+    }
     navigate(`/builder/${nodeId}`);
-  }, [navigate]);
+  }, [nodes, navigate]);
 
   // Update callbacks for initial node
   React.useEffect(() => {
@@ -260,6 +316,14 @@ const PageMapEditor = () => {
           </ReactFlow>
         </div>
       </div>
+
+      {/* Project Config Modal */}
+      <ProjectConfigModal
+        isOpen={projectConfigOpen}
+        onClose={() => setProjectConfigOpen(false)}
+        config={projectConfig}
+        onSave={setProjectConfig}
+      />
     </div>
   );
 };

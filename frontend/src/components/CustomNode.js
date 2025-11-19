@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Handle, Position } from 'reactflow';
-import { IconEye, IconEyeOff, IconEdit, IconTrash, IconCheck, IconX } from '@tabler/icons-react';
+import { IconEye, IconEyeOff, IconEdit, IconTrash, IconCheck, IconX, IconSettings } from '@tabler/icons-react';
 import { getTemplateByType } from '../constants/nodeTypes';
 
 const CustomNode = ({ data, id }) => {
@@ -11,6 +11,8 @@ const CustomNode = ({ data, id }) => {
   const template = getTemplateByType(data.type);
   const nodeColor = template?.color || '#6B7280';
   const NodeIcon = template?.icon;
+  const isProjectConfig = data.isProjectConfig || data.type === 'project_config';
+  const canDelete = data.canDelete !== false && !data.isHome && !isProjectConfig;
 
   const handleSaveEdit = () => {
     if (editedName.trim()) {
@@ -59,17 +61,24 @@ const CustomNode = ({ data, id }) => {
             </div>
           )}
           <div className="flex-grow">
-            {isEditing ? (
-              <input
-                type="text"
-                value={editedName}
-                onChange={(e) => setEditedName(e.target.value)}
-                className="w-full px-2 py-1 text-sm font-semibold border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                autoFocus
-              />
-            ) : (
-              <h3 className="font-semibold text-gray-800 text-sm">{data.label}</h3>
-            )}
+            <div className="flex items-center gap-2">
+              {isEditing ? (
+                <input
+                  type="text"
+                  value={editedName}
+                  onChange={(e) => setEditedName(e.target.value)}
+                  className="flex-1 px-2 py-1 text-sm font-semibold border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  autoFocus
+                />
+              ) : (
+                <h3 className="font-semibold text-gray-800 text-sm">{data.label}</h3>
+              )}
+              {isProjectConfig && !isEditing && (
+                <span className="px-1.5 py-0.5 bg-purple-100 text-purple-700 text-[10px] font-bold rounded">
+                  CORE
+                </span>
+              )}
+            </div>
             {isEditing ? (
               <input
                 type="text"
@@ -127,7 +136,7 @@ const CustomNode = ({ data, id }) => {
               </button>
             </div>
             <div className="flex gap-1">
-              {!data.isHome && (
+              {canDelete && (
                 <button
                   onClick={() => data.onDelete(id)}
                   className="p-1.5 rounded hover:bg-red-50 transition-colors"
@@ -138,9 +147,14 @@ const CustomNode = ({ data, id }) => {
               )}
               <button
                 onClick={() => data.onDesign(id)}
-                className="px-3 py-1.5 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors text-xs font-medium"
+                className={`flex items-center gap-1 px-3 py-1.5 ${
+                  isProjectConfig
+                    ? 'bg-purple-500 hover:bg-purple-600'
+                    : 'bg-blue-500 hover:bg-blue-600'
+                } text-white rounded transition-colors text-xs font-medium`}
               >
-                Design
+                {isProjectConfig && <IconSettings className="w-3.5 h-3.5" />}
+                {isProjectConfig ? 'Configure' : 'Design'}
               </button>
             </div>
           </>
