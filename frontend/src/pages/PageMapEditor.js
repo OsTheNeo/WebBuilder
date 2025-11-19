@@ -43,7 +43,7 @@ const PageMapEditor = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
-  const [zoomLevel, setZoomLevel] = useState(100);
+  const [zoomLevel, setZoomLevel] = useState(110);
   const nodeIdCounter = useRef(2);
 
   const onConnect = useCallback(
@@ -239,7 +239,7 @@ const PageMapEditor = () => {
             onDragOver={onDragOver}
             onMove={onMove}
             nodeTypes={nodeTypes}
-            fitView
+            defaultViewport={{ x: 0, y: 0, zoom: 1.1 }}
             attributionPosition="bottom-right"
             className="bg-gray-50"
             defaultEdgeOptions={{
