@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconX, IconUpload, IconPalette, IconTypography } from '@tabler/icons-react';
+import BlockCarouselPicker from './BlockCarouselPicker';
 
 const ProjectConfigModal = ({ isOpen, onClose, config, onSave }) => {
   const [formData, setFormData] = useState(config);
@@ -257,38 +258,20 @@ const ProjectConfigModal = ({ isOpen, onClose, config, onSave }) => {
                       Select default header and footer that will be applied to all pages
                     </p>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Default Header
-                        </label>
-                        <select
-                          value={formData.defaultHeader || ''}
-                          onChange={(e) => setFormData({ ...formData, defaultHeader: e.target.value || null })}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                          <option value="">None</option>
-                          <option value="header-1">Header Style 1</option>
-                          <option value="header-2">Header Style 2</option>
-                          <option value="header-3">Header Style 3</option>
-                        </select>
-                      </div>
+                    <div className="space-y-4">
+                      <BlockCarouselPicker
+                        filterCategory="headers"
+                        selectedBlockId={formData.defaultHeader}
+                        onSelectBlock={(blockId) => setFormData({ ...formData, defaultHeader: blockId })}
+                        label="Default Header"
+                      />
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Default Footer
-                        </label>
-                        <select
-                          value={formData.defaultFooter || ''}
-                          onChange={(e) => setFormData({ ...formData, defaultFooter: e.target.value || null })}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                          <option value="">None</option>
-                          <option value="footer-1">Footer Style 1</option>
-                          <option value="footer-2">Footer Style 2</option>
-                          <option value="footer-3">Footer Style 3</option>
-                        </select>
-                      </div>
+                      <BlockCarouselPicker
+                        filterCategory="footers"
+                        selectedBlockId={formData.defaultFooter}
+                        onSelectBlock={(blockId) => setFormData({ ...formData, defaultFooter: blockId })}
+                        label="Default Footer"
+                      />
                     </div>
                   </div>
                 </div>
