@@ -104,12 +104,12 @@ const BlockCarouselPicker = ({ filterCategory, selectedBlockId, onSelectBlock, l
               return (
                 <motion.div
                   key={block.id}
-                  className="flex-shrink-0 w-full flex items-center justify-center px-10 py-1 snap-center"
+                  className="flex-shrink-0 w-full flex items-center justify-center py-1 snap-center"
                   initial={{ opacity: 0.7 }}
                   animate={{ opacity: isCurrent ? 1 : 0.5 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-full max-w-lg" style={{ transform: 'scale(0.75)' }}>
+                  <div className="w-full" style={{ transform: 'scale(0.85)' }}>
                     <motion.div
                       className={`w-full rounded-lg shadow-md overflow-hidden border-2 ${
                         isSelected
