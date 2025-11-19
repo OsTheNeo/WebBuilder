@@ -89,7 +89,7 @@ const BlockCarouselPicker = ({ filterCategory, selectedBlockId, onSelectBlock, l
           {/* Blocks Carousel */}
           <div
             ref={scrollContainerRef}
-            className="flex overflow-x-hidden scroll-smooth snap-x snap-mandatory max-h-96"
+            className="flex overflow-x-hidden scroll-smooth snap-x snap-mandatory"
             style={{ scrollSnapType: 'x mandatory' }}
           >
             {blocks.map((block, index) => {
