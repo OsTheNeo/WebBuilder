@@ -97,8 +97,9 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
     textColor: {
       label: 'Color',
       icon: (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M9 3L5 21h2l1-3h8l1 3h2L15 3H9zm1.5 3h3l2.5 10h-8.5l2.5-10z"/>
+          <rect x="4" y="19" width="16" height="2" fill="currentColor"/>
         </svg>
       ),
       isColorPicker: true,
