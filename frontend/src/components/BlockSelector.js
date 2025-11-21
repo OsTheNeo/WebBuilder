@@ -120,23 +120,6 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
           transition={{ delay: 0.2 }}
           className="relative w-full"
         >
-          {/* Navigation Buttons - Simple icons overlay */}
-          <button
-            onClick={navigateLeft}
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 transition-opacity hover:opacity-100 opacity-70"
-            aria-label="Previous block"
-          >
-            <IconChevronLeft className="w-10 h-10 text-gray-600" stroke={2.5} />
-          </button>
-
-          <button
-            onClick={navigateRight}
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 transition-opacity hover:opacity-100 opacity-70"
-            aria-label="Next block"
-          >
-            <IconChevronRight className="w-10 h-10 text-gray-600" stroke={2.5} />
-          </button>
-
           {/* Blocks Carousel */}
           <div
             ref={scrollContainerRef}
@@ -183,18 +166,23 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
             })}
           </div>
 
-          {/* Block Counter */}
-          <div className="text-center mt-4 text-gray-600 font-semibold">
-            {currentIndex + 1} / {filteredBlocks.length}
-          </div>
-
-          {/* Action Buttons */}
+          {/* Action Buttons with Navigation */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex gap-4 justify-center mt-6"
+            className="flex items-center justify-between mt-6 max-w-2xl mx-auto"
           >
+            {/* Left Navigation Button */}
+            <button
+              onClick={navigateLeft}
+              className="transition-opacity hover:opacity-100 opacity-70 p-2"
+              aria-label="Previous block"
+            >
+              <IconChevronLeft className="w-8 h-8 text-gray-600" stroke={2.5} />
+            </button>
+
+            {/* Cancel Button */}
             <Button
               onClick={onClose}
               variant="outline"
@@ -202,12 +190,42 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
             >
               Cancel
             </Button>
+
+            {/* Dots Indicator */}
+            <div className="flex gap-2 items-center">
+              {filteredBlocks.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => {
+                    setCurrentIndex(index);
+                    scrollToBlock(index);
+                  }}
+                  className={`rounded-full transition-all ${
+                    currentIndex === index
+                      ? 'w-3 h-3 bg-blue-500'
+                      : 'w-2 h-2 bg-gray-300 hover:bg-gray-400'
+                  }`}
+                  aria-label={`Go to block ${index + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Add Block Button */}
             <Button
               onClick={handleSelectBlock}
               size="lg"
             >
               Add Block
             </Button>
+
+            {/* Right Navigation Button */}
+            <button
+              onClick={navigateRight}
+              className="transition-opacity hover:opacity-100 opacity-70 p-2"
+              aria-label="Next block"
+            >
+              <IconChevronRight className="w-8 h-8 text-gray-600" stroke={2.5} />
+            </button>
           </motion.div>
         </motion.div>
       </div>
