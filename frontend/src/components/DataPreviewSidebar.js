@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 const DataPreviewSidebar = ({ blocks, nodeStyles, isOpen, onToggle }) => {
   const [activeTab, setActiveTab] = useState('json');
 
-  // Preparar datos como se guardarían en BD
+  // Preparar datos como se guardarian en BD
   const prepareForDatabase = () => {
     return {
       version: '1.0',
@@ -26,7 +26,7 @@ const DataPreviewSidebar = ({ blocks, nodeStyles, isOpen, onToggle }) => {
   // Formato SQL para INSERT
   const generateSQLInsert = () => {
     const data = prepareForDatabase();
-    return `-- Ejemplo de cómo guardar en MySQL/PostgreSQL
+    return `-- Ejemplo de como guardar en MySQL/PostgreSQL
 -- Tabla: page_content
 
 INSERT INTO page_content (
@@ -53,7 +53,7 @@ ${blocks.map((block, index) =>
 
   // Schema recomendado
   const getDatabaseSchema = () => {
-    return `-- OPCIÓN 1: Guardar todo en JSON (como Elementor)
+    return `-- OPCION 1: Guardar todo en JSON (como Elementor)
 CREATE TABLE page_content (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   page_id BIGINT NOT NULL,
@@ -64,7 +64,7 @@ CREATE TABLE page_content (
   INDEX idx_page_id (page_id)
 );
 
--- OPCIÓN 2: Bloques separados (más flexible)
+-- OPCION 2: Bloques separados (mas flexible)
 CREATE TABLE page_blocks (
   id BIGINT PRIMARY KEY AUTO_INCREMENT,
   page_id BIGINT NOT NULL,
@@ -87,13 +87,13 @@ CREATE TABLE page_blocks (
         return (
           <div className="space-y-4">
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">=æ Estructura de Datos</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">[DATA] Estructura de Datos</h3>
               <pre className="bg-gray-900 text-green-400 p-4 rounded-lg text-xs overflow-x-auto font-mono">
                 {JSON.stringify(dbData, null, 2)}
               </pre>
             </div>
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-xs">
-              <p className="font-semibold text-blue-900 mb-1">=¡ Cómo se guarda:</p>
+              <p className="font-semibold text-blue-900 mb-1">[INFO] Como se guarda:</p>
               <p className="text-blue-800">
                 Este JSON se guarda como un solo campo LONGTEXT o JSON en la base de datos,
                 similar a como Elementor/Divi lo hacen.
@@ -106,7 +106,7 @@ CREATE TABLE page_blocks (
         return (
           <div className="space-y-4">
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">=¾ Query SQL de Inserción</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">[SQL] Query de Insercion</h3>
               <pre className="bg-gray-900 text-yellow-400 p-4 rounded-lg text-xs overflow-x-auto font-mono">
                 {generateSQLInsert()}
               </pre>
@@ -118,17 +118,17 @@ CREATE TABLE page_blocks (
         return (
           <div className="space-y-4">
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">=Ã Schema de Base de Datos</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">[DB] Schema de Base de Datos</h3>
               <pre className="bg-gray-900 text-cyan-400 p-4 rounded-lg text-xs overflow-x-auto font-mono">
                 {getDatabaseSchema()}
               </pre>
             </div>
             <div className="bg-purple-50 border border-purple-200 rounded-lg p-3 text-xs space-y-2">
-              <p className="font-semibold text-purple-900">=Ú Comparación con Elementor/Divi:</p>
+              <p className="font-semibold text-purple-900">[CMP] Comparacion con Elementor/Divi:</p>
               <ul className="text-purple-800 space-y-1 list-disc list-inside">
                 <li><strong>Elementor:</strong> Guarda en wp_postmeta como _elementor_data (JSON serializado)</li>
                 <li><strong>Divi:</strong> Guarda en post_content (shortcodes) + opciones separadas</li>
-                <li><strong>Esta app:</strong> JSON puro en campo dedicado (más limpio y rápido)</li>
+                <li><strong>Esta app:</strong> JSON puro en campo dedicado (mas limpio y rapido)</li>
               </ul>
             </div>
           </div>
@@ -151,7 +151,7 @@ CREATE TABLE page_blocks (
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">=Ê Tipos de Bloques</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">[TYPES] Tipos de Bloques</h3>
               <div className="space-y-2">
                 {Array.from(new Set(blocks.map(b => b.type))).map(type => {
                   const count = blocks.filter(b => b.type === type).length;
@@ -166,13 +166,13 @@ CREATE TABLE page_blocks (
             </div>
 
             <div>
-              <h3 className="text-sm font-semibold text-gray-700 mb-2">=¾ Tamaño estimado</h3>
+              <h3 className="text-sm font-semibold text-gray-700 mb-2">[SIZE] Tamano estimado</h3>
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
                 <div className="text-2xl font-bold text-yellow-700">
                   {(JSON.stringify(dbData).length / 1024).toFixed(2)} KB
                 </div>
                 <div className="text-xs text-yellow-600 mt-1">
-                  Tamaño en base de datos
+                  Tamano en base de datos
                 </div>
               </div>
             </div>
@@ -208,17 +208,17 @@ CREATE TABLE page_blocks (
       >
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4">
-          <h2 className="text-lg font-bold">=¾ Vista de Datos</h2>
-          <p className="text-xs opacity-90 mt-1">Cómo se guarda tu contenido</p>
+          <h2 className="text-lg font-bold">[DATA] Vista de Datos</h2>
+          <p className="text-xs opacity-90 mt-1">Como se guarda tu contenido</p>
         </div>
 
         {/* Tabs */}
         <div className="flex border-b border-gray-200 bg-gray-50">
           {[
-            { id: 'json', label: 'JSON', icon: '=Ä' },
-            { id: 'sql', label: 'SQL', icon: '=¾' },
-            { id: 'schema', label: 'Schema', icon: '=Ã' },
-            { id: 'stats', label: 'Stats', icon: '=Ê' },
+            { id: 'json', label: 'JSON' },
+            { id: 'sql', label: 'SQL' },
+            { id: 'schema', label: 'Schema' },
+            { id: 'stats', label: 'Stats' },
           ].map(tab => (
             <button
               key={tab.id}
@@ -229,7 +229,6 @@ CREATE TABLE page_blocks (
                   : 'text-gray-600 hover:bg-gray-100'
               }`}
             >
-              <span className="mr-1">{tab.icon}</span>
               {tab.label}
             </button>
           ))}
@@ -245,11 +244,11 @@ CREATE TABLE page_blocks (
           <button
             onClick={() => {
               navigator.clipboard.writeText(JSON.stringify(prepareForDatabase(), null, 2));
-              alert('¡JSON copiado al portapapeles!');
+              alert('JSON copiado al portapapeles!');
             }}
             className="w-full bg-blue-500 text-white py-2 rounded-lg text-sm font-semibold hover:bg-blue-600 transition-colors"
           >
-            =Ë Copiar JSON
+            [COPY] Copiar JSON
           </button>
         </div>
       </motion.div>

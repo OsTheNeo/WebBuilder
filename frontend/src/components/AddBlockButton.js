@@ -8,43 +8,43 @@ const AddBlockButton = ({ onAddBlock, position = 'between' }) => {
     {
       id: 'text-single',
       name: 'Texto 1 Columna',
-      icon: '📝',
+      icon: '[ T ]',
       description: 'Párrafo simple'
     },
     {
       id: 'text-two-column',
       name: 'Texto 2 Columnas',
-      icon: '📰',
+      icon: '[T|T]',
       description: 'Texto en dos columnas'
     },
     {
       id: 'image-full',
       name: 'Imagen Completa',
-      icon: '🖼️',
+      icon: '[IMG]',
       description: 'Imagen ancho completo'
     },
     {
       id: 'image-text-left',
       name: 'Imagen + Texto',
-      icon: '◧',
+      icon: '[I][T]',
       description: 'Imagen izquierda, texto derecha'
     },
     {
       id: 'image-text-right',
       name: 'Texto + Imagen',
-      icon: '◨',
+      icon: '[T][I]',
       description: 'Texto izquierda, imagen derecha'
     },
     {
       id: 'heading',
       name: 'Título',
-      icon: 'H',
+      icon: '< H >',
       description: 'Encabezado de sección'
     },
     {
       id: 'quote',
       name: 'Cita',
-      icon: '💬',
+      icon: '" "',
       description: 'Bloque de cita'
     },
   ];

@@ -173,14 +173,14 @@ const EditorPage = () => {
 
         {/* Helper info */}
         <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h3 className="font-semibold text-blue-900 mb-2">💡 Consejos:</h3>
+          <h3 className="font-semibold text-blue-900 mb-2">[TIP] Consejos:</h3>
           <ul className="text-sm text-blue-800 space-y-1">
-            <li>• Pasa el mouse entre bloques para ver el botón <strong>+</strong></li>
-            <li>• Pasa el mouse sobre un bloque para ver el botón de eliminar</li>
+            <li>• Pasa el mouse entre bloques para ver el boton <strong>+</strong></li>
+            <li>• Pasa el mouse sobre un bloque para ver el boton de eliminar</li>
             <li>• Haz clic en cualquier texto para editarlo</li>
             <li>• Usa la barra de herramientas para dar formato al texto</li>
-            <li>• Haz clic en "Cambiar Imagen" para reemplazar imágenes</li>
-            <li>• Haz clic en el botón de la derecha para ver cómo se guarda tu contenido</li>
+            <li>• Haz clic en "Cambiar Imagen" para reemplazar imagenes</li>
+            <li>• Haz clic en el boton de la derecha para ver como se guarda tu contenido</li>
           </ul>
         </div>
       </div>
