@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconX, IconUpload, IconPalette, IconTypography } from '@tabler/icons-react';
 import BlockSelector from './BlockSelector';
+import { getBlockById } from '../data/blocksData';
+import { getBlockComponent } from '../blocks';
 
 const ProjectConfigModal = ({ isOpen, onClose, config, onSave }) => {
   const [formData, setFormData] = useState(config);
@@ -277,15 +279,28 @@ const ProjectConfigModal = ({ isOpen, onClose, config, onSave }) => {
                       </div>
 
                       {formData.defaultHeader ? (
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center justify-between">
-                          <span className="text-sm font-medium text-blue-800">
-                            Selected: {formData.defaultHeader}
-                          </span>
+                        <div className="space-y-3">
+                          {/* Visual Preview */}
+                          <div className="border-2 border-blue-200 rounded-lg overflow-hidden">
+                            {(() => {
+                              const BlockComponent = getBlockComponent(formData.defaultHeader);
+                              return BlockComponent ? (
+                                <BlockComponent data={{}} />
+                              ) : (
+                                <div className="bg-blue-50 p-4 text-center">
+                                  <p className="text-sm font-medium text-blue-800">
+                                    {formData.defaultHeader}
+                                  </p>
+                                </div>
+                              );
+                            })()}
+                          </div>
+                          {/* Change Button */}
                           <button
                             onClick={() => setHeaderSelectorOpen(true)}
-                            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                            className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors text-sm"
                           >
-                            Change
+                            Change Header
                           </button>
                         </div>
                       ) : (
@@ -329,15 +344,28 @@ const ProjectConfigModal = ({ isOpen, onClose, config, onSave }) => {
                       </div>
 
                       {formData.defaultFooter ? (
-                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-center justify-between">
-                          <span className="text-sm font-medium text-blue-800">
-                            Selected: {formData.defaultFooter}
-                          </span>
+                        <div className="space-y-3">
+                          {/* Visual Preview */}
+                          <div className="border-2 border-blue-200 rounded-lg overflow-hidden">
+                            {(() => {
+                              const BlockComponent = getBlockComponent(formData.defaultFooter);
+                              return BlockComponent ? (
+                                <BlockComponent data={{}} />
+                              ) : (
+                                <div className="bg-blue-50 p-4 text-center">
+                                  <p className="text-sm font-medium text-blue-800">
+                                    {formData.defaultFooter}
+                                  </p>
+                                </div>
+                              );
+                            })()}
+                          </div>
+                          {/* Change Button */}
                           <button
                             onClick={() => setFooterSelectorOpen(true)}
-                            className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                            className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors text-sm"
                           >
-                            Change
+                            Change Footer
                           </button>
                         </div>
                       ) : (

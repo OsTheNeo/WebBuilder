@@ -139,7 +139,7 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
               return (
                 <motion.div
                   key={block.id}
-                  className="flex-shrink-0 w-full flex items-start justify-center py-2 snap-center"
+                  className="flex-shrink-0 w-full flex items-center justify-center py-2 snap-center min-h-[400px]"
                   initial={{ opacity: 0.7 }}
                   animate={{ opacity: currentIndex === index ? 1 : 0.5 }}
                   transition={{ duration: 0.3 }}
@@ -151,7 +151,6 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
                       } cursor-pointer`}
                       onClick={() => setCurrentIndex(index)}
                       whileHover={{ scale: 1.02 }}
-                      style={{ minHeight: 'auto' }}
                     >
                       {BlockComponent ? (
                         <BlockComponent data={{}} />
