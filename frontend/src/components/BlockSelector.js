@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { categories, getColorShades } from '../data/blocksData';
 import { getBlockComponent } from '../blocks';
@@ -21,7 +21,6 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
   const availableCategories = getAvailableCategories();
   const [selectedCategory, setSelectedCategory] = useState(availableCategories[0]?.id || 'hero');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollContainerRef = useRef(null);
 
   // Get all blocks or filtered by category
   const getFilteredBlocks = () => {
@@ -35,28 +34,15 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
 
   const filteredBlocks = getFilteredBlocks();
 
-  // Handle scroll navigation
-  const scrollToBlock = (index) => {
-    if (scrollContainerRef.current) {
-      const blockWidth = scrollContainerRef.current.clientWidth;
-      scrollContainerRef.current.scrollTo({
-        left: blockWidth * index,
-        behavior: 'smooth'
-      });
-    }
-  };
-
   // Navigate left/right with infinite loop
   const navigateLeft = useCallback(() => {
     const newIndex = currentIndex === 0 ? filteredBlocks.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
-    scrollToBlock(newIndex);
   }, [currentIndex, filteredBlocks.length]);
 
   const navigateRight = useCallback(() => {
     const newIndex = currentIndex === filteredBlocks.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-    scrollToBlock(newIndex);
   }, [currentIndex, filteredBlocks.length]);
 
   const handleSelectBlock = useCallback(() => {
@@ -121,35 +107,28 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
           className="relative w-full"
         >
           {/* Blocks Carousel */}
-          <div
-            ref={scrollContainerRef}
-            className="flex overflow-x-hidden scroll-smooth snap-x snap-mandatory w-full"
-            style={{
-              scrollSnapType: 'x mandatory',
-              minHeight: 'fit-content'
-            }}
-          >
-            {filteredBlocks.map((block, index) => {
-              const colorShades = getColorShades(block.color);
-              const shadeIndex = Math.min(index % colorShades.length, colorShades.length - 1);
-              const bgColor = colorShades[shadeIndex];
+          <div className="w-full">
+            {(() => {
+              const block = filteredBlocks[currentIndex];
+              if (!block) return null;
 
+              const colorShades = getColorShades(block.color);
+              const shadeIndex = Math.min(currentIndex % colorShades.length, colorShades.length - 1);
+              const bgColor = colorShades[shadeIndex];
               const BlockComponent = getBlockComponent(block.id);
 
               return (
                 <motion.div
                   key={block.id}
-                  className="flex-shrink-0 w-full flex items-center justify-center py-2 snap-center"
-                  initial={{ opacity: 0.7 }}
-                  animate={{ opacity: currentIndex === index ? 1 : 0.5 }}
+                  className="w-full flex justify-center py-2"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
                 >
                   <div className="w-full px-4">
                     <motion.div
-                      className={`w-full rounded-lg shadow-xl overflow-hidden border-4 ${
-                        currentIndex === index ? 'border-blue-500' : 'border-gray-300'
-                      } cursor-pointer`}
-                      onClick={() => setCurrentIndex(index)}
+                      className="w-full rounded-lg shadow-xl overflow-hidden border-4 border-blue-500"
                       whileHover={{ scale: 1.02 }}
                     >
                       {BlockComponent ? (
@@ -166,7 +145,7 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
                   </div>
                 </motion.div>
               );
-            })}
+            })()}
           </div>
 
           {/* Action Buttons with Navigation */}
@@ -199,10 +178,7 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
               {filteredBlocks.map((_, index) => (
                 <button
                   key={index}
-                  onClick={() => {
-                    setCurrentIndex(index);
-                    scrollToBlock(index);
-                  }}
+                  onClick={() => setCurrentIndex(index)}
                   className={`rounded-full transition-all ${
                     currentIndex === index
                       ? 'w-3 h-3 bg-blue-500'
