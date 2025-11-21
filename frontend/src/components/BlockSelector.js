@@ -120,27 +120,21 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
           transition={{ delay: 0.2 }}
           className="relative w-full"
         >
-          {/* Navigation Buttons - Full height with gradient overlay */}
+          {/* Navigation Buttons - Simple icons overlay */}
           <button
             onClick={navigateLeft}
-            className="absolute left-0 top-0 h-full w-24 z-20 flex items-center justify-start pl-4 transition-opacity hover:opacity-100 opacity-80"
-            style={{
-              background: 'linear-gradient(to right, rgba(55, 65, 81, 0.8), transparent)'
-            }}
+            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 transition-opacity hover:opacity-100 opacity-70"
             aria-label="Previous block"
           >
-            <IconChevronLeft className="w-8 h-8 text-white drop-shadow-lg" stroke={2.5} />
+            <IconChevronLeft className="w-10 h-10 text-gray-600" stroke={2.5} />
           </button>
 
           <button
             onClick={navigateRight}
-            className="absolute right-0 top-0 h-full w-24 z-20 flex items-center justify-end pr-4 transition-opacity hover:opacity-100 opacity-80"
-            style={{
-              background: 'linear-gradient(to left, rgba(55, 65, 81, 0.8), transparent)'
-            }}
+            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 transition-opacity hover:opacity-100 opacity-70"
             aria-label="Next block"
           >
-            <IconChevronRight className="w-8 h-8 text-white drop-shadow-lg" stroke={2.5} />
+            <IconChevronRight className="w-10 h-10 text-gray-600" stroke={2.5} />
           </button>
 
           {/* Blocks Carousel */}
@@ -159,12 +153,12 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
               return (
                 <motion.div
                   key={block.id}
-                  className="flex-shrink-0 w-full flex items-center justify-center py-8 snap-center"
+                  className="flex-shrink-0 w-full flex items-center justify-center py-2 snap-center"
                   initial={{ opacity: 0.7 }}
                   animate={{ opacity: currentIndex === index ? 1 : 0.5 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-full max-w-7xl px-4" style={{ transform: 'scale(0.85)' }}>
+                  <div className="w-full px-4">
                     <motion.div
                       className={`w-full rounded-lg shadow-xl overflow-hidden border-4 ${
                         currentIndex === index ? 'border-blue-500' : 'border-gray-300'
