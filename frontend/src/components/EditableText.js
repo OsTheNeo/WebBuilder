@@ -81,6 +81,7 @@ const EditableText = ({
       textAlign: /^text-(left|center|right|justify)$/,
       listStyle: /^list-(disc|decimal|none)$/,
       padding: /^pl-\d+$/,
+      columns: /^columns-\d+$/,
     };
 
     // Handle toggle classes (italic, underline, bold)

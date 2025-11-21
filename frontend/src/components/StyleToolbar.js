@@ -1,5 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import {
+  FontFamilyIcon,
+  TextColorIcon,
+  BackgroundColorIcon,
+  DropdownIcon,
+  AlignLeftIcon,
+  AlignCenterIcon,
+  AlignRightIcon,
+  AlignJustifyIcon,
+  IndentNoneIcon,
+  IndentSmallIcon,
+  IndentMediumIcon,
+  IndentLargeIcon,
+  ResetIcon,
+  ColumnsIcon
+} from './ToolbarIcons';
 
 const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -64,11 +80,7 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
   const styleGroups = {
     fontFamily: {
       label: 'Tipografía',
-      icon: (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h7" />
-        </svg>
-      ),
+      icon: <FontFamilyIcon />,
       options: [
         { name: 'Sans Serif', class: 'font-sans' },
         { name: 'Serif', class: 'font-serif' },
@@ -96,24 +108,24 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
     },
     textColor: {
       label: 'Color',
-      icon: (
-        <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M9 3L5 21h2l1-3h8l1 3h2L15 3H9zm1.5 3h3l2.5 10h-8.5l2.5-10z"/>
-          <rect x="4" y="19" width="16" height="2" fill="currentColor"/>
-        </svg>
-      ),
+      icon: <TextColorIcon />,
       isColorPicker: true,
     },
     bgColor: {
       label: 'Fondo',
-      icon: (
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
-          <path d="M7 7h10v10H7z"/>
-        </svg>
-      ),
+      icon: <BackgroundColorIcon />,
       isColorPicker: true,
       isBackground: true,
+    },
+    columns: {
+      label: 'Columnas',
+      icon: <ColumnsIcon />,
+      options: [
+        { name: '1 Columna', class: 'columns-1' },
+        { name: '2 Columnas', class: 'columns-2' },
+        { name: '3 Columnas', class: 'columns-3' },
+        { name: '4 Columnas', class: 'columns-4' },
+      ],
     },
   };
 
@@ -261,9 +273,7 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
                   ) : (
                     group.icon
                   )}
-                  <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </svg>
+                  <DropdownIcon />
                 </button>
 
                 <AnimatePresence>
@@ -303,36 +313,28 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
                 className="px-2.5 py-1.5 hover:bg-gray-100 rounded transition-colors"
                 title="Alinear a la izquierda"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h10M4 18h16" />
-                </svg>
+                <AlignLeftIcon />
               </button>
               <button
                 onClick={() => handleStyleClick('text-center')}
                 className="px-2.5 py-1.5 hover:bg-gray-100 rounded transition-colors"
                 title="Centrar"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M7 12h10M4 18h16" />
-                </svg>
+                <AlignCenterIcon />
               </button>
               <button
                 onClick={() => handleStyleClick('text-right')}
                 className="px-2.5 py-1.5 hover:bg-gray-100 rounded transition-colors"
                 title="Alinear a la derecha"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M10 12h10M4 18h16" />
-                </svg>
+                <AlignRightIcon />
               </button>
               <button
                 onClick={() => handleStyleClick('text-justify')}
                 className="px-2.5 py-1.5 hover:bg-gray-100 rounded transition-colors"
                 title="Justificar"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                </svg>
+                <AlignJustifyIcon />
               </button>
             </div>
 
@@ -343,36 +345,28 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
                 className="px-2.5 py-1.5 hover:bg-gray-100 rounded transition-colors"
                 title="Sin sangría"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-                </svg>
+                <IndentNoneIcon />
               </button>
               <button
                 onClick={() => handleStyleClick('pl-4')}
                 className="px-2.5 py-1.5 hover:bg-gray-100 rounded transition-colors"
                 title="Sangría pequeña"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
+                <IndentSmallIcon />
               </button>
               <button
                 onClick={() => handleStyleClick('pl-8')}
                 className="px-2.5 py-1.5 hover:bg-gray-100 rounded transition-colors"
                 title="Sangría mediana"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
-                </svg>
+                <IndentMediumIcon />
               </button>
               <button
                 onClick={() => handleStyleClick('pl-12')}
                 className="px-2.5 py-1.5 hover:bg-gray-100 rounded transition-colors"
                 title="Sangría grande"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 5l7 7-7 7M9 5l7 7-7 7M1 5l7 7-7 7" />
-                </svg>
+                <IndentLargeIcon />
               </button>
             </div>
 
@@ -383,9 +377,7 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
                 className="px-2.5 py-1.5 hover:bg-red-50 text-red-600 rounded transition-colors"
                 title="Resetear estilos"
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                </svg>
+                <ResetIcon />
               </button>
             </div>
           </div>

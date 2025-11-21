@@ -37,6 +37,8 @@ module.exports = {
     'text-4xl', 'text-5xl', 'text-6xl', 'text-7xl', 'text-8xl', 'text-9xl',
     // Font families
     'font-sans', 'font-serif', 'font-mono',
+    // Columns
+    'columns-1', 'columns-2', 'columns-3', 'columns-4',
     // All text colors - using pattern matching
     {
       pattern: /^text-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(50|100|200|300|400|500|600|700|800|900|950)$/,
