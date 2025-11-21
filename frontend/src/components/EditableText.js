@@ -64,30 +64,48 @@ const EditableText = ({
 
     // Define class categories to avoid conflicts
     const classCategories = {
-      textColor: /^text-(gray|blue|red|green|purple|orange|yellow|indigo|pink|teal)-\d+$/,
+      textColor: /^text-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|white|black)-(\d+)?$/,
       fontSize: /^text-(xs|sm|base|lg|xl|2xl|3xl|4xl|5xl|6xl|7xl|8xl|9xl)$/,
       fontWeight: /^font-(thin|extralight|light|normal|medium|semibold|bold|extrabold|black)$/,
-      bgColor: /^bg-(gray|blue|red|green|purple|orange|yellow|indigo|pink|teal|white)-\d+$/,
+      bgColor: /^bg-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose|white|black)-(\d+)?$/,
       fontFamily: /^font-(sans|serif|mono)$/,
+      textAlign: /^text-(left|center|right|justify)$/,
+      listStyle: /^list-(disc|decimal|none)$/,
+      padding: /^pl-\d+$/,
     };
 
-    // Identify which category the new class belongs to
-    let categoryToRemove = null;
-    for (const [category, regex] of Object.entries(classCategories)) {
-      if (regex.test(styleClass)) {
-        categoryToRemove = regex;
-        break;
+    // Handle toggle classes (italic, underline, bold)
+    const toggleClasses = ['italic', 'underline', 'font-bold'];
+    if (toggleClasses.includes(styleClass)) {
+      // Toggle the class
+      if (currentClasses.includes(styleClass)) {
+        currentClasses = currentClasses.filter(c => c !== styleClass);
+      } else {
+        // For bold, remove other font-weight classes first
+        if (styleClass === 'font-bold') {
+          currentClasses = currentClasses.filter(c => !classCategories.fontWeight.test(c));
+        }
+        currentClasses.push(styleClass);
       }
-    }
+    } else {
+      // Identify which category the new class belongs to
+      let categoryToRemove = null;
+      for (const [category, regex] of Object.entries(classCategories)) {
+        if (regex.test(styleClass)) {
+          categoryToRemove = regex;
+          break;
+        }
+      }
 
-    // Remove old classes from the same category
-    if (categoryToRemove) {
-      currentClasses = currentClasses.filter(c => !categoryToRemove.test(c));
-    }
+      // Remove old classes from the same category
+      if (categoryToRemove) {
+        currentClasses = currentClasses.filter(c => !categoryToRemove.test(c));
+      }
 
-    // Add the new class if it's not empty
-    if (styleClass) {
-      currentClasses.push(styleClass);
+      // Add the new class if it's not empty
+      if (styleClass) {
+        currentClasses.push(styleClass);
+      }
     }
 
     const newClasses = currentClasses.join(' ');
