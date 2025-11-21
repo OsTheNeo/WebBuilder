@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { IconArrowRight, IconArrowLeft, IconCopy, IconCheck, IconAlertCircle } from '@tabler/icons-react';
+import { IconArrowRight, IconArrowLeft, IconCopy, IconCheck, IconAlertCircle, IconEye, IconEyeOff } from '@tabler/icons-react';
 import { Button } from '../ui/button';
 import { htmlToJson, formatJson, validateHtml } from './utils/htmlToJson';
 import { jsonToHtml, validateJsonStructure } from './utils/jsonToHtml';
@@ -11,6 +11,7 @@ const HtmlJsonConverter = () => {
   const [error, setError] = useState(null);
   const [copiedHtml, setCopiedHtml] = useState(false);
   const [copiedJson, setCopiedJson] = useState(false);
+  const [showPreview, setShowPreview] = useState(true);
 
   // Convert HTML to JSON
   const handleHtmlToJson = useCallback(() => {
@@ -115,17 +116,37 @@ const HtmlJsonConverter = () => {
       </div>
 
       {/* Actions */}
-      <div className="flex gap-3 mb-4">
-        <Button onClick={loadExample} variant="outline" size="sm">
-          Load Example
-        </Button>
-        <Button onClick={handleHtmlToJson} size="sm" className="flex items-center gap-2">
-          <IconArrowRight className="w-4 h-4" />
-          HTML → JSON
-        </Button>
-        <Button onClick={handleJsonToHtml} size="sm" className="flex items-center gap-2">
-          <IconArrowLeft className="w-4 h-4" />
-          JSON → HTML
+      <div className="flex gap-3 mb-4 justify-between items-center">
+        <div className="flex gap-3">
+          <Button onClick={loadExample} variant="outline" size="sm">
+            Load Example
+          </Button>
+          <Button onClick={handleHtmlToJson} size="sm" className="flex items-center gap-2">
+            <IconArrowRight className="w-4 h-4" />
+            HTML → JSON
+          </Button>
+          <Button onClick={handleJsonToHtml} size="sm" className="flex items-center gap-2">
+            <IconArrowLeft className="w-4 h-4" />
+            JSON → HTML
+          </Button>
+        </div>
+        <Button
+          onClick={() => setShowPreview(!showPreview)}
+          variant="outline"
+          size="sm"
+          className="flex items-center gap-2"
+        >
+          {showPreview ? (
+            <>
+              <IconEyeOff className="w-4 h-4" />
+              Hide Preview
+            </>
+          ) : (
+            <>
+              <IconEye className="w-4 h-4" />
+              Show Preview
+            </>
+          )}
         </Button>
       </div>
 
@@ -144,8 +165,8 @@ const HtmlJsonConverter = () => {
         </motion.div>
       )}
 
-      {/* Two-Column Layout */}
-      <div className="flex-1 grid grid-cols-2 gap-4 min-h-0">
+      {/* Three-Column Layout */}
+      <div className={`flex-1 grid ${showPreview ? 'grid-cols-3' : 'grid-cols-2'} gap-4 min-h-0`}>
         {/* HTML Input Panel */}
         <div className="flex flex-col border border-gray-200 rounded-lg overflow-hidden bg-white">
           <div className="px-4 py-3 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
@@ -171,7 +192,7 @@ const HtmlJsonConverter = () => {
             value={htmlInput}
             onChange={(e) => setHtmlInput(e.target.value)}
             placeholder="Paste your HTML here..."
-            className="flex-1 p-4 font-mono text-sm resize-none focus:outline-none"
+            className="flex-1 p-4 font-mono text-sm resize-none focus:outline-none min-h-[400px]"
             spellCheck={false}
           />
           <div className="px-4 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
@@ -204,17 +225,53 @@ const HtmlJsonConverter = () => {
             value={jsonOutput}
             onChange={(e) => setJsonOutput(e.target.value)}
             placeholder="JSON structure will appear here..."
-            className="flex-1 p-4 font-mono text-sm resize-none focus:outline-none"
+            className="flex-1 p-4 font-mono text-sm resize-none focus:outline-none min-h-[400px]"
             spellCheck={false}
           />
           <div className="px-4 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
             {jsonOutput.length} characters | {jsonOutput.split('\n').length} lines
           </div>
         </div>
+
+        {/* HTML Preview Panel */}
+        {showPreview && (
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3 }}
+            className="flex flex-col border border-gray-200 rounded-lg overflow-hidden bg-white"
+          >
+            <div className="px-4 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <IconEye className="w-4 h-4" />
+                <span className="text-sm font-semibold">HTML Preview</span>
+              </div>
+            </div>
+            <div className="flex-1 p-4 overflow-auto bg-gray-50 min-h-[400px]">
+              {htmlInput ? (
+                <div
+                  className="prose prose-sm max-w-none"
+                  dangerouslySetInnerHTML={{ __html: htmlInput }}
+                />
+              ) : (
+                <div className="h-full flex items-center justify-center">
+                  <p className="text-sm text-gray-400 text-center">
+                    HTML preview will appear here
+                    <br />
+                    <span className="text-xs">Paste HTML code to see the rendered output</span>
+                  </p>
+                </div>
+              )}
+            </div>
+            <div className="px-4 py-2 bg-gray-50 border-t border-gray-200 text-xs text-gray-500">
+              Live Preview
+            </div>
+          </motion.div>
+        )}
       </div>
 
       {/* Info Cards */}
-      <div className="mt-4 grid grid-cols-2 gap-4">
+      <div className={`mt-4 grid ${showPreview ? 'grid-cols-3' : 'grid-cols-2'} gap-4`}>
         <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <h3 className="text-sm font-semibold text-blue-900 mb-2">HTML → JSON</h3>
           <p className="text-xs text-blue-700">
@@ -227,6 +284,14 @@ const HtmlJsonConverter = () => {
             Reconstructs the original HTML from JSON structure maintaining exact formatting and attributes.
           </p>
         </div>
+        {showPreview && (
+          <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+            <h3 className="text-sm font-semibold text-green-900 mb-2">Live Preview</h3>
+            <p className="text-xs text-green-700">
+              See your HTML rendered in real-time. Changes to HTML input are instantly reflected in the preview.
+            </p>
+          </div>
+        )}
       </div>
     </div>
   );
