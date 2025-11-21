@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { categories, getColorShades } from '../data/blocksData';
 import { getBlockComponent } from '../blocks';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { IconChevronLeft, IconChevronRight, IconX } from '@tabler/icons-react';
 import { Button } from './ui/button';
 
 const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories, excludeCategories }) => {
@@ -21,6 +21,11 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
   const availableCategories = getAvailableCategories();
   const [selectedCategory, setSelectedCategory] = useState(availableCategories[0]?.id || 'hero');
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  // Scroll to top when currentIndex changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentIndex]);
 
   // Get all blocks or filtered by category
   const getFilteredBlocks = () => {
@@ -65,14 +70,38 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
   }, [navigateLeft, navigateRight, handleSelectBlock, onClose]);
 
   return (
-    <motion.div
-      initial={{ height: 0, opacity: 0 }}
-      animate={{ height: 'auto', opacity: 1 }}
-      exit={{ height: 0, opacity: 0 }}
-      transition={{ duration: 0.4, ease: 'easeInOut' }}
-      className="w-full bg-gradient-to-b from-gray-50 to-white border-y-4 border-blue-500 overflow-hidden"
-    >
-      <div className="py-8 px-4">
+    <>
+      {/* Overlay */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.5 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        className="fixed inset-0 bg-black z-40"
+        onClick={onClose}
+      />
+
+      {/* Drawer */}
+      <motion.div
+        initial={{ x: '100%' }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%' }}
+        transition={{ duration: 0.4, ease: 'easeInOut' }}
+        className="fixed top-0 right-0 h-full w-[70%] bg-gradient-to-b from-gray-50 to-white shadow-2xl z-50 overflow-y-auto"
+      >
+        {/* Drawer Header */}
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center z-10">
+          <h2 className="text-2xl font-bold text-gray-800">Seleccionar Bloque</h2>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg transition-all hover:bg-gray-100 text-gray-600 hover:text-gray-800"
+            aria-label="Cerrar"
+          >
+            <IconX className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="py-8 px-6">
         {/* Category Filters - Hidden if hideCategories is true */}
         {!hideCategories && (
           <motion.div
@@ -207,8 +236,9 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
             </button>
           </motion.div>
         </motion.div>
-      </div>
-    </motion.div>
+        </div>
+      </motion.div>
+    </>
   );
 };
 

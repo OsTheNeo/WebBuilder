@@ -1,16 +1,34 @@
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import BlockSelector from '../components/BlockSelector';
-import { IconHome } from '@tabler/icons-react';
+import { IconHome, IconPlus } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
+import { getBlockComponent } from '../blocks';
 
 const SliderPage = () => {
   const navigate = useNavigate();
   const [selectedBlock, setSelectedBlock] = useState(null);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+  // Load saved block from localStorage on mount
+  useEffect(() => {
+    const savedBlockStr = localStorage.getItem('sliderSelectedBlock');
+    if (savedBlockStr) {
+      try {
+        const savedBlock = JSON.parse(savedBlockStr);
+        setSelectedBlock(savedBlock);
+      } catch (e) {
+        console.error('Error loading saved block:', e);
+      }
+    }
+  }, []);
 
   const handleSelectBlock = (block) => {
     setSelectedBlock(block);
-    console.log('Selected block:', block);
+    // Auto-save to localStorage
+    localStorage.setItem('sliderSelectedBlock', JSON.stringify(block));
+    console.log('Selected and saved block:', block);
+    setIsDrawerOpen(false);
   };
 
   return (
@@ -55,53 +73,85 @@ const SliderPage = () => {
           transition={{ delay: 0.1 }}
           className="bg-white rounded-xl shadow-lg p-8"
         >
-          <div className="mb-6">
-            <h2 className="text-xl font-semibold text-gray-800 mb-2">
-              Explora los Headers Disponibles
-            </h2>
-            <p className="text-gray-600">
-              Usa las flechas o el teclado (← →) para navegar. Presiona Enter para seleccionar.
-            </p>
-          </div>
-
-          {/* Block Selector - Filtered for headers only */}
-          <div className="mt-8">
-            <BlockSelector
-              onSelectBlock={handleSelectBlock}
-              onClose={() => console.log('Selector closed')}
-              filterCategory="headers"
-              hideCategories={false}
-            />
-          </div>
-
-          {/* Selected Block Info */}
-          {selectedBlock && (
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              className="mt-8 bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-6"
-            >
-              <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                Bloque Seleccionado
-              </h3>
-              <div className="space-y-2">
-                <p className="text-gray-700">
-                  <span className="font-medium">Nombre:</span> {selectedBlock.name}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">ID:</span> {selectedBlock.id}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">Categoría:</span> {selectedBlock.categoryName}
-                </p>
-                <p className="text-gray-700">
-                  <span className="font-medium">Altura:</span> {selectedBlock.height}
-                </p>
+          {/* Selected Block Preview */}
+          {selectedBlock ? (
+            <div className="space-y-4">
+              <div className="flex justify-between items-center">
+                <h2 className="text-xl font-semibold text-gray-800">
+                  Bloque Seleccionado
+                </h2>
+                <button
+                  onClick={() => setIsDrawerOpen(true)}
+                  className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <IconPlus className="w-5 h-5" />
+                  Cambiar Bloque
+                </button>
               </div>
-            </motion.div>
+
+              {/* Visual Preview */}
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="border-2 border-blue-200 rounded-lg overflow-hidden shadow-lg"
+              >
+                {(() => {
+                  const BlockComponent = getBlockComponent(selectedBlock.id);
+                  return BlockComponent ? (
+                    <BlockComponent data={{}} />
+                  ) : (
+                    <div className="bg-blue-50 p-8 text-center">
+                      <p className="text-lg font-medium text-blue-800">
+                        {selectedBlock.name}
+                      </p>
+                    </div>
+                  );
+                })()}
+              </motion.div>
+
+              {/* Block Info */}
+              <div className="bg-gray-50 rounded-lg p-4 grid grid-cols-2 gap-4">
+                <div>
+                  <p className="text-sm text-gray-500">Nombre</p>
+                  <p className="font-medium text-gray-800">{selectedBlock.name}</p>
+                </div>
+                <div>
+                  <p className="text-sm text-gray-500">Categoría</p>
+                  <p className="font-medium text-gray-800">{selectedBlock.categoryName}</p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+                No hay bloque seleccionado
+              </h2>
+              <p className="text-gray-600 mb-6">
+                Selecciona un header para comenzar
+              </p>
+              <button
+                onClick={() => setIsDrawerOpen(true)}
+                className="px-6 py-3 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center gap-2 mx-auto"
+              >
+                <IconPlus className="w-5 h-5" />
+                Seleccionar Bloque
+              </button>
+            </div>
           )}
         </motion.div>
       </div>
+
+      {/* Block Selector Drawer */}
+      <AnimatePresence>
+        {isDrawerOpen && (
+          <BlockSelector
+            onSelectBlock={handleSelectBlock}
+            onClose={() => setIsDrawerOpen(false)}
+            filterCategory="headers"
+            hideCategories={false}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
