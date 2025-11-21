@@ -118,33 +118,35 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="relative"
+          className="relative w-full"
         >
-          {/* Navigation Buttons - Floating over carousel */}
-          <Button
+          {/* Navigation Buttons - Full height with gradient overlay */}
+          <button
             onClick={navigateLeft}
-            variant="outline"
-            size="icon"
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full h-14 w-14 shadow-2xl hover:scale-110 transition-transform"
+            className="absolute left-0 top-0 h-full w-24 z-20 flex items-center justify-start pl-4 transition-opacity hover:opacity-100 opacity-80"
+            style={{
+              background: 'linear-gradient(to right, rgba(55, 65, 81, 0.8), transparent)'
+            }}
             aria-label="Previous block"
           >
-            <IconChevronLeft className="w-7 h-7" stroke={2.5} />
-          </Button>
+            <IconChevronLeft className="w-8 h-8 text-white drop-shadow-lg" stroke={2.5} />
+          </button>
 
-          <Button
+          <button
             onClick={navigateRight}
-            variant="outline"
-            size="icon"
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full h-14 w-14 shadow-2xl hover:scale-110 transition-transform"
+            className="absolute right-0 top-0 h-full w-24 z-20 flex items-center justify-end pr-4 transition-opacity hover:opacity-100 opacity-80"
+            style={{
+              background: 'linear-gradient(to left, rgba(55, 65, 81, 0.8), transparent)'
+            }}
             aria-label="Next block"
           >
-            <IconChevronRight className="w-7 h-7" stroke={2.5} />
-          </Button>
+            <IconChevronRight className="w-8 h-8 text-white drop-shadow-lg" stroke={2.5} />
+          </button>
 
           {/* Blocks Carousel */}
           <div
             ref={scrollContainerRef}
-            className="flex overflow-x-hidden scroll-smooth snap-x snap-mandatory"
+            className="flex overflow-x-hidden scroll-smooth snap-x snap-mandatory w-full"
             style={{ scrollSnapType: 'x mandatory' }}
           >
             {filteredBlocks.map((block, index) => {
@@ -157,12 +159,12 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
               return (
                 <motion.div
                   key={block.id}
-                  className="flex-shrink-0 w-full flex items-center justify-center px-16 py-8 snap-center"
+                  className="flex-shrink-0 w-full flex items-center justify-center py-8 snap-center"
                   initial={{ opacity: 0.7 }}
                   animate={{ opacity: currentIndex === index ? 1 : 0.5 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-full max-w-6xl" style={{ transform: 'scale(0.85)' }}>
+                  <div className="w-full max-w-7xl px-4" style={{ transform: 'scale(0.85)' }}>
                     <motion.div
                       className={`w-full rounded-lg shadow-xl overflow-hidden border-4 ${
                         currentIndex === index ? 'border-blue-500' : 'border-gray-300'
