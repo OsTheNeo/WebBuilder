@@ -9,6 +9,7 @@ import BlockSettingsDrawer from './BlockSettingsDrawer';
 import PageSettingsDrawer from './PageSettingsDrawer';
 import SvgPatterns from './SvgPatterns';
 import { IconSun, IconMoon, IconSettings, IconEye, IconEdit, IconHome } from '@tabler/icons-react';
+import { getBlockById } from '../data/blocksData';
 
 const BlockBuilder = () => {
   const navigate = useNavigate();
@@ -62,6 +63,58 @@ const BlockBuilder = () => {
       loadGoogleFont(pageSettings.secondaryFont);
     }
   }, [pageSettings.primaryFont, pageSettings.secondaryFont]);
+
+  // Load default header and footer from project config on mount
+  useEffect(() => {
+    const projectConfigStr = localStorage.getItem('projectConfig');
+    if (!projectConfigStr) return;
+
+    try {
+      const projectConfig = JSON.parse(projectConfigStr);
+
+      // Load default header if configured and not already set
+      if (projectConfig.defaultHeader && !headerBlock) {
+        const headerBlockData = getBlockById(projectConfig.defaultHeader);
+        if (headerBlockData) {
+          const newBlock = {
+            ...headerBlockData,
+            uniqueId: `${headerBlockData.id}-${Date.now()}-${Math.random()}`,
+            config: {
+              layout: 'boxed',
+              alignment: 'center',
+              maxWidth: '7xl',
+              padding: { top: 0, right: 0, bottom: 0, left: 0 },
+              margin: { top: 0, bottom: 0 },
+              background: { type: 'color', color: '#ffffff' }
+            }
+          };
+          setHeaderBlock(newBlock);
+        }
+      }
+
+      // Load default footer if configured and not already set
+      if (projectConfig.defaultFooter && !footerBlock) {
+        const footerBlockData = getBlockById(projectConfig.defaultFooter);
+        if (footerBlockData) {
+          const newBlock = {
+            ...footerBlockData,
+            uniqueId: `${footerBlockData.id}-${Date.now()}-${Math.random()}`,
+            config: {
+              layout: 'boxed',
+              alignment: 'center',
+              maxWidth: '7xl',
+              padding: { top: 0, right: 0, bottom: 0, left: 0 },
+              margin: { top: 0, bottom: 0 },
+              background: { type: 'color', color: '#ffffff' }
+            }
+          };
+          setFooterBlock(newBlock);
+        }
+      }
+    } catch (e) {
+      console.error('Error loading default blocks from project config:', e);
+    }
+  }, []); // Only run once on mount
 
   const handleAddBlock = (block, position, section) => {
     const newBlock = {
