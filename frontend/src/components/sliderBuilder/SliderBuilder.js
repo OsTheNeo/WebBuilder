@@ -1,21 +1,27 @@
 import React, { useState } from 'react';
-import { IconHome, IconPlayerPlay, IconPlayerPause } from '@tabler/icons-react';
+import { IconHome, IconPlayerPlay, IconPlayerPause, IconTemplate } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import SliderCanvas from './SliderCanvas';
 import LayersPanel from './LayersPanel';
 import SettingsPanel from './SettingsPanel';
 import TimelinePanel from './TimelinePanel';
+import TemplateSelector from './TemplateSelector';
+import { getTemplate } from './templates';
 
 const SliderBuilder = () => {
   const navigate = useNavigate();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [selectedLayerId, setSelectedLayerId] = useState(null);
+  const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+
+  // Load hero banner template by default
+  const defaultTemplate = getTemplate('hero_banner');
 
   // Slider data state
-  const [sliderData, setSliderData] = useState({
+  const [sliderData, setSliderData] = useState(defaultTemplate ? defaultTemplate.data : {
     id: 'slider_1',
-    duration: 5000, // 5 seconds
+    duration: 5000,
     slides: [
       {
         id: 'slide_1',
@@ -24,43 +30,7 @@ const SliderBuilder = () => {
           type: 'color',
           value: '#f0f0f0'
         },
-        layers: [
-          {
-            id: 'layer_1',
-            type: 'text',
-            content: 'Hello World!',
-            position: { x: 100, y: 100 },
-            scale: { x: 1, y: 1 },
-            rotation: 0,
-            opacity: 1,
-            zIndex: 1,
-            fontSize: 48,
-            fontFamily: 'Arial',
-            fill: '#000000',
-            animations: [
-              {
-                type: 'in',
-                startTime: 0,
-                duration: 1000,
-                easing: 'power2.out',
-                properties: {
-                  from: { x: -200, opacity: 0 },
-                  to: { x: 100, opacity: 1 }
-                }
-              },
-              {
-                type: 'out',
-                startTime: 4000,
-                duration: 1000,
-                easing: 'power2.in',
-                properties: {
-                  from: { opacity: 1 },
-                  to: { opacity: 0 }
-                }
-              }
-            ]
-          }
-        ]
+        layers: []
       }
     ]
   });
@@ -155,6 +125,33 @@ const SliderBuilder = () => {
     setIsPlaying(!isPlaying);
   };
 
+  const handleSelectTemplate = (template) => {
+    if (template === null) {
+      // Blank template
+      setSliderData({
+        id: 'slider_blank',
+        duration: 5000,
+        slides: [
+          {
+            id: 'slide_blank_1',
+            duration: 5000,
+            background: {
+              type: 'color',
+              value: '#1a1a2e'
+            },
+            layers: []
+          }
+        ]
+      });
+    } else {
+      setSliderData(template.data);
+    }
+    setSelectedLayerId(null);
+    setCurrentTime(0);
+    setIsPlaying(false);
+    setShowTemplateSelector(false);
+  };
+
   const selectedLayer = currentSlide.layers.find(l => l.id === selectedLayerId);
 
   return (
@@ -177,6 +174,14 @@ const SliderBuilder = () => {
 
         {/* Playback controls */}
         <div className="flex items-center gap-3">
+          <button
+            onClick={() => setShowTemplateSelector(true)}
+            className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors flex items-center gap-2"
+            title="Load Template"
+          >
+            <IconTemplate className="w-5 h-5" />
+            Templates
+          </button>
           <button
             onClick={handlePlayPause}
             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center gap-2"
@@ -246,6 +251,14 @@ const SliderBuilder = () => {
           onSelectLayer={setSelectedLayerId}
         />
       </div>
+
+      {/* Template Selector Modal */}
+      {showTemplateSelector && (
+        <TemplateSelector
+          onSelectTemplate={handleSelectTemplate}
+          onClose={() => setShowTemplateSelector(false)}
+        />
+      )}
     </div>
   );
 };
