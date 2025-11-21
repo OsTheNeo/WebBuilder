@@ -59,6 +59,15 @@ const EditableText = ({
   };
 
   const handleStyleChangeInternal = (styleClass) => {
+    // Handle reset command
+    if (styleClass === 'RESET_STYLES') {
+      setAppliedClasses(className); // Reset to original className
+      if (onStyleChange) {
+        onStyleChange(nodeId, className);
+      }
+      return;
+    }
+
     // Remove conflicting classes from the same category
     let currentClasses = appliedClasses.split(' ').filter(c => c);
 

@@ -15,7 +15,7 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
     if (isVisible && targetElement) {
       const updatePosition = () => {
         const rect = targetElement.getBoundingClientRect();
-        const toolbarHeight = 60; // Increased for more controls
+        const toolbarHeight = 60;
         const spacing = 10;
 
         setPosition({
@@ -97,8 +97,8 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
     textColor: {
       label: 'Color',
       icon: (
-        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
         </svg>
       ),
       isColorPicker: true,
@@ -106,8 +106,9 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
     bgColor: {
       label: 'Fondo',
       icon: (
-        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+        <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
+          <path d="M7 7h10v10H7z"/>
         </svg>
       ),
       isColorPicker: true,
@@ -121,7 +122,6 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
       [format]: !prev[format]
     }));
 
-    // Apply the corresponding class
     const classMap = {
       bold: 'font-bold',
       italic: 'italic',
@@ -140,53 +140,59 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
     setOpenDropdown(openDropdown === groupKey ? null : groupKey);
   };
 
+  const handleReset = () => {
+    // Reset to minimal styling - notify parent to clear custom styles
+    onStyleChange('RESET_STYLES');
+    setActiveFormats({
+      bold: false,
+      italic: false,
+      underline: false,
+    });
+  };
+
   const renderColorPicker = (isBackground = false) => {
     const prefix = isBackground ? 'bg' : 'text';
 
     return (
-      <div className="p-3 max-h-96 overflow-y-auto w-80">
+      <div className="p-2 max-h-96 overflow-y-auto w-72">
         {isBackground && (
-          <div className="mb-3">
+          <div className="mb-2">
             <button
               onClick={() => handleStyleClick('')}
-              className="w-full text-left px-3 py-2 rounded hover:bg-gray-100 text-sm font-medium border-2 border-gray-300"
+              className="w-full text-left px-2 py-1.5 rounded hover:bg-gray-100 text-xs font-medium border border-gray-300"
             >
               Sin fondo
             </button>
           </div>
         )}
         {Object.entries(tailwindColors).map(([colorName, shades]) => (
-          <div key={colorName} className="mb-3">
-            <div className="text-xs font-semibold text-gray-600 mb-1 capitalize">{colorName}</div>
-            <div className="grid grid-cols-11 gap-1">
+          <div key={colorName} className="mb-2">
+            <div className="grid grid-cols-11 gap-0.5">
               {shades.map((shade) => {
                 const className = `${prefix}-${colorName}-${shade}`;
                 return (
                   <button
                     key={shade}
                     onClick={() => handleStyleClick(className)}
-                    className={`w-6 h-6 rounded border border-gray-300 hover:scale-110 transition-transform ${className}`}
+                    className={`w-5 h-5 rounded border border-gray-300 hover:scale-125 transition-transform ${className}`}
                     title={`${colorName}-${shade}`}
-                  >
-                    {!isBackground && <span className="text-xs opacity-0">A</span>}
-                  </button>
+                  />
                 );
               })}
             </div>
           </div>
         ))}
         {/* Special colors */}
-        <div className="mb-3">
-          <div className="text-xs font-semibold text-gray-600 mb-1">Especiales</div>
+        <div className="mt-2">
           <div className="flex gap-1">
             <button
               onClick={() => handleStyleClick(`${prefix}-white`)}
-              className={`w-6 h-6 rounded border-2 border-gray-400 hover:scale-110 transition-transform ${prefix}-white`}
+              className={`w-5 h-5 rounded border-2 border-gray-400 hover:scale-125 transition-transform ${prefix}-white`}
               title="white"
             />
             <button
               onClick={() => handleStyleClick(`${prefix}-black`)}
-              className={`w-6 h-6 rounded border border-gray-300 hover:scale-110 transition-transform ${prefix}-black`}
+              className={`w-5 h-5 rounded border border-gray-300 hover:scale-125 transition-transform ${prefix}-black`}
               title="black"
             />
           </div>
@@ -327,31 +333,6 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
               </button>
             </div>
 
-            {/* Lists */}
-            <div className="flex items-center gap-0.5 border-l border-gray-300 pl-1.5 ml-1.5">
-              <button
-                onClick={() => handleStyleClick('list-disc')}
-                className="px-2.5 py-1.5 hover:bg-gray-100 rounded transition-colors"
-                title="Lista con viñetas"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                  <circle cx="2" cy="6" r="1" fill="currentColor" />
-                  <circle cx="2" cy="12" r="1" fill="currentColor" />
-                  <circle cx="2" cy="18" r="1" fill="currentColor" />
-                </svg>
-              </button>
-              <button
-                onClick={() => handleStyleClick('list-decimal')}
-                className="px-2.5 py-1.5 hover:bg-gray-100 rounded transition-colors"
-                title="Lista numerada"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 6h11M9 12h11M9 18h11M3 6h.01M3 12h.01M3 18h.01" />
-                </svg>
-              </button>
-            </div>
-
             {/* Indentation */}
             <div className="flex items-center gap-0.5 border-l border-gray-300 pl-1.5 ml-1.5">
               <button
@@ -388,6 +369,19 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 5l7 7-7 7M9 5l7 7-7 7M1 5l7 7-7 7" />
+                </svg>
+              </button>
+            </div>
+
+            {/* Reset Button */}
+            <div className="flex items-center border-l border-gray-300 pl-1.5 ml-1.5">
+              <button
+                onClick={handleReset}
+                className="px-2.5 py-1.5 hover:bg-red-50 text-red-600 rounded transition-colors"
+                title="Resetear estilos"
+              >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                 </svg>
               </button>
             </div>

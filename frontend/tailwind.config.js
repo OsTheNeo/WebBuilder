@@ -24,6 +24,33 @@ module.exports = {
     // Margin classes
     'mt-0', 'mt-1', 'mt-2', 'mt-3', 'mt-4', 'mt-6', 'mt-8', 'mt-10', 'mt-12', 'mt-16', 'mt-20', 'mt-24', 'mt-32',
     'mb-0', 'mb-1', 'mb-2', 'mb-3', 'mb-4', 'mb-6', 'mb-8', 'mb-10', 'mb-12', 'mb-16', 'mb-20', 'mb-24', 'mb-32',
+    // Text formatting
+    'italic', 'underline', 'font-bold',
+    // Text alignment
+    'text-left', 'text-center', 'text-right', 'text-justify',
+    // List styles
+    'list-disc', 'list-decimal', 'list-none',
+    // Indentation
+    'pl-0', 'pl-4', 'pl-8', 'pl-12',
+    // Font sizes
+    'text-xs', 'text-sm', 'text-base', 'text-lg', 'text-xl', 'text-2xl', 'text-3xl',
+    'text-4xl', 'text-5xl', 'text-6xl', 'text-7xl', 'text-8xl', 'text-9xl',
+    // Font families
+    'font-sans', 'font-serif', 'font-mono',
+    // All text colors - using pattern matching
+    {
+      pattern: /^text-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(50|100|200|300|400|500|600|700|800|900|950)$/,
+    },
+    {
+      pattern: /^text-(white|black)$/,
+    },
+    // All background colors - using pattern matching
+    {
+      pattern: /^bg-(slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(50|100|200|300|400|500|600|700|800|900|950)$/,
+    },
+    {
+      pattern: /^bg-(white|black)$/,
+    },
   ],
   theme: {
     container: {
