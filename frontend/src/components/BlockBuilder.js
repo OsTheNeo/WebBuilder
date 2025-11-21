@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import HeaderSection from './sections/HeaderSection';
 import ContentSection from './sections/ContentSection';
 import FooterSection from './sections/FooterSection';
@@ -7,9 +8,12 @@ import DrawerEditor from './DrawerEditor';
 import BlockSettingsDrawer from './BlockSettingsDrawer';
 import PageSettingsDrawer from './PageSettingsDrawer';
 import SvgPatterns from './SvgPatterns';
-import { IconSun, IconMoon, IconSettings, IconEye, IconEdit } from '@tabler/icons-react';
+import { IconSun, IconMoon, IconSettings, IconEye, IconEdit, IconHome } from '@tabler/icons-react';
+import { getBlockById } from '../data/blocksData';
 
 const BlockBuilder = () => {
+  const navigate = useNavigate();
+
   // Separate states for header, content, and footer sections
   const [headerBlock, setHeaderBlock] = useState(null);
   const [contentBlocks, setContentBlocks] = useState([]);
@@ -59,6 +63,58 @@ const BlockBuilder = () => {
       loadGoogleFont(pageSettings.secondaryFont);
     }
   }, [pageSettings.primaryFont, pageSettings.secondaryFont]);
+
+  // Load default header and footer from project config on mount
+  useEffect(() => {
+    const projectConfigStr = localStorage.getItem('projectConfig');
+    if (!projectConfigStr) return;
+
+    try {
+      const projectConfig = JSON.parse(projectConfigStr);
+
+      // Load default header if configured and not already set
+      if (projectConfig.defaultHeader && !headerBlock) {
+        const headerBlockData = getBlockById(projectConfig.defaultHeader);
+        if (headerBlockData) {
+          const newBlock = {
+            ...headerBlockData,
+            uniqueId: `${headerBlockData.id}-${Date.now()}-${Math.random()}`,
+            config: {
+              layout: 'boxed',
+              alignment: 'center',
+              maxWidth: '7xl',
+              padding: { top: 0, right: 0, bottom: 0, left: 0 },
+              margin: { top: 0, bottom: 0 },
+              background: { type: 'color', color: '#ffffff' }
+            }
+          };
+          setHeaderBlock(newBlock);
+        }
+      }
+
+      // Load default footer if configured and not already set
+      if (projectConfig.defaultFooter && !footerBlock) {
+        const footerBlockData = getBlockById(projectConfig.defaultFooter);
+        if (footerBlockData) {
+          const newBlock = {
+            ...footerBlockData,
+            uniqueId: `${footerBlockData.id}-${Date.now()}-${Math.random()}`,
+            config: {
+              layout: 'boxed',
+              alignment: 'center',
+              maxWidth: '7xl',
+              padding: { top: 0, right: 0, bottom: 0, left: 0 },
+              margin: { top: 0, bottom: 0 },
+              background: { type: 'color', color: '#ffffff' }
+            }
+          };
+          setFooterBlock(newBlock);
+        }
+      }
+    } catch (e) {
+      console.error('Error loading default blocks from project config:', e);
+    }
+  }, []); // Only run once on mount
 
   const handleAddBlock = (block, position, section) => {
     const newBlock = {
@@ -261,7 +317,18 @@ const BlockBuilder = () => {
       >
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex justify-between items-center">
-            <div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => navigate('/')}
+                className={`p-2 rounded-lg transition-all ${
+                  pageSettings.darkMode
+                    ? 'hover:bg-gray-700 text-gray-300 hover:text-white'
+                    : 'hover:bg-gray-100 text-gray-600 hover:text-gray-800'
+                }`}
+                title="Volver al Home"
+              >
+                <IconHome className="w-5 h-5" />
+              </button>
               <h1 className={`text-2xl font-bold transition-colors ${
                 pageSettings.darkMode ? 'text-white' : 'text-gray-800'
               }`}>Block Builder</h1>

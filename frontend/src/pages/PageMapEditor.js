@@ -73,23 +73,42 @@ const PageMapEditor = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
   const [zoomLevel, setZoomLevel] = useState(110);
   const [projectConfigOpen, setProjectConfigOpen] = useState(false);
-  const [projectConfig, setProjectConfig] = useState({
-    projectName: 'My Web Project',
-    description: 'A beautiful web application',
-    logo: null,
-    primaryFont: 'Inter',
-    secondaryFont: 'Inter',
-    colorPalette: {
-      primary: '#3b82f6',
-      secondary: '#8b5cf6',
-      accent: '#10b981',
-      background: '#ffffff',
-      text: '#1f2937'
-    },
-    defaultHeader: null,
-    defaultFooter: null
-  });
+
+  // Load project config from localStorage or use defaults
+  const getInitialProjectConfig = () => {
+    const savedConfig = localStorage.getItem('projectConfig');
+    if (savedConfig) {
+      try {
+        return JSON.parse(savedConfig);
+      } catch (e) {
+        console.error('Error parsing project config:', e);
+      }
+    }
+    return {
+      projectName: 'My Web Project',
+      description: 'A beautiful web application',
+      logo: null,
+      primaryFont: 'Inter',
+      secondaryFont: 'Inter',
+      colorPalette: {
+        primary: '#3b82f6',
+        secondary: '#8b5cf6',
+        accent: '#10b981',
+        background: '#ffffff',
+        text: '#1f2937'
+      },
+      defaultHeader: null,
+      defaultFooter: null
+    };
+  };
+
+  const [projectConfig, setProjectConfig] = useState(getInitialProjectConfig());
   const nodeIdCounter = useRef(2);
+
+  // Save project config to localStorage whenever it changes
+  React.useEffect(() => {
+    localStorage.setItem('projectConfig', JSON.stringify(projectConfig));
+  }, [projectConfig]);
 
   const onConnect = useCallback(
     (params) => setEdges((eds) => addEdge({ ...params, animated: true, style: { stroke: '#94a3b8', strokeWidth: 2 } }, eds)),

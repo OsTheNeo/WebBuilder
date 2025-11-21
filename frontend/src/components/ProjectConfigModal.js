@@ -1,9 +1,14 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { IconX, IconUpload, IconPalette, IconTypography } from '@tabler/icons-react';
+import BlockSelector from './BlockSelector';
+import { getBlockById } from '../data/blocksData';
+import { getBlockComponent } from '../blocks';
 
 const ProjectConfigModal = ({ isOpen, onClose, config, onSave }) => {
   const [formData, setFormData] = useState(config);
+  const [headerSelectorOpen, setHeaderSelectorOpen] = useState(false);
+  const [footerSelectorOpen, setFooterSelectorOpen] = useState(false);
 
   const handleSave = () => {
     onSave(formData);
@@ -257,38 +262,134 @@ const ProjectConfigModal = ({ isOpen, onClose, config, onSave }) => {
                       Select default header and footer that will be applied to all pages
                     </p>
 
-                    <div className="grid grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                    {/* Default Header */}
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="text-sm font-medium text-gray-700">
                           Default Header
                         </label>
-                        <select
-                          value={formData.defaultHeader || ''}
-                          onChange={(e) => setFormData({ ...formData, defaultHeader: e.target.value || null })}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                          <option value="">None</option>
-                          <option value="header-1">Header Style 1</option>
-                          <option value="header-2">Header Style 2</option>
-                          <option value="header-3">Header Style 3</option>
-                        </select>
+                        {formData.defaultHeader && (
+                          <button
+                            onClick={() => setFormData({ ...formData, defaultHeader: null })}
+                            className="text-xs text-red-500 hover:text-red-700 font-medium"
+                          >
+                            Clear Selection
+                          </button>
+                        )}
                       </div>
 
-                      <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                      {formData.defaultHeader ? (
+                        <div className="space-y-3">
+                          {/* Visual Preview */}
+                          <div className="border-2 border-blue-200 rounded-lg overflow-hidden">
+                            {(() => {
+                              const BlockComponent = getBlockComponent(formData.defaultHeader);
+                              return BlockComponent ? (
+                                <BlockComponent data={{}} />
+                              ) : (
+                                <div className="bg-blue-50 p-4 text-center">
+                                  <p className="text-sm font-medium text-blue-800">
+                                    {formData.defaultHeader}
+                                  </p>
+                                </div>
+                              );
+                            })()}
+                          </div>
+                          {/* Change Button */}
+                          <button
+                            onClick={() => setHeaderSelectorOpen(true)}
+                            className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors text-sm"
+                          >
+                            Change Header
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setHeaderSelectorOpen(true)}
+                          className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors text-sm text-gray-600 hover:text-blue-600 font-medium"
+                        >
+                          + Select Default Header
+                        </button>
+                      )}
+
+                      {headerSelectorOpen && (
+                        <div className="mt-4">
+                          <BlockSelector
+                            onSelectBlock={(block) => {
+                              setFormData({ ...formData, defaultHeader: block.id });
+                              setHeaderSelectorOpen(false);
+                            }}
+                            onClose={() => setHeaderSelectorOpen(false)}
+                            filterCategory="headers"
+                            hideCategories={true}
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Default Footer */}
+                    <div>
+                      <div className="flex items-center justify-between mb-3">
+                        <label className="text-sm font-medium text-gray-700">
                           Default Footer
                         </label>
-                        <select
-                          value={formData.defaultFooter || ''}
-                          onChange={(e) => setFormData({ ...formData, defaultFooter: e.target.value || null })}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                          <option value="">None</option>
-                          <option value="footer-1">Footer Style 1</option>
-                          <option value="footer-2">Footer Style 2</option>
-                          <option value="footer-3">Footer Style 3</option>
-                        </select>
+                        {formData.defaultFooter && (
+                          <button
+                            onClick={() => setFormData({ ...formData, defaultFooter: null })}
+                            className="text-xs text-red-500 hover:text-red-700 font-medium"
+                          >
+                            Clear Selection
+                          </button>
+                        )}
                       </div>
+
+                      {formData.defaultFooter ? (
+                        <div className="space-y-3">
+                          {/* Visual Preview */}
+                          <div className="border-2 border-blue-200 rounded-lg overflow-hidden">
+                            {(() => {
+                              const BlockComponent = getBlockComponent(formData.defaultFooter);
+                              return BlockComponent ? (
+                                <BlockComponent data={{}} />
+                              ) : (
+                                <div className="bg-blue-50 p-4 text-center">
+                                  <p className="text-sm font-medium text-blue-800">
+                                    {formData.defaultFooter}
+                                  </p>
+                                </div>
+                              );
+                            })()}
+                          </div>
+                          {/* Change Button */}
+                          <button
+                            onClick={() => setFooterSelectorOpen(true)}
+                            className="w-full px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg font-medium transition-colors text-sm"
+                          >
+                            Change Footer
+                          </button>
+                        </div>
+                      ) : (
+                        <button
+                          onClick={() => setFooterSelectorOpen(true)}
+                          className="w-full px-4 py-3 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-colors text-sm text-gray-600 hover:text-blue-600 font-medium"
+                        >
+                          + Select Default Footer
+                        </button>
+                      )}
+
+                      {footerSelectorOpen && (
+                        <div className="mt-4">
+                          <BlockSelector
+                            onSelectBlock={(block) => {
+                              setFormData({ ...formData, defaultFooter: block.id });
+                              setFooterSelectorOpen(false);
+                            }}
+                            onClose={() => setFooterSelectorOpen(false)}
+                            filterCategory="footers"
+                            hideCategories={true}
+                          />
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

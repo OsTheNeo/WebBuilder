@@ -149,3 +149,9 @@ export const getAllBlocks = () => {
     }))
   );
 };
+
+// Get a specific block by ID
+export const getBlockById = (blockId) => {
+  const allBlocks = getAllBlocks();
+  return allBlocks.find(block => block.id === blockId);
+};

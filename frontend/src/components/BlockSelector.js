@@ -1,8 +1,8 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import { categories, getColorShades } from '../data/blocksData';
 import { getBlockComponent } from '../blocks';
-import { IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+import { IconChevronLeft, IconChevronRight, IconX } from '@tabler/icons-react';
 import { Button } from './ui/button';
 
 const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories, excludeCategories }) => {
@@ -21,7 +21,11 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
   const availableCategories = getAvailableCategories();
   const [selectedCategory, setSelectedCategory] = useState(availableCategories[0]?.id || 'hero');
   const [currentIndex, setCurrentIndex] = useState(0);
-  const scrollContainerRef = useRef(null);
+
+  // Scroll to top when currentIndex changes
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [currentIndex]);
 
   // Get all blocks or filtered by category
   const getFilteredBlocks = () => {
@@ -35,28 +39,15 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
 
   const filteredBlocks = getFilteredBlocks();
 
-  // Handle scroll navigation
-  const scrollToBlock = (index) => {
-    if (scrollContainerRef.current) {
-      const blockWidth = scrollContainerRef.current.clientWidth;
-      scrollContainerRef.current.scrollTo({
-        left: blockWidth * index,
-        behavior: 'smooth'
-      });
-    }
-  };
-
   // Navigate left/right with infinite loop
   const navigateLeft = useCallback(() => {
     const newIndex = currentIndex === 0 ? filteredBlocks.length - 1 : currentIndex - 1;
     setCurrentIndex(newIndex);
-    scrollToBlock(newIndex);
   }, [currentIndex, filteredBlocks.length]);
 
   const navigateRight = useCallback(() => {
     const newIndex = currentIndex === filteredBlocks.length - 1 ? 0 : currentIndex + 1;
     setCurrentIndex(newIndex);
-    scrollToBlock(newIndex);
   }, [currentIndex, filteredBlocks.length]);
 
   const handleSelectBlock = useCallback(() => {
@@ -79,14 +70,38 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
   }, [navigateLeft, navigateRight, handleSelectBlock, onClose]);
 
   return (
-    <motion.div
-      initial={{ height: 0, opacity: 0 }}
-      animate={{ height: 'auto', opacity: 1 }}
-      exit={{ height: 0, opacity: 0 }}
-      transition={{ duration: 0.4, ease: 'easeInOut' }}
-      className="w-full bg-gradient-to-b from-gray-50 to-white border-y-4 border-blue-500 overflow-hidden"
-    >
-      <div className="py-8 px-4">
+    <>
+      {/* Overlay */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.5 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.3 }}
+        className="fixed inset-0 bg-black z-40"
+        onClick={onClose}
+      />
+
+      {/* Drawer */}
+      <motion.div
+        initial={{ x: '100%' }}
+        animate={{ x: 0 }}
+        exit={{ x: '100%' }}
+        transition={{ duration: 0.4, ease: 'easeInOut' }}
+        className="fixed top-0 right-0 h-full w-[70%] bg-gradient-to-b from-gray-50 to-white shadow-2xl z-50 overflow-y-auto"
+      >
+        {/* Drawer Header */}
+        <div className="sticky top-0 bg-white border-b border-gray-200 px-6 py-4 flex justify-between items-center z-10">
+          <h2 className="text-2xl font-bold text-gray-800">Seleccionar Bloque</h2>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-lg transition-all hover:bg-gray-100 text-gray-600 hover:text-gray-800"
+            aria-label="Cerrar"
+          >
+            <IconX className="w-6 h-6" />
+          </button>
+        </div>
+
+        <div className="py-8 px-6">
         {/* Category Filters - Hidden if hideCategories is true */}
         {!hideCategories && (
           <motion.div
@@ -118,56 +133,31 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
-          className="relative"
+          className="relative w-full"
         >
-          {/* Navigation Buttons - Floating over carousel */}
-          <Button
-            onClick={navigateLeft}
-            variant="outline"
-            size="icon"
-            className="absolute left-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full h-14 w-14 shadow-2xl hover:scale-110 transition-transform"
-            aria-label="Previous block"
-          >
-            <IconChevronLeft className="w-7 h-7" stroke={2.5} />
-          </Button>
-
-          <Button
-            onClick={navigateRight}
-            variant="outline"
-            size="icon"
-            className="absolute right-4 top-1/2 -translate-y-1/2 z-20 bg-white/90 backdrop-blur-sm rounded-full h-14 w-14 shadow-2xl hover:scale-110 transition-transform"
-            aria-label="Next block"
-          >
-            <IconChevronRight className="w-7 h-7" stroke={2.5} />
-          </Button>
-
           {/* Blocks Carousel */}
-          <div
-            ref={scrollContainerRef}
-            className="flex overflow-x-hidden scroll-smooth snap-x snap-mandatory"
-            style={{ scrollSnapType: 'x mandatory' }}
-          >
-            {filteredBlocks.map((block, index) => {
-              const colorShades = getColorShades(block.color);
-              const shadeIndex = Math.min(index % colorShades.length, colorShades.length - 1);
-              const bgColor = colorShades[shadeIndex];
+          <div className="w-full">
+            {(() => {
+              const block = filteredBlocks[currentIndex];
+              if (!block) return null;
 
+              const colorShades = getColorShades(block.color);
+              const shadeIndex = Math.min(currentIndex % colorShades.length, colorShades.length - 1);
+              const bgColor = colorShades[shadeIndex];
               const BlockComponent = getBlockComponent(block.id);
 
               return (
                 <motion.div
                   key={block.id}
-                  className="flex-shrink-0 w-full flex items-center justify-center px-16 py-8 snap-center"
-                  initial={{ opacity: 0.7 }}
-                  animate={{ opacity: currentIndex === index ? 1 : 0.5 }}
+                  className="w-full flex justify-center py-2"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
                   transition={{ duration: 0.3 }}
                 >
-                  <div className="w-full max-w-6xl" style={{ transform: 'scale(0.85)' }}>
+                  <div className="w-full px-4">
                     <motion.div
-                      className={`w-full rounded-lg shadow-xl overflow-hidden border-4 ${
-                        currentIndex === index ? 'border-blue-500' : 'border-gray-300'
-                      } cursor-pointer`}
-                      onClick={() => setCurrentIndex(index)}
+                      className="w-full rounded-lg shadow-xl overflow-hidden border-4 border-blue-500"
                       whileHover={{ scale: 1.02 }}
                     >
                       {BlockComponent ? (
@@ -184,21 +174,26 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
                   </div>
                 </motion.div>
               );
-            })}
+            })()}
           </div>
 
-          {/* Block Counter */}
-          <div className="text-center mt-4 text-gray-600 font-semibold">
-            {currentIndex + 1} / {filteredBlocks.length}
-          </div>
-
-          {/* Action Buttons */}
+          {/* Action Buttons with Navigation */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="flex gap-4 justify-center mt-6"
+            className="flex items-center justify-between mt-6 max-w-2xl mx-auto"
           >
+            {/* Left Navigation Button */}
+            <button
+              onClick={navigateLeft}
+              className="transition-opacity hover:opacity-100 opacity-70 p-2"
+              aria-label="Previous block"
+            >
+              <IconChevronLeft className="w-8 h-8 text-gray-600" stroke={2.5} />
+            </button>
+
+            {/* Cancel Button */}
             <Button
               onClick={onClose}
               variant="outline"
@@ -206,16 +201,44 @@ const BlockSelector = ({ onSelectBlock, onClose, filterCategory, hideCategories,
             >
               Cancel
             </Button>
+
+            {/* Dots Indicator */}
+            <div className="flex gap-2 items-center">
+              {filteredBlocks.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`rounded-full transition-all ${
+                    currentIndex === index
+                      ? 'w-3 h-3 bg-blue-500'
+                      : 'w-2 h-2 bg-gray-300 hover:bg-gray-400'
+                  }`}
+                  aria-label={`Go to block ${index + 1}`}
+                />
+              ))}
+            </div>
+
+            {/* Add Block Button */}
             <Button
               onClick={handleSelectBlock}
               size="lg"
             >
               Add Block
             </Button>
+
+            {/* Right Navigation Button */}
+            <button
+              onClick={navigateRight}
+              className="transition-opacity hover:opacity-100 opacity-70 p-2"
+              aria-label="Next block"
+            >
+              <IconChevronRight className="w-8 h-8 text-gray-600" stroke={2.5} />
+            </button>
           </motion.div>
         </motion.div>
-      </div>
-    </motion.div>
+        </div>
+      </motion.div>
+    </>
   );
 };
 
