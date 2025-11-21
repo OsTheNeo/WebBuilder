@@ -5,48 +5,21 @@ const AddBlockButton = ({ onAddBlock, position = 'between' }) => {
   const [showMenu, setShowMenu] = useState(false);
 
   const blockTypes = [
-    {
-      id: 'text-single',
-      name: 'Texto 1 Columna',
-      icon: '[ T ]',
-      description: 'Párrafo simple'
-    },
-    {
-      id: 'text-two-column',
-      name: 'Texto 2 Columnas',
-      icon: '[T|T]',
-      description: 'Texto en dos columnas'
-    },
-    {
-      id: 'image-full',
-      name: 'Imagen Completa',
-      icon: '[IMG]',
-      description: 'Imagen ancho completo'
-    },
-    {
-      id: 'image-text-left',
-      name: 'Imagen + Texto',
-      icon: '[I][T]',
-      description: 'Imagen izquierda, texto derecha'
-    },
-    {
-      id: 'image-text-right',
-      name: 'Texto + Imagen',
-      icon: '[T][I]',
-      description: 'Texto izquierda, imagen derecha'
-    },
-    {
-      id: 'heading',
-      name: 'Título',
-      icon: '< H >',
-      description: 'Encabezado de sección'
-    },
-    {
-      id: 'quote',
-      name: 'Cita',
-      icon: '" "',
-      description: 'Bloque de cita'
-    },
+    { id: 'text', name: 'Text', icon: 'T' },
+    { id: 'menu', name: 'Menu', icon: '≡' },
+    { id: 'map', name: 'Map', icon: '🗺' },
+    { id: 'image', name: 'Image', icon: '□' },
+    { id: 'video', name: 'Video', icon: '▶' },
+    { id: 'audio', name: 'Audio', icon: '♫' },
+    { id: 'button', name: 'Button', icon: '▭' },
+    { id: 'icon', name: 'Icon', icon: '★' },
+    { id: 'spacer', name: 'Spacer', icon: '↕' },
+    { id: 'form', name: 'Form', icon: '⊞' },
+    { id: 'markup', name: 'Markup', icon: '<>' },
+    { id: 'embed', name: 'Embed', icon: '⊕' },
+    { id: 'circletext', name: 'Circle Text', icon: '◯' },
+    { id: 'slider', name: 'Slider', icon: '⊟' },
+    { id: 'social', name: 'Social', icon: '⚑' },
   ];
 
   const handleBlockSelect = (blockType) => {
@@ -95,27 +68,21 @@ const AddBlockButton = ({ onAddBlock, position = 'between' }) => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.15 }}
-              className="absolute left-1/2 transform -translate-x-1/2 mt-2 bg-white rounded-lg shadow-2xl border-2 border-blue-500 p-2 z-50 min-w-[280px]"
+              className="absolute left-1/2 transform -translate-x-1/2 mt-2 bg-white rounded-lg shadow-2xl border-2 border-blue-500 p-3 z-50"
             >
-              <div className="text-xs font-semibold text-gray-500 px-3 py-2">
+              <div className="text-xs font-semibold text-gray-500 px-1 mb-2">
                 Agregar bloque
               </div>
-              <div className="grid grid-cols-1 gap-1">
+              <div className="grid grid-cols-5 gap-2">
                 {blockTypes.map((type) => (
                   <button
                     key={type.id}
                     onClick={() => handleBlockSelect(type)}
-                    className="flex items-center gap-3 px-3 py-2.5 rounded-md hover:bg-blue-50 transition-colors text-left group/item"
+                    className="flex flex-col items-center justify-center w-16 h-16 rounded-lg border-2 border-gray-200 hover:border-blue-500 hover:bg-blue-50 transition-all group"
+                    title={type.name}
                   >
-                    <span className="text-2xl">{type.icon}</span>
-                    <div className="flex-1">
-                      <div className="text-sm font-medium text-gray-900 group-hover/item:text-blue-700">
-                        {type.name}
-                      </div>
-                      <div className="text-xs text-gray-500">
-                        {type.description}
-                      </div>
-                    </div>
+                    <span className="text-2xl mb-1 group-hover:scale-110 transition-transform">{type.icon}</span>
+                    <span className="text-[9px] font-medium text-gray-600 group-hover:text-blue-700">{type.name}</span>
                   </button>
                 ))}
               </div>
