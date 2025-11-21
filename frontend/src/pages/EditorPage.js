@@ -1,150 +1,75 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import EditableText from '../components/EditableText';
-import TreeView from '../components/TreeView';
-import MediaModal from '../components/MediaModal';
+import { motion, AnimatePresence } from 'framer-motion';
+import AddBlockButton from '../components/AddBlockButton';
+import EditableBlock from '../components/EditableBlock';
+import DataPreviewSidebar from '../components/DataPreviewSidebar';
+import { BLOCK_COMPONENTS, BLOCK_INITIAL_DATA } from '../components/BlockTemplates';
 
 const EditorPage = () => {
-  const [article, setArticle] = useState({
-    title: 'The Art of Modern Web Design',
-    subtitle: 'Exploring the intersection of creativity and technology',
-    author: 'Jane Doe',
-    date: 'November 15, 2025',
-    image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop',
-    quote: '"Design is not just what it looks like and feels like. Design is how it works."',
-    quoteAuthor: 'Steve Jobs',
-    columnOneContent: `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-
-Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.`,
-
-    columnTwoContent: `Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.
-
-Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem.
-
-Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.`
-  });
-
-  const [selectedNodeId, setSelectedNodeId] = useState('root');
-  const [showMediaModal, setShowMediaModal] = useState(false);
-  const [mediaType, setMediaType] = useState('image'); // or 'video'
-  const [nodeStyles, setNodeStyles] = useState({}); // Track styles for each node
-
-  // Build tree structure from article
-  const buildTreeStructure = () => {
-    return {
-      id: 'root',
-      tag: 'article',
-      label: 'Article',
-      children: [
-        {
-          id: 'header',
-          tag: 'header',
-          label: 'Header Section',
-          children: [
-            { id: 'title', tag: 'h1', label: 'Title' },
-            { id: 'subtitle', tag: 'p', label: 'Subtitle' },
-            { id: 'meta', tag: 'div', label: 'Metadata (Author, Date)' }
-          ]
-        },
-        {
-          id: 'image',
-          tag: 'img',
-          label: 'Featured Image'
-        },
-        {
-          id: 'content',
-          tag: 'div',
-          label: 'Two Column Content',
-          children: [
-            { id: 'col1', tag: 'div', label: 'Column 1 (Paragraphs)' },
-            { id: 'col2', tag: 'div', label: 'Column 2 (Paragraphs)' }
-          ]
-        },
-        {
-          id: 'quote-section',
-          tag: 'blockquote',
-          label: 'Quote Section',
-          children: [
-            { id: 'quote', tag: 'q', label: 'Quote Text' },
-            { id: 'quote-author', tag: 'cite', label: 'Quote Author' }
-          ]
-        }
-      ]
-    };
-  };
-
-  const [treeStructure, setTreeStructure] = useState(buildTreeStructure());
-
-  const updateArticleField = (field, value) => {
-    setArticle(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleAddNode = (parentId, componentType) => {
-    const newNodeId = `${componentType.id}-${Date.now()}`;
-
-    // Create new node based on component type
-    const newNode = {
-      id: newNodeId,
-      tag: componentType.id === 'title' ? 'h1' :
-           componentType.id === 'subtitle' ? 'h2' :
-           componentType.id === 'paragraph' ? 'p' :
-           componentType.id === 'quote' ? 'blockquote' :
-           componentType.id === 'image' ? 'img' :
-           componentType.id === 'two-column' ? 'div' : 'div',
-      label: componentType.name,
-      ...(componentType.id === 'two-column' && {
-        children: [
-          { id: `${newNodeId}-col1`, tag: 'div', label: 'Column 1' },
-          { id: `${newNodeId}-col2`, tag: 'div', label: 'Column 2' }
-        ]
-      })
-    };
-
-    // Add default content to article
-    const defaultContent = {
-      title: 'New Title',
-      subtitle: 'New Subtitle',
-      paragraph: 'New paragraph content...',
-      quote: 'New quote...',
-      image: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop',
-      'two-column': { col1: 'Column 1 content...', col2: 'Column 2 content...' }
-    };
-
-    setArticle(prev => ({
-      ...prev,
-      [newNodeId]: defaultContent[componentType.id] || 'New content...'
-    }));
-
-    // Update tree structure
-    const addNodeToTree = (node, parentId, newChild) => {
-      if (node.id === parentId) {
-        return {
-          ...node,
-          children: [...(node.children || []), newChild]
-        };
+  const [blocks, setBlocks] = useState([
+    {
+      id: 'block-1',
+      type: 'heading',
+      data: { content: 'Mi Primer Artículo' }
+    },
+    {
+      id: 'block-2',
+      type: 'text-single',
+      data: { content: 'Comienza a escribir tu contenido aquí. Puedes agregar más bloques usando el botón + que aparece entre los elementos.' }
+    },
+    {
+      id: 'block-3',
+      type: 'image-full',
+      data: {
+        imageUrl: 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop',
+        alt: 'Imagen de ejemplo'
       }
-      if (node.children) {
-        return {
-          ...node,
-          children: node.children.map(child => addNodeToTree(child, parentId, newChild))
-        };
-      }
-      return node;
+    }
+  ]);
+
+  const [nodeStyles, setNodeStyles] = useState({});
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
+  // Agregar bloque
+  const handleAddBlock = (blockType, afterBlockId) => {
+    const newBlockId = `block-${Date.now()}`;
+    const newBlock = {
+      id: newBlockId,
+      type: blockType.id,
+      data: { ...BLOCK_INITIAL_DATA[blockType.id] }
     };
 
-    setTreeStructure(prev => addNodeToTree(prev, parentId, newNode));
+    setBlocks(prevBlocks => {
+      if (!afterBlockId) {
+        // Agregar al final
+        return [...prevBlocks, newBlock];
+      }
+
+      // Insertar después de un bloque específico
+      const index = prevBlocks.findIndex(b => b.id === afterBlockId);
+      const newBlocks = [...prevBlocks];
+      newBlocks.splice(index + 1, 0, newBlock);
+      return newBlocks;
+    });
   };
 
-  const handleMediaSelect = (media) => {
-    setArticle(prev => ({
-      ...prev,
-      image: media.url
-    }));
-    setMediaType(media.type);
+  // Eliminar bloque
+  const handleDeleteBlock = (blockId) => {
+    setBlocks(prevBlocks => prevBlocks.filter(b => b.id !== blockId));
   };
 
+  // Actualizar datos de un bloque
+  const handleBlockDataChange = (blockId, field, value) => {
+    setBlocks(prevBlocks =>
+      prevBlocks.map(block =>
+        block.id === blockId
+          ? { ...block, data: { ...block.data, [field]: value } }
+          : block
+      )
+    );
+  };
+
+  // Manejar cambio de estilos
   const handleStyleChange = (nodeId, newClasses) => {
     setNodeStyles(prev => ({
       ...prev,
@@ -152,110 +77,28 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
     }));
   };
 
-  const renderDynamicContent = (node) => {
-    if (!node || node.id === 'root') {
-      return node.children?.map(child => renderDynamicContent(child));
+  // Renderizar un bloque
+  const renderBlock = (block) => {
+    const BlockComponent = BLOCK_COMPONENTS[block.type];
+
+    if (!BlockComponent) {
+      return <div>Tipo de bloque desconocido: {block.type}</div>;
     }
 
-    // Skip rendering static nodes that are already rendered manually
-    const staticNodes = ['header', 'title', 'subtitle', 'meta', 'image', 'content', 'col1', 'col2', 'quote-section', 'quote', 'quote-author'];
-    if (staticNodes.includes(node.id)) {
-      return null;
-    }
+    return (
+      <BlockComponent
+        blockId={block.id}
+        data={block.data}
+        onChange={handleBlockDataChange}
+        onStyleChange={handleStyleChange}
+      />
+    );
+  };
 
-    const content = article[node.id];
-
-    switch (node.tag) {
-      case 'h1':
-      case 'h2':
-        return (
-          <EditableText
-            key={node.id}
-            tag={node.tag}
-            value={content || 'New heading...'}
-            onChange={(val) => updateArticleField(node.id, val)}
-            className={node.tag === 'h1' ? 'text-4xl font-bold text-gray-900 mb-4' : 'text-3xl font-semibold text-gray-800 mb-3'}
-            placeholder="Enter heading..."
-            nodeId={node.id}
-            onStyleChange={handleStyleChange}
-          />
-        );
-
-      case 'p':
-        return (
-          <EditableText
-            key={node.id}
-            tag="p"
-            value={content || 'New paragraph...'}
-            onChange={(val) => updateArticleField(node.id, val)}
-            className="text-gray-700 leading-relaxed text-lg mb-4"
-            placeholder="Enter paragraph..."
-            multiline={true}
-            nodeId={node.id}
-            onStyleChange={handleStyleChange}
-          />
-        );
-
-      case 'blockquote':
-        return (
-          <div key={node.id} className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-8 rounded-r-lg my-8">
-            <EditableText
-              tag="blockquote"
-              value={content || 'New quote...'}
-              onChange={(val) => updateArticleField(node.id, val)}
-              className="text-2xl font-medium text-gray-800 italic"
-              placeholder="Enter quote..."
-              multiline={true}
-              nodeId={node.id}
-              onStyleChange={handleStyleChange}
-            />
-          </div>
-        );
-
-      case 'img':
-        return (
-          <div key={node.id} className="mb-8 group relative">
-            <img
-              src={content || 'https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&h=600&fit=crop'}
-              alt={node.label}
-              className="w-full h-96 object-cover rounded-lg shadow-md"
-            />
-            <button
-              onClick={() => setShowMediaModal(true)}
-              className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity px-4 py-2 bg-white rounded-lg shadow-lg font-semibold hover:bg-gray-50"
-            >
-              Change Image
-            </button>
-          </div>
-        );
-
-      case 'div':
-        if (node.children && node.children.length === 2) {
-          // Two column layout
-          return (
-            <div key={node.id} className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-              {node.children.map(child => (
-                <div key={child.id} className="space-y-4">
-                  <EditableText
-                    tag="p"
-                    value={article[child.id] || 'Column content...'}
-                    onChange={(val) => updateArticleField(child.id, val)}
-                    className="text-gray-700 leading-relaxed text-lg"
-                    placeholder="Enter content..."
-                    multiline={true}
-                    nodeId={child.id}
-                    onStyleChange={handleStyleChange}
-                  />
-                </div>
-              ))}
-            </div>
-          );
-        }
-        return null;
-
-      default:
-        return null;
-    }
+  // Guardar contenido (puedes implementar esto más tarde)
+  const handleSave = () => {
+    console.log('Guardando...', { blocks, nodeStyles });
+    alert('Contenido guardado! (Ver consola para detalles)');
   };
 
   return (
@@ -269,192 +112,85 @@ Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit la
         <div className="max-w-full mx-auto px-4">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">Article Editor</h1>
-              <p className="text-gray-600 text-sm">Create and edit your article with inline editing</p>
+              <h1 className="text-3xl font-bold text-gray-800">Editor de Contenido</h1>
+              <p className="text-gray-600 text-sm">
+                Crea y edita tu contenido con bloques dinámicos
+              </p>
             </div>
             <div className="flex gap-3">
-              <button className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg font-semibold hover:bg-gray-300 transition-colors">
-                Preview
-              </button>
-              <button className="px-6 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors">
-                Publish
+              <button
+                onClick={handleSave}
+                className="px-6 py-2 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 transition-colors"
+              >
+                Guardar
               </button>
             </div>
           </div>
         </div>
       </motion.div>
 
-      {/* Two Column Layout: Editor + Tree View */}
-      <div className="flex h-[calc(100vh-80px)]">
-        {/* Left Column: Article Editor */}
-        <div className="flex-1 overflow-y-auto p-8">
-          <motion.article
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-12"
-          >
-            {/* Article Header */}
-            <header className="mb-12 border-b border-gray-200 pb-8">
-              <EditableText
-                tag="h1"
-                value={article.title}
-                onChange={(val) => updateArticleField('title', val)}
-                className="text-5xl font-bold text-gray-900 mb-4"
-                placeholder="Enter article title..."
-                nodeId="title"
-                onStyleChange={handleStyleChange}
-              />
-              <EditableText
-                tag="p"
-                value={article.subtitle}
-                onChange={(val) => updateArticleField('subtitle', val)}
-                className="text-2xl text-gray-600 mb-6"
-                placeholder="Enter subtitle..."
-                nodeId="subtitle"
-                onStyleChange={handleStyleChange}
-              />
-              <div className="flex items-center text-gray-500 text-sm">
-                <EditableText
-                  tag="span"
-                  value={article.author}
-                  onChange={(val) => updateArticleField('author', val)}
-                  className="font-semibold"
-                  placeholder="Author name..."
-                  nodeId="meta"
-                  onStyleChange={handleStyleChange}
-                />
-                <span className="mx-2">•</span>
-                <EditableText
-                  tag="span"
-                  value={article.date}
-                  onChange={(val) => updateArticleField('date', val)}
-                  placeholder="Date..."
-                  nodeId="meta"
-                  onStyleChange={handleStyleChange}
-                />
-              </div>
-            </header>
-
-            {/* Featured Media (Image or Video) */}
-            <div className="mb-12 group relative">
-              {mediaType === 'video' ? (
-                <video
-                  src={article.image}
-                  controls
-                  className="w-full h-96 object-cover rounded-lg shadow-md"
-                />
-              ) : (
-                <img
-                  src={article.image}
-                  alt={article.title}
-                  className="w-full h-96 object-cover rounded-lg shadow-md"
-                />
-              )}
-              <button
-                onClick={() => setShowMediaModal(true)}
-                className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity px-4 py-2 bg-white rounded-lg shadow-lg font-semibold hover:bg-gray-50"
-              >
-                Change Media
-              </button>
-            </div>
-
-            {/* Two Column Content */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              {/* Column 1 */}
-              <div className="space-y-4">
-                {article.columnOneContent.split('\n\n').map((paragraph, index) => (
-                  <EditableText
-                    key={`col1-${index}`}
-                    tag="p"
-                    value={paragraph}
-                    onChange={(val) => {
-                      const paragraphs = article.columnOneContent.split('\n\n');
-                      paragraphs[index] = val;
-                      updateArticleField('columnOneContent', paragraphs.join('\n\n'));
-                    }}
-                    className="text-gray-700 leading-relaxed text-lg"
-                    placeholder="Enter paragraph..."
-                    multiline={true}
-                    nodeId="col1"
-                    onStyleChange={handleStyleChange}
-                  />
-                ))}
-              </div>
-
-              {/* Column 2 */}
-              <div className="space-y-4">
-                {article.columnTwoContent.split('\n\n').map((paragraph, index) => (
-                  <EditableText
-                    key={`col2-${index}`}
-                    tag="p"
-                    value={paragraph}
-                    onChange={(val) => {
-                      const paragraphs = article.columnTwoContent.split('\n\n');
-                      paragraphs[index] = val;
-                      updateArticleField('columnTwoContent', paragraphs.join('\n\n'));
-                    }}
-                    className="text-gray-700 leading-relaxed text-lg"
-                    placeholder="Enter paragraph..."
-                    multiline={true}
-                    nodeId="col2"
-                    onStyleChange={handleStyleChange}
-                  />
-                ))}
-              </div>
-            </div>
-
-            {/* Quote Section */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.3 }}
-              className="bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-blue-500 p-8 rounded-r-lg my-12"
-            >
-              <EditableText
-                tag="blockquote"
-                value={article.quote}
-                onChange={(val) => updateArticleField('quote', val)}
-                className="text-2xl font-medium text-gray-800 italic mb-3"
-                placeholder="Enter quote..."
-                multiline={true}
-                nodeId="quote"
-                onStyleChange={handleStyleChange}
-              />
-              <EditableText
-                tag="cite"
-                value={article.quoteAuthor}
-                onChange={(val) => updateArticleField('quoteAuthor', val)}
-                className="text-gray-600 not-italic font-semibold"
-                placeholder="Quote author..."
-                nodeId="quote-author"
-                onStyleChange={handleStyleChange}
-              />
-            </motion.div>
-
-            {/* Dynamic Content - Rendered from tree structure */}
-            {renderDynamicContent(treeStructure)}
-          </motion.article>
-        </div>
-
-        {/* Right Column: Tree View */}
-        <div className="w-96 bg-gray-100 border-l border-gray-300 p-4">
-          <TreeView
-            structure={treeStructure}
-            onAddNode={handleAddNode}
-            onSelectNode={setSelectedNodeId}
-            selectedNodeId={selectedNodeId}
-            nodeStyles={nodeStyles}
+      {/* Editor Content */}
+      <div className="max-w-4xl mx-auto p-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="bg-white rounded-lg shadow-lg p-12"
+        >
+          {/* Add button at the top */}
+          <AddBlockButton
+            onAddBlock={(blockType) => handleAddBlock(blockType, null)}
           />
+
+          {/* Render blocks */}
+          <AnimatePresence>
+            {blocks.map((block, index) => (
+              <React.Fragment key={block.id}>
+                <EditableBlock
+                  blockId={block.id}
+                  onDelete={handleDeleteBlock}
+                >
+                  {renderBlock(block)}
+                </EditableBlock>
+
+                {/* Add button between blocks */}
+                <AddBlockButton
+                  onAddBlock={(blockType) => handleAddBlock(blockType, block.id)}
+                />
+              </React.Fragment>
+            ))}
+          </AnimatePresence>
+
+          {/* Empty state */}
+          {blocks.length === 0 && (
+            <div className="text-center py-12">
+              <p className="text-gray-500 mb-4">
+                No hay bloques aún. Haz clic en el botón + para agregar contenido.
+              </p>
+            </div>
+          )}
+        </motion.div>
+
+        {/* Helper info */}
+        <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <h3 className="font-semibold text-blue-900 mb-2">[TIP] Consejos:</h3>
+          <ul className="text-sm text-blue-800 space-y-1">
+            <li>• Pasa el mouse entre bloques para ver el boton <strong>+</strong></li>
+            <li>• Pasa el mouse sobre un bloque para ver el boton de eliminar</li>
+            <li>• Haz clic en cualquier texto para editarlo</li>
+            <li>• Usa la barra de herramientas para dar formato al texto</li>
+            <li>• Haz clic en "Cambiar Imagen" para reemplazar imagenes</li>
+            <li>• Haz clic en el boton de la derecha para ver como se guarda tu contenido</li>
+          </ul>
         </div>
       </div>
 
-      {/* Media Modal */}
-      <MediaModal
-        isOpen={showMediaModal}
-        onClose={() => setShowMediaModal(false)}
-        onSelectMedia={handleMediaSelect}
-        currentUrl={article.image}
+      {/* Data Preview Sidebar */}
+      <DataPreviewSidebar
+        blocks={blocks}
+        nodeStyles={nodeStyles}
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
       />
     </div>
   );
