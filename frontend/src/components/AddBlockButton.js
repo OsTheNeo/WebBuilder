@@ -56,20 +56,20 @@ const AddBlockButton = ({ onAddBlock, position = 'between' }) => {
 
   return (
     <div className="relative group my-4">
-      {/* Divider line */}
-      <div className="absolute inset-0 flex items-center pointer-events-none">
-        <div className="w-full border-t-2 border-dashed border-gray-300 group-hover:border-blue-400 transition-colors"></div>
+      {/* Divider line - only visible on hover */}
+      <div className="absolute inset-0 flex items-center pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="w-full border-t-2 border-dashed border-blue-400"></div>
       </div>
 
-      {/* Add button */}
-      <div className="relative flex justify-center">
+      {/* Add button - only visible on hover */}
+      <div className="relative flex justify-center opacity-0 group-hover:opacity-100 transition-opacity">
         <button
           onClick={() => setShowMenu(!showMenu)}
-          className="w-8 h-8 bg-white border-2 border-gray-300 rounded-full flex items-center justify-center hover:border-blue-500 hover:bg-blue-50 transition-all group-hover:scale-110 shadow-sm"
+          className="w-8 h-8 bg-white border-2 border-blue-400 rounded-full flex items-center justify-center hover:border-blue-600 hover:bg-blue-50 transition-all hover:scale-110 shadow-lg"
           title="Agregar bloque"
         >
           <svg
-            className={`w-5 h-5 text-gray-600 transition-transform ${showMenu ? 'rotate-45' : ''}`}
+            className={`w-5 h-5 text-blue-600 transition-transform ${showMenu ? 'rotate-45' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

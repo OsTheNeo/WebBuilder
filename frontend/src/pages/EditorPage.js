@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AddBlockButton from '../components/AddBlockButton';
 import EditableBlock from '../components/EditableBlock';
+import DataPreviewSidebar from '../components/DataPreviewSidebar';
 import { BLOCK_COMPONENTS, BLOCK_INITIAL_DATA } from '../components/BlockTemplates';
 
 const EditorPage = () => {
@@ -27,6 +28,7 @@ const EditorPage = () => {
   ]);
 
   const [nodeStyles, setNodeStyles] = useState({});
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   // Agregar bloque
   const handleAddBlock = (blockType, afterBlockId) => {
@@ -173,14 +175,23 @@ const EditorPage = () => {
         <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
           <h3 className="font-semibold text-blue-900 mb-2">💡 Consejos:</h3>
           <ul className="text-sm text-blue-800 space-y-1">
-            <li>• Haz clic en el botón <strong>+</strong> para agregar nuevos bloques</li>
+            <li>• Pasa el mouse entre bloques para ver el botón <strong>+</strong></li>
             <li>• Pasa el mouse sobre un bloque para ver el botón de eliminar</li>
             <li>• Haz clic en cualquier texto para editarlo</li>
             <li>• Usa la barra de herramientas para dar formato al texto</li>
             <li>• Haz clic en "Cambiar Imagen" para reemplazar imágenes</li>
+            <li>• Haz clic en el botón de la derecha para ver cómo se guarda tu contenido</li>
           </ul>
         </div>
       </div>
+
+      {/* Data Preview Sidebar */}
+      <DataPreviewSidebar
+        blocks={blocks}
+        nodeStyles={nodeStyles}
+        isOpen={sidebarOpen}
+        onToggle={() => setSidebarOpen(!sidebarOpen)}
+      />
     </div>
   );
 };
