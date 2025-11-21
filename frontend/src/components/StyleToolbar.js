@@ -170,11 +170,13 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
             <div className="grid grid-cols-11 gap-0.5">
               {shades.map((shade) => {
                 const className = `${prefix}-${colorName}-${shade}`;
+                // For preview, always show as background color so it's visible
+                const previewClassName = `bg-${colorName}-${shade}`;
                 return (
                   <button
                     key={shade}
                     onClick={() => handleStyleClick(className)}
-                    className={`w-5 h-5 rounded border border-gray-300 hover:scale-125 transition-transform ${className}`}
+                    className={`w-5 h-5 rounded border border-gray-300 hover:scale-125 transition-transform ${previewClassName}`}
                     title={`${colorName}-${shade}`}
                   />
                 );
@@ -187,12 +189,12 @@ const StyleToolbar = ({ isVisible, targetElement, onStyleChange }) => {
           <div className="flex gap-1">
             <button
               onClick={() => handleStyleClick(`${prefix}-white`)}
-              className={`w-5 h-5 rounded border-2 border-gray-400 hover:scale-125 transition-transform ${prefix}-white`}
+              className={`w-5 h-5 rounded border-2 border-gray-400 hover:scale-125 transition-transform bg-white`}
               title="white"
             />
             <button
               onClick={() => handleStyleClick(`${prefix}-black`)}
-              className={`w-5 h-5 rounded border border-gray-300 hover:scale-125 transition-transform ${prefix}-black`}
+              className={`w-5 h-5 rounded border border-gray-300 hover:scale-125 transition-transform bg-black`}
               title="black"
             />
           </div>
