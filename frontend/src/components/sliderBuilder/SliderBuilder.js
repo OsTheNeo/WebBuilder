@@ -19,8 +19,8 @@ const SliderBuilder = () => {
   const [showLoadModal, setShowLoadModal] = useState(false);
   const [sliderName, setSliderName] = useState('');
 
-  // Load hero banner template by default
-  const defaultTemplate = getTemplate('hero_banner');
+  // Load parallax hero template by default
+  const defaultTemplate = getTemplate('parallax_hero');
 
   // Slider data state
   const [sliderData, setSliderData] = useState(defaultTemplate ? defaultTemplate.data : {
