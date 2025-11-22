@@ -154,6 +154,27 @@ const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, is
       // Create timeline for all layers
       const tl = gsap.timeline({
         paused: true,
+        onStart: function() {
+          console.log('🎬 Timeline starting - resetting all layers to initial state');
+          // Force reset all layers to initial state when timeline starts
+          slide.layers.forEach((layer) => {
+            const layerNode = layerRefs.current[layer.id];
+            if (!layerNode) return;
+
+            const inAnimation = layer.animations?.find(a => a.type === 'in');
+            if (inAnimation && inAnimation.properties?.from) {
+              gsap.set(layerNode, {
+                x: inAnimation.properties.from.x !== undefined ? inAnimation.properties.from.x : layer.position.x,
+                y: inAnimation.properties.from.y !== undefined ? inAnimation.properties.from.y : layer.position.y,
+                opacity: inAnimation.properties.from.opacity !== undefined ? inAnimation.properties.from.opacity : layer.opacity,
+                scaleX: inAnimation.properties.from.scale !== undefined ? inAnimation.properties.from.scale : layer.scale.x,
+                scaleY: inAnimation.properties.from.scale !== undefined ? inAnimation.properties.from.scale : layer.scale.y,
+                rotation: inAnimation.properties.from.rotation !== undefined ? inAnimation.properties.from.rotation : layer.rotation,
+              });
+            }
+          });
+          stageRef.current?.batchDraw();
+        },
         onUpdate: function() {
           stageRef.current?.batchDraw();
           // Update current time (convert from seconds to milliseconds)
@@ -257,7 +278,8 @@ const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, is
 
     if (isPlaying) {
       console.log('▶️ Playing slide', slideIndex, '- restarting timeline');
-      // Restart from beginning when slide changes
+      // Invalidate and restart to force recalculation and reset
+      timelineRef.current.invalidate();
       timelineRef.current.restart();
     } else {
       console.log('⏸️ Pausing slide', slideIndex);
