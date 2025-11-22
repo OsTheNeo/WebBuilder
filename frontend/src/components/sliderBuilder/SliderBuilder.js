@@ -12,6 +12,7 @@ const SliderBuilder = () => {
   const navigate = useNavigate();
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [selectedLayerId, setSelectedLayerId] = useState(null);
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
@@ -38,7 +39,13 @@ const SliderBuilder = () => {
     ]
   });
 
-  const currentSlide = sliderData.slides[0]; // For now, work with first slide
+  const currentSlide = sliderData.slides[currentSlideIndex];
+
+  const handleSlideComplete = () => {
+    // Advance to next slide (loop back to 0 when reaching the end)
+    setCurrentSlideIndex((prev) => (prev + 1) % sliderData.slides.length);
+    setCurrentTime(0);
+  };
 
   const handleAddLayer = (layerType) => {
     const newLayer = {
@@ -82,7 +89,7 @@ const SliderBuilder = () => {
     setSliderData(prev => ({
       ...prev,
       slides: prev.slides.map((slide, idx) =>
-        idx === 0 ? { ...slide, layers: [...slide.layers, newLayer] } : slide
+        idx === currentSlideIndex ? { ...slide, layers: [...slide.layers, newLayer] } : slide
       )
     }));
 
@@ -93,7 +100,7 @@ const SliderBuilder = () => {
     setSliderData(prev => ({
       ...prev,
       slides: prev.slides.map((slide, idx) =>
-        idx === 0 ? { ...slide, layers: slide.layers.filter(l => l.id !== layerId) } : slide
+        idx === currentSlideIndex ? { ...slide, layers: slide.layers.filter(l => l.id !== layerId) } : slide
       )
     }));
     if (selectedLayerId === layerId) {
@@ -105,7 +112,7 @@ const SliderBuilder = () => {
     setSliderData(prev => ({
       ...prev,
       slides: prev.slides.map((slide, idx) =>
-        idx === 0 ? {
+        idx === currentSlideIndex ? {
           ...slide,
           layers: slide.layers.map(layer =>
             layer.id === layerId ? { ...layer, ...updates } : layer
@@ -119,7 +126,7 @@ const SliderBuilder = () => {
     setSliderData(prev => ({
       ...prev,
       slides: prev.slides.map((slide, idx) =>
-        idx === 0 ? { ...slide, layers: newLayers } : slide
+        idx === currentSlideIndex ? { ...slide, layers: newLayers } : slide
       )
     }));
   };
@@ -151,6 +158,7 @@ const SliderBuilder = () => {
     }
     setSelectedLayerId(null);
     setCurrentTime(0);
+    setCurrentSlideIndex(0);
     setIsPlaying(false);
     setShowTemplateSelector(false);
   };
@@ -181,6 +189,7 @@ const SliderBuilder = () => {
     setSliderData(slider.data);
     setSelectedLayerId(null);
     setCurrentTime(0);
+    setCurrentSlideIndex(0);
     setIsPlaying(false);
     setShowLoadModal(false);
   };
@@ -283,7 +292,7 @@ const SliderBuilder = () => {
         </div>
 
         {/* Center - Canvas */}
-        <div className="flex-1 bg-gray-900 flex items-center justify-center p-8">
+        <div className="flex-1 bg-gray-900 flex flex-col items-center justify-center p-8">
           <SliderCanvas
             slide={currentSlide}
             selectedLayerId={selectedLayerId}
@@ -292,8 +301,29 @@ const SliderBuilder = () => {
             isPlaying={isPlaying}
             currentTime={currentTime}
             onTimeUpdate={setCurrentTime}
-            duration={sliderData.duration}
+            duration={currentSlide.duration}
+            onSlideComplete={handleSlideComplete}
+            slideIndex={currentSlideIndex}
           />
+
+          {/* Slide Navigation Dots */}
+          <div className="flex gap-2 mt-4">
+            {sliderData.slides.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => {
+                  setCurrentSlideIndex(idx);
+                  setCurrentTime(0);
+                }}
+                className={`w-3 h-3 rounded-full transition-all ${
+                  idx === currentSlideIndex
+                    ? 'bg-blue-500 w-8'
+                    : 'bg-gray-600 hover:bg-gray-500'
+                }`}
+                title={`Slide ${idx + 1}`}
+              />
+            ))}
+          </div>
         </div>
 
         {/* Right Panel - Settings */}

@@ -128,7 +128,7 @@ const TransformerComponent = ({ selectedLayer }) => {
   return <Transformer ref={transformerRef} />;
 };
 
-const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, isPlaying, currentTime, onTimeUpdate, duration }) => {
+const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, isPlaying, currentTime, onTimeUpdate, duration, onSlideComplete, slideIndex }) => {
   const stageRef = useRef();
   const layerRefs = useRef({});
   const timelineRef = useRef(null);
@@ -143,13 +143,18 @@ const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, is
     // Create timeline for all layers
     const tl = gsap.timeline({
       paused: true,
-      repeat: -1, // Loop infinitely
       onUpdate: function() {
         stageRef.current?.batchDraw();
         // Update current time (convert from seconds to milliseconds)
         if (onTimeUpdate) {
           const time = this.time() * 1000;
-          onTimeUpdate(time % duration); // Loop back to 0 when duration is reached
+          onTimeUpdate(Math.min(time, duration));
+        }
+      },
+      onComplete: function() {
+        // When slide animations complete, trigger slide change
+        if (onSlideComplete && isPlaying) {
+          onSlideComplete();
         }
       }
     });
@@ -203,6 +208,10 @@ const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, is
       });
     });
 
+    // Ensure timeline lasts for the full slide duration
+    // Add a dummy animation at the end to extend timeline to full duration
+    tl.to({}, { duration: 0.001 }, duration / 1000);
+
     // Set timeline to start and redraw
     tl.seek(0);
     stageRef.current?.batchDraw();
@@ -214,18 +223,19 @@ const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, is
         timelineRef.current.kill();
       }
     };
-  }, { dependencies: [slide.layers], scope: stageRef });
+  }, { dependencies: [slide.layers, slideIndex, duration], scope: stageRef });
 
   // Control playback
   useEffect(() => {
     if (!timelineRef.current) return;
 
     if (isPlaying) {
-      timelineRef.current.play();
+      // Restart from beginning when slide changes
+      timelineRef.current.restart();
     } else {
       timelineRef.current.pause();
     }
-  }, [isPlaying]);
+  }, [isPlaying, slideIndex]);
 
   const handleStageClick = (e) => {
     // Click on empty area - deselect
