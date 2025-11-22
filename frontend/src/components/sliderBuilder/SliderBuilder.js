@@ -227,6 +227,8 @@ const SliderBuilder = () => {
             onUpdateLayer={handleUpdateLayer}
             isPlaying={isPlaying}
             currentTime={currentTime}
+            onTimeUpdate={setCurrentTime}
+            duration={sliderData.duration}
           />
         </div>
 

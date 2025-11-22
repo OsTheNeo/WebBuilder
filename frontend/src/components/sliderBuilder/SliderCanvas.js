@@ -128,18 +128,29 @@ const TransformerComponent = ({ selectedLayer }) => {
   return <Transformer ref={transformerRef} />;
 };
 
-const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, isPlaying, currentTime }) => {
+const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, isPlaying, currentTime, onTimeUpdate, duration }) => {
   const stageRef = useRef();
   const layerRefs = useRef({});
+  const timelineRef = useRef(null);
 
-  // Handle animations with GSAP
+  // Create and setup timeline
   useGSAP(() => {
-    if (!isPlaying) return;
+    // Kill previous timeline if exists
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
 
     // Create timeline for all layers
     const tl = gsap.timeline({
-      onUpdate: () => {
+      paused: true,
+      repeat: -1, // Loop infinitely
+      onUpdate: function() {
         stageRef.current?.batchDraw();
+        // Update current time (convert from seconds to milliseconds)
+        if (onTimeUpdate) {
+          const time = this.time() * 1000;
+          onTimeUpdate(time % duration); // Loop back to 0 when duration is reached
+        }
       }
     });
 
@@ -147,11 +158,24 @@ const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, is
       const layerNode = layerRefs.current[layer.id];
       if (!layerNode) return;
 
+      // Set initial state from first "in" animation
+      const inAnimation = layer.animations.find(a => a.type === 'in');
+      if (inAnimation && inAnimation.properties.from) {
+        gsap.set(layerNode, {
+          x: inAnimation.properties.from.x !== undefined ? inAnimation.properties.from.x : layer.position.x,
+          y: inAnimation.properties.from.y !== undefined ? inAnimation.properties.from.y : layer.position.y,
+          opacity: inAnimation.properties.from.opacity !== undefined ? inAnimation.properties.from.opacity : layer.opacity,
+          scaleX: inAnimation.properties.from.scale !== undefined ? inAnimation.properties.from.scale : layer.scale.x,
+          scaleY: inAnimation.properties.from.scale !== undefined ? inAnimation.properties.from.scale : layer.scale.y,
+          rotation: inAnimation.properties.from.rotation !== undefined ? inAnimation.properties.from.rotation : layer.rotation,
+        });
+      }
+
       layer.animations.forEach((anim) => {
         const { startTime, duration, easing, properties } = anim;
 
         // Convert easing string to GSAP format
-        const gsapEasing = easing.replace('.', '.');
+        const gsapEasing = easing;
 
         // Add animation to timeline
         tl.fromTo(
@@ -179,10 +203,29 @@ const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, is
       });
     });
 
+    // Set timeline to start and redraw
+    tl.seek(0);
+    stageRef.current?.batchDraw();
+
+    timelineRef.current = tl;
+
     return () => {
-      tl.kill();
+      if (timelineRef.current) {
+        timelineRef.current.kill();
+      }
     };
-  }, { dependencies: [isPlaying, slide.layers], scope: stageRef });
+  }, { dependencies: [slide.layers], scope: stageRef });
+
+  // Control playback
+  useEffect(() => {
+    if (!timelineRef.current) return;
+
+    if (isPlaying) {
+      timelineRef.current.play();
+    } else {
+      timelineRef.current.pause();
+    }
+  }, [isPlaying]);
 
   const handleStageClick = (e) => {
     // Click on empty area - deselect
