@@ -149,6 +149,8 @@ const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, is
 
     // Small delay to ensure refs are populated
     const timer = setTimeout(() => {
+      console.log('Creating timeline for slide', slideIndex, 'with duration', duration);
+
       // Create timeline for all layers
       const tl = gsap.timeline({
         paused: true,
@@ -162,7 +164,9 @@ const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, is
         },
         onComplete: function() {
           // When slide animations complete, trigger slide change
-          if (onSlideComplete && isPlaying) {
+          console.log('✅ Timeline completed! Slide index:', slideIndex, 'Duration:', duration);
+          if (onSlideComplete) {
+            console.log('Calling onSlideComplete callback');
             onSlideComplete();
           }
         }
@@ -218,8 +222,16 @@ const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, is
       });
 
       // Ensure timeline lasts for the full slide duration
-      // Add a dummy animation at the end to extend timeline to full duration
-      tl.to({}, { duration: 0.001 }, duration / 1000);
+      // GSAP will auto-extend, but we force it to exactly the slide duration
+      const currentDuration = tl.duration();
+      const targetDuration = duration / 1000; // Convert to seconds
+
+      if (currentDuration < targetDuration) {
+        // Add a dummy tween to extend timeline to exact duration
+        tl.to({}, { duration: targetDuration - currentDuration }, currentDuration);
+      }
+
+      console.log('Timeline created with duration:', tl.duration(), 'seconds (target:', targetDuration, ')');
 
       // Set timeline to start and redraw
       tl.seek(0);
@@ -238,12 +250,17 @@ const SliderCanvas = ({ slide, selectedLayerId, onSelectLayer, onUpdateLayer, is
 
   // Control playback
   useEffect(() => {
-    if (!timelineRef.current) return;
+    if (!timelineRef.current) {
+      console.log('⚠️ Timeline ref not ready yet');
+      return;
+    }
 
     if (isPlaying) {
+      console.log('▶️ Playing slide', slideIndex, '- restarting timeline');
       // Restart from beginning when slide changes
       timelineRef.current.restart();
     } else {
+      console.log('⏸️ Pausing slide', slideIndex);
       timelineRef.current.pause();
     }
   }, [isPlaying, slideIndex]);

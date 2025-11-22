@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconHome, IconPlayerPlay, IconPlayerPause, IconTemplate, IconDeviceFloppy, IconFolderOpen } from '@tabler/icons-react';
+import { IconHome, IconPlayerPlay, IconPlayerPause, IconTemplate, IconDeviceFloppy, IconFolderOpen, IconCode } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import SliderCanvas from './SliderCanvas';
 import LayersPanel from './LayersPanel';
@@ -17,6 +17,7 @@ const SliderBuilder = () => {
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [showLoadModal, setShowLoadModal] = useState(false);
+  const [showJSONModal, setShowJSONModal] = useState(false);
   const [sliderName, setSliderName] = useState('');
 
   // Load parallax hero template by default
@@ -42,8 +43,13 @@ const SliderBuilder = () => {
   const currentSlide = sliderData.slides[currentSlideIndex];
 
   const handleSlideComplete = () => {
+    console.log('🔄 Slide complete, advancing from slide', currentSlideIndex);
     // Advance to next slide (loop back to 0 when reaching the end)
-    setCurrentSlideIndex((prev) => (prev + 1) % sliderData.slides.length);
+    setCurrentSlideIndex((prev) => {
+      const next = (prev + 1) % sliderData.slides.length;
+      console.log('   Moving to slide', next);
+      return next;
+    });
     setCurrentTime(0);
   };
 
@@ -254,6 +260,14 @@ const SliderBuilder = () => {
             <IconTemplate className="w-5 h-5" />
             <span className="hidden md:inline">Templates</span>
           </button>
+          <button
+            onClick={() => setShowJSONModal(true)}
+            className="px-3 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded-lg transition-colors flex items-center gap-2"
+            title="View JSON Data"
+          >
+            <IconCode className="w-5 h-5" />
+            <span className="hidden md:inline">View JSON</span>
+          </button>
           <div className="w-px h-8 bg-gray-700"></div>
           <button
             onClick={handlePlayPause}
@@ -443,6 +457,54 @@ const SliderBuilder = () => {
               <button
                 onClick={() => setShowLoadModal(false)}
                 className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* JSON Viewer Modal */}
+      {showJSONModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-8" onClick={() => setShowJSONModal(false)}>
+          <div className="bg-gray-800 rounded-xl shadow-2xl max-w-5xl w-full max-h-[90vh] overflow-hidden flex flex-col" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 border-b border-gray-700 flex justify-between items-center">
+              <div>
+                <h2 className="text-xl font-bold text-white">Slider JSON Data</h2>
+                <p className="text-sm text-gray-400 mt-1">Complete structure that will be saved to database</p>
+              </div>
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(JSON.stringify(sliderData, null, 2));
+                  alert('JSON copied to clipboard!');
+                }}
+                className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors text-sm"
+              >
+                Copy JSON
+              </button>
+            </div>
+            <div className="flex-1 overflow-y-auto p-6 bg-gray-900">
+              <pre className="text-sm text-green-400 font-mono whitespace-pre-wrap break-words">
+                {JSON.stringify(sliderData, null, 2)}
+              </pre>
+            </div>
+            <div className="p-4 border-t border-gray-700 bg-gray-800">
+              <div className="text-xs text-gray-400 mb-3">
+                <p className="font-semibold text-white mb-2">Structure includes:</p>
+                <ul className="list-disc list-inside space-y-1 ml-2">
+                  <li>Slider ID and configuration</li>
+                  <li>All slides with durations and backgrounds</li>
+                  <li>All layers per slide (text, images, shapes)</li>
+                  <li>Layer properties: position, scale, rotation, opacity, zIndex</li>
+                  <li>Animation definitions: type (in/out), timing, easing, properties</li>
+                  <li>Visual properties: fontSize, fontFamily, fill colors</li>
+                  <li>Complete layer tree structure</li>
+                </ul>
+              </div>
+              <button
+                onClick={() => setShowJSONModal(false)}
+                className="w-full px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
               >
                 Close
               </button>
