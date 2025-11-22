@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
+import { getEntranceAnimations, getExitAnimations, getAnimationPreset } from './animationPresets';
 
 const SettingsPanel = ({ layer, onUpdateLayer }) => {
   const [expandedSections, setExpandedSections] = useState({
-    transform: true,
+    animation: true,
+    position: true,
     appearance: true,
-    animation: false,
   });
 
   const toggleSection = (section) => {
@@ -19,10 +20,51 @@ const SettingsPanel = ({ layer, onUpdateLayer }) => {
     return (
       <div className="flex flex-col h-full items-center justify-center text-gray-500 p-8 text-center">
         <p className="text-sm">No layer selected</p>
-        <p className="text-xs mt-2 text-gray-600">Select a layer to edit its properties</p>
+        <p className="text-xs mt-2 text-gray-600">Click on a layer in the canvas or layers panel to edit</p>
       </div>
     );
   }
+
+  const entranceAnimations = getEntranceAnimations();
+  const exitAnimations = getExitAnimations();
+
+  const inAnimation = layer.animations?.find(a => a.type === 'in') || null;
+  const outAnimation = layer.animations?.find(a => a.type === 'out') || null;
+
+  const handleAnimationChange = (type, presetKey) => {
+    const preset = getAnimationPreset(presetKey);
+    const newAnimations = [...(layer.animations || [])];
+
+    const animIndex = newAnimations.findIndex(a => a.type === type);
+    const newAnim = {
+      type: type,
+      startTime: type === 'in' ? 0 : 4000,
+      duration: preset.duration,
+      easing: preset.easing,
+      properties: preset.properties
+    };
+
+    if (animIndex >= 0) {
+      newAnimations[animIndex] = newAnim;
+    } else {
+      newAnimations.push(newAnim);
+    }
+
+    onUpdateLayer(layer.id, { animations: newAnimations });
+  };
+
+  const handleTimingChange = (type, field, value) => {
+    const newAnimations = [...(layer.animations || [])];
+    const animIndex = newAnimations.findIndex(a => a.type === type);
+
+    if (animIndex >= 0) {
+      newAnimations[animIndex] = {
+        ...newAnimations[animIndex],
+        [field]: parseInt(value)
+      };
+      onUpdateLayer(layer.id, { animations: newAnimations });
+    }
+  };
 
   const handleChange = (property, value) => {
     onUpdateLayer(layer.id, { [property]: value });
@@ -286,26 +328,102 @@ const SettingsPanel = ({ layer, onUpdateLayer }) => {
 
         {/* Animation Section */}
         <Section title="Animation" name="animation">
-          <div className="space-y-3">
-            <p className="text-xs text-gray-400">
-              Animation settings coming soon...
-            </p>
-
-            {layer.animations && layer.animations.length > 0 && (
-              <div className="space-y-2">
-                {layer.animations.map((anim, idx) => (
-                  <div key={idx} className="p-3 bg-gray-700/50 rounded border border-gray-600">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-xs font-semibold text-gray-300 uppercase">{anim.type}</span>
-                      <span className="text-xs text-gray-500">{anim.duration}ms</span>
-                    </div>
-                    <div className="text-xs text-gray-400">
-                      Easing: {anim.easing}
-                    </div>
-                  </div>
+          <div className="space-y-4">
+            {/* Entrance Animation */}
+            <div>
+              <label className="block text-xs text-gray-400 mb-2 font-semibold">Entrance Animation</label>
+              <select
+                value={inAnimation ? entranceAnimations.findIndex(a => a.easing === inAnimation.easing && JSON.stringify(a.properties) === JSON.stringify(inAnimation.properties)) : -1}
+                onChange={(e) => {
+                  const selectedAnim = entranceAnimations[e.target.value];
+                  if (selectedAnim) handleAnimationChange('in', selectedAnim.key);
+                }}
+                className="w-full px-3 py-2 bg-gray-700 text-gray-200 rounded border border-gray-600 focus:border-blue-500 focus:outline-none text-sm mb-2"
+              >
+                <option value="-1">Choose animation...</option>
+                {entranceAnimations.map((anim, idx) => (
+                  <option key={anim.key} value={idx}>{anim.name}</option>
                 ))}
-              </div>
-            )}
+              </select>
+
+              {inAnimation && (
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Start (ms)</label>
+                    <input
+                      type="number"
+                      value={inAnimation.startTime}
+                      onChange={(e) => handleTimingChange('in', 'startTime', e.target.value)}
+                      min={0}
+                      step={100}
+                      className="w-full px-2 py-1 bg-gray-700 text-gray-200 rounded border border-gray-600 focus:border-blue-500 focus:outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Duration (ms)</label>
+                    <input
+                      type="number"
+                      value={inAnimation.duration}
+                      onChange={(e) => handleTimingChange('in', 'duration', e.target.value)}
+                      min={100}
+                      step={100}
+                      className="w-full px-2 py-1 bg-gray-700 text-gray-200 rounded border border-gray-600 focus:border-blue-500 focus:outline-none text-sm"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Exit Animation */}
+            <div>
+              <label className="block text-xs text-gray-400 mb-2 font-semibold">Exit Animation</label>
+              <select
+                value={outAnimation ? exitAnimations.findIndex(a => a.easing === outAnimation.easing && JSON.stringify(a.properties) === JSON.stringify(outAnimation.properties)) : -1}
+                onChange={(e) => {
+                  const selectedAnim = exitAnimations[e.target.value];
+                  if (selectedAnim) handleAnimationChange('out', selectedAnim.key);
+                }}
+                className="w-full px-3 py-2 bg-gray-700 text-gray-200 rounded border border-gray-600 focus:border-blue-500 focus:outline-none text-sm mb-2"
+              >
+                <option value="-1">Choose animation...</option>
+                {exitAnimations.map((anim, idx) => (
+                  <option key={anim.key} value={idx}>{anim.name}</option>
+                ))}
+              </select>
+
+              {outAnimation && (
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Start (ms)</label>
+                    <input
+                      type="number"
+                      value={outAnimation.startTime}
+                      onChange={(e) => handleTimingChange('out', 'startTime', e.target.value)}
+                      min={0}
+                      step={100}
+                      className="w-full px-2 py-1 bg-gray-700 text-gray-200 rounded border border-gray-600 focus:border-blue-500 focus:outline-none text-sm"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-400 mb-1">Duration (ms)</label>
+                    <input
+                      type="number"
+                      value={outAnimation.duration}
+                      onChange={(e) => handleTimingChange('out', 'duration', e.target.value)}
+                      min={100}
+                      step={100}
+                      className="w-full px-2 py-1 bg-gray-700 text-gray-200 rounded border border-gray-600 focus:border-blue-500 focus:outline-none text-sm"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="pt-2 border-t border-gray-700">
+              <p className="text-xs text-gray-500 italic">
+                Select entrance and exit animations from presets. Adjust timing to control when animations start and how long they last.
+              </p>
+            </div>
           </div>
         </Section>
       </div>

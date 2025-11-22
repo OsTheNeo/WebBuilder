@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconHome, IconPlayerPlay, IconPlayerPause, IconTemplate } from '@tabler/icons-react';
+import { IconHome, IconPlayerPlay, IconPlayerPause, IconTemplate, IconDeviceFloppy, IconFolderOpen } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import SliderCanvas from './SliderCanvas';
 import LayersPanel from './LayersPanel';
@@ -14,6 +14,9 @@ const SliderBuilder = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [selectedLayerId, setSelectedLayerId] = useState(null);
   const [showTemplateSelector, setShowTemplateSelector] = useState(false);
+  const [showSaveModal, setShowSaveModal] = useState(false);
+  const [showLoadModal, setShowLoadModal] = useState(false);
+  const [sliderName, setSliderName] = useState('');
 
   // Load hero banner template by default
   const defaultTemplate = getTemplate('hero_banner');
@@ -152,6 +155,50 @@ const SliderBuilder = () => {
     setShowTemplateSelector(false);
   };
 
+  const handleSave = () => {
+    if (!sliderName.trim()) {
+      alert('Please enter a name for your slider');
+      return;
+    }
+
+    const savedSliders = JSON.parse(localStorage.getItem('savedSliders') || '[]');
+    const newSlider = {
+      id: Date.now(),
+      name: sliderName,
+      data: sliderData,
+      createdAt: new Date().toISOString()
+    };
+
+    savedSliders.push(newSlider);
+    localStorage.setItem('savedSliders', JSON.stringify(savedSliders));
+
+    alert(`Slider "${sliderName}" saved successfully!`);
+    setShowSaveModal(false);
+    setSliderName('');
+  };
+
+  const handleLoad = (slider) => {
+    setSliderData(slider.data);
+    setSelectedLayerId(null);
+    setCurrentTime(0);
+    setIsPlaying(false);
+    setShowLoadModal(false);
+  };
+
+  const handleDelete = (sliderId) => {
+    if (!window.confirm('Are you sure you want to delete this slider?')) return;
+
+    const savedSliders = JSON.parse(localStorage.getItem('savedSliders') || '[]');
+    const filtered = savedSliders.filter(s => s.id !== sliderId);
+    localStorage.setItem('savedSliders', JSON.stringify(filtered));
+    setShowLoadModal(false);
+    setTimeout(() => setShowLoadModal(true), 10); // Force re-render
+  };
+
+  const getSavedSliders = () => {
+    return JSON.parse(localStorage.getItem('savedSliders') || '[]');
+  };
+
   const selectedLayer = currentSlide.layers.find(l => l.id === selectedLayerId);
 
   return (
@@ -173,15 +220,32 @@ const SliderBuilder = () => {
         </div>
 
         {/* Playback controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setShowSaveModal(true)}
+            className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors flex items-center gap-2"
+            title="Save Slider"
+          >
+            <IconDeviceFloppy className="w-5 h-5" />
+            <span className="hidden md:inline">Save</span>
+          </button>
+          <button
+            onClick={() => setShowLoadModal(true)}
+            className="px-3 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg transition-colors flex items-center gap-2"
+            title="Load Slider"
+          >
+            <IconFolderOpen className="w-5 h-5" />
+            <span className="hidden md:inline">Load</span>
+          </button>
           <button
             onClick={() => setShowTemplateSelector(true)}
-            className="px-4 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors flex items-center gap-2"
+            className="px-3 py-2 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors flex items-center gap-2"
             title="Load Template"
           >
             <IconTemplate className="w-5 h-5" />
-            Templates
+            <span className="hidden md:inline">Templates</span>
           </button>
+          <div className="w-px h-8 bg-gray-700"></div>
           <button
             onClick={handlePlayPause}
             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center gap-2"
@@ -260,6 +324,101 @@ const SliderBuilder = () => {
           onSelectTemplate={handleSelectTemplate}
           onClose={() => setShowTemplateSelector(false)}
         />
+      )}
+
+      {/* Save Modal */}
+      {showSaveModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-8" onClick={() => setShowSaveModal(false)}>
+          <div className="bg-gray-800 rounded-xl shadow-2xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+            <h2 className="text-xl font-bold text-white mb-4">Save Slider</h2>
+            <input
+              type="text"
+              value={sliderName}
+              onChange={(e) => setSliderName(e.target.value)}
+              placeholder="Enter slider name..."
+              className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:border-blue-500 focus:outline-none mb-4"
+              autoFocus
+            />
+            <div className="flex gap-3">
+              <button
+                onClick={handleSave}
+                className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors font-semibold"
+              >
+                Save
+              </button>
+              <button
+                onClick={() => {
+                  setShowSaveModal(false);
+                  setSliderName('');
+                }}
+                className="flex-1 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Load Modal */}
+      {showLoadModal && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-8" onClick={() => setShowLoadModal(false)}>
+          <div className="bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full max-h-[80vh] overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="p-6 border-b border-gray-700">
+              <h2 className="text-xl font-bold text-white">Load Slider</h2>
+              <p className="text-sm text-gray-400 mt-1">Select a saved slider to load</p>
+            </div>
+            <div className="p-6 overflow-y-auto max-h-[60vh]">
+              {getSavedSliders().length === 0 ? (
+                <div className="text-center py-12 text-gray-500">
+                  <p>No saved sliders yet</p>
+                  <p className="text-sm mt-2">Create a slider and click Save to see it here</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {getSavedSliders().map((slider) => (
+                    <div
+                      key={slider.id}
+                      className="flex items-center justify-between p-4 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
+                    >
+                      <div className="flex-1">
+                        <h3 className="text-white font-semibold">{slider.name}</h3>
+                        <p className="text-xs text-gray-400 mt-1">
+                          {new Date(slider.createdAt).toLocaleString()}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          {slider.data.slides[0].layers.length} layers
+                        </p>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => handleLoad(slider)}
+                          className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors font-semibold"
+                        >
+                          Load
+                        </button>
+                        <button
+                          onClick={() => handleDelete(slider.id)}
+                          className="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors"
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="p-4 border-t border-gray-700 flex justify-end">
+              <button
+                onClick={() => setShowLoadModal(false)}
+                className="px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg transition-colors"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
