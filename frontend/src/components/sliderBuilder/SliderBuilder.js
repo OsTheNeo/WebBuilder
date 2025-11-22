@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { IconHome, IconPlayerPlay, IconPlayerPause, IconTemplate, IconDeviceFloppy, IconFolderOpen, IconCode } from '@tabler/icons-react';
+import { IconHome, IconPlayerPlay, IconPlayerPause, IconTemplate, IconDeviceFloppy, IconFolderOpen, IconCode, IconLayoutSidebarLeftCollapse, IconLayoutSidebarLeftExpand, IconLayoutSidebarRightCollapse, IconLayoutSidebarRightExpand, IconLayoutBottombarCollapse, IconLayoutBottombarExpand } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import SliderCanvas from './SliderCanvas';
 import LayersPanel from './LayersPanel';
@@ -19,6 +19,11 @@ const SliderBuilder = () => {
   const [showLoadModal, setShowLoadModal] = useState(false);
   const [showJSONModal, setShowJSONModal] = useState(false);
   const [sliderName, setSliderName] = useState('');
+
+  // Panel visibility states
+  const [showLeftPanel, setShowLeftPanel] = useState(true);
+  const [showRightPanel, setShowRightPanel] = useState(true);
+  const [showBottomPanel, setShowBottomPanel] = useState(true);
 
   // Load parallax hero template by default
   const defaultTemplate = getTemplate('parallax_hero');
@@ -269,6 +274,30 @@ const SliderBuilder = () => {
             <span className="hidden md:inline">View JSON</span>
           </button>
           <div className="w-px h-8 bg-gray-700"></div>
+
+          {/* Panel toggles */}
+          <button
+            onClick={() => setShowLeftPanel(!showLeftPanel)}
+            className="p-2 rounded-lg transition-all hover:bg-gray-700 text-gray-300 hover:text-white"
+            title={showLeftPanel ? "Hide Layers Panel" : "Show Layers Panel"}
+          >
+            {showLeftPanel ? <IconLayoutSidebarLeftCollapse className="w-5 h-5" /> : <IconLayoutSidebarLeftExpand className="w-5 h-5" />}
+          </button>
+          <button
+            onClick={() => setShowRightPanel(!showRightPanel)}
+            className="p-2 rounded-lg transition-all hover:bg-gray-700 text-gray-300 hover:text-white"
+            title={showRightPanel ? "Hide Settings Panel" : "Show Settings Panel"}
+          >
+            {showRightPanel ? <IconLayoutSidebarRightCollapse className="w-5 h-5" /> : <IconLayoutSidebarRightExpand className="w-5 h-5" />}
+          </button>
+          <button
+            onClick={() => setShowBottomPanel(!showBottomPanel)}
+            className="p-2 rounded-lg transition-all hover:bg-gray-700 text-gray-300 hover:text-white"
+            title={showBottomPanel ? "Hide Timeline Panel" : "Show Timeline Panel"}
+          >
+            {showBottomPanel ? <IconLayoutBottombarCollapse className="w-5 h-5" /> : <IconLayoutBottombarExpand className="w-5 h-5" />}
+          </button>
+          <div className="w-px h-8 bg-gray-700"></div>
           <button
             onClick={handlePlayPause}
             className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors flex items-center gap-2"
@@ -294,16 +323,18 @@ const SliderBuilder = () => {
       {/* Main Content */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Panel - Layers */}
-        <div className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
-          <LayersPanel
-            layers={currentSlide.layers}
-            selectedLayerId={selectedLayerId}
-            onSelectLayer={setSelectedLayerId}
-            onAddLayer={handleAddLayer}
-            onDeleteLayer={handleDeleteLayer}
-            onReorderLayers={handleReorderLayers}
-          />
-        </div>
+        {showLeftPanel && (
+          <div className="w-64 bg-gray-800 border-r border-gray-700 flex flex-col">
+            <LayersPanel
+              layers={currentSlide.layers}
+              selectedLayerId={selectedLayerId}
+              onSelectLayer={setSelectedLayerId}
+              onAddLayer={handleAddLayer}
+              onDeleteLayer={handleDeleteLayer}
+              onReorderLayers={handleReorderLayers}
+            />
+          </div>
+        )}
 
         {/* Center - Canvas */}
         <div className="flex-1 bg-gray-900 flex flex-col items-center justify-center p-8">
@@ -341,26 +372,30 @@ const SliderBuilder = () => {
         </div>
 
         {/* Right Panel - Settings */}
-        <div className="w-80 bg-gray-800 border-l border-gray-700 flex flex-col">
-          <SettingsPanel
-            layer={selectedLayer}
-            onUpdateLayer={handleUpdateLayer}
-          />
-        </div>
+        {showRightPanel && (
+          <div className="w-80 bg-gray-800 border-l border-gray-700 flex flex-col">
+            <SettingsPanel
+              layer={selectedLayer}
+              onUpdateLayer={handleUpdateLayer}
+            />
+          </div>
+        )}
       </div>
 
       {/* Bottom Panel - Timeline */}
-      <div className="h-48 bg-gray-800 border-t border-gray-700">
-        <TimelinePanel
-          layers={currentSlide.layers}
-          duration={sliderData.duration}
-          currentTime={currentTime}
-          isPlaying={isPlaying}
-          onTimeUpdate={setCurrentTime}
-          selectedLayerId={selectedLayerId}
-          onSelectLayer={setSelectedLayerId}
-        />
-      </div>
+      {showBottomPanel && (
+        <div className="h-48 bg-gray-800 border-t border-gray-700">
+          <TimelinePanel
+            layers={currentSlide.layers}
+            duration={sliderData.duration}
+            currentTime={currentTime}
+            isPlaying={isPlaying}
+            onTimeUpdate={setCurrentTime}
+            selectedLayerId={selectedLayerId}
+            onSelectLayer={setSelectedLayerId}
+          />
+        </div>
+      )}
 
       {/* Template Selector Modal */}
       {showTemplateSelector && (

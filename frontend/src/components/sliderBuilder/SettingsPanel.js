@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { IconChevronDown, IconChevronRight } from '@tabler/icons-react';
 import { getEntranceAnimations, getExitAnimations, getAnimationPreset } from './animationPresets';
+import EditableText from '../EditableText';
 
 const SettingsPanel = ({ layer, onUpdateLayer }) => {
   const [expandedSections, setExpandedSections] = useState({
@@ -77,6 +78,11 @@ const SettingsPanel = ({ layer, onUpdateLayer }) => {
         [property]: value
       }
     });
+  };
+
+  const handleStyleChange = (nodeId, newClassName) => {
+    // Update the layer's tailwind classes
+    onUpdateLayer(layer.id, { tailwindClasses: newClassName });
   };
 
   const Section = ({ title, name, children }) => (
@@ -224,13 +230,18 @@ const SettingsPanel = ({ layer, onUpdateLayer }) => {
           {layer.type === 'text' && (
             <>
               <div>
-                <label className="block text-xs text-gray-400 mb-1">Text Content</label>
-                <textarea
-                  value={layer.content}
-                  onChange={(e) => handleChange('content', e.target.value)}
-                  rows={3}
-                  className="w-full px-3 py-2 bg-gray-700 text-gray-200 rounded border border-gray-600 focus:border-blue-500 focus:outline-none text-sm resize-none"
-                />
+                <label className="block text-xs text-gray-400 mb-2">Text Content (WYSIWYG)</label>
+                <div className="bg-gray-700 p-3 rounded border border-gray-600 min-h-[100px]">
+                  <EditableText
+                    value={layer.content}
+                    onChange={(newValue) => handleChange('content', newValue)}
+                    className={layer.tailwindClasses || 'text-white'}
+                    multiline={true}
+                    onStyleChange={handleStyleChange}
+                    nodeId={layer.id}
+                  />
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Click text to edit with style toolbar</p>
               </div>
 
               <InputField
